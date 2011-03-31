@@ -185,8 +185,8 @@ Namespace SimpleD
             sr.Close()
             Return True
         End Function
-        Public Sub FromString(ByVal Data As String)
-            If Data = "" Then Return
+        Public Function FromString(ByVal Data As String) As String
+            If Data.Length < 2 Then Return "Nothing in file."
 
             Dim InComment As Boolean = False
 
@@ -202,33 +202,40 @@ Namespace SimpleD
 
                 ElseIf Not InComment Then
 
-                    'Find the start so we can get the name.
+                    'Find the start of the group so we can get the name.
                     Dim Start As Integer = Data.IndexOf("{", n)
-                    If Start = -1 Then Return
+                    If Start = -1 Then
+                        If Groups.Count = 0 Then Return "Could not find any groups."
+                        Return ""
+                    End If
+
                     'Now get the name.
-                    Dim gName As String = Trim(Data.Substring(n, Start - n).Trim(New Char() {vbCr, vbLf, vbTab}))
+                    Dim gName As String = Data.Substring(n, Start - n).Trim()
                     n = Start + 1
 
                     Dim Group As New Group(gName)
                     Groups.Add(Group)
 
-                    GetGroup(Data, n, Group)
-                    If n + 2 > Data.Length Then Return
+                    Dim result As String = GetGroup(Data, n, Group)
+                    If result <> "" Then
+                        Return result
+                    End If
+                    If n + 2 > Data.Length Then Return ""
                 End If
 
 
                 n += 1
             Loop Until n >= Data.Length - 1
 
+            Return ""
+        End Function
 
-        End Sub
-
-        Private Sub GetGroup(ByVal Data As String, ByRef n As Integer, ByVal Group As Group)
+        Private Function GetGroup(ByVal Data As String, ByRef n As Integer, ByVal Group As Group) As String
             Dim tmp As String
             Dim InComment As Boolean = False
             'Now lets get all of the propertys from the group.
             Do
-                If n + 2 > Data.Length Then Return
+                If n + 2 > Data.Length Then Return "Could not find end of group: " & Group.Name
                 tmp = Data.Substring(n, 2)
                 If tmp = "//" Then
                     InComment = True
@@ -239,37 +246,39 @@ Namespace SimpleD
 
 
                 ElseIf Not InComment Then
-                    Dim Equals As Integer = Data.IndexOf("=", n)
-                    Dim GroupStart As Integer = Data.IndexOf("{", n)
+                    Dim Equals As Integer = Data.IndexOf("=", n) 'Search for the next property.
+                    Dim GroupStart As Integer = Data.IndexOf("{", n) 'Search for the NEXT group.
+                    If Equals = -1 AndAlso GroupStart = -1 Then Return "" 'If there is no more groups and propertys then we are at the end of file.
                     Dim GroupEnd As Integer = Data.IndexOf("}", n)
-                    If Equals = -1 And GroupStart = -1 Then Return
-                    If GroupEnd < GroupStart And GroupEnd < Equals Then
+                    If GroupEnd < GroupStart And GroupEnd < Equals Then 'Are we at the end of this group?
                         n = GroupEnd
-                        Return
+                        Return ""
                     End If
                     'Is the next thing a group or property?
                     If Equals > -1 And ((Equals < GroupStart) Or GroupStart = -1) Then
-                        Dim PropName As String = Trim(Data.Substring(n, Equals - n).Trim(New Char() {vbCr, vbLf, vbTab}))
+                        Dim PropName As String = Data.Substring(n, Equals - n).Trim
                         n = Equals
                         Dim PropEnd As Integer = Data.IndexOf(";", n)
-                        Dim PropValue As String = Trim(Data.Substring(n + 1, PropEnd - n - 1).Trim(New Char() {vbCr, vbLf, vbTab}))
+                        If PropEnd = -1 Then Return "Could not find end of Prop:" & PropName
+                        Dim PropValue As String = Data.Substring(n + 1, PropEnd - n - 1).Trim
                         n = PropEnd
                         Group.Set_Value(PropName, PropValue)
-                    ElseIf GroupStart > -1 Then
 
-                        Dim gName As String = Trim(Data.Substring(n, GroupStart - n).Trim(New Char() {vbCr, vbLf, vbTab}))
+                    ElseIf GroupStart > -1 Then
+                        Dim gName As String = Trim(Data.Substring(n, GroupStart - n).Trim)
                         n = GroupStart + 1
 
                         Dim NewGroup As New Group(gName)
                         Group.Add_Group(NewGroup)
                         GetGroup(Data, n, NewGroup)
                     End If
-
                 End If
 
                 n += 1
+                If n >= Data.Length Then Return "" 'The end of the string is also the end of the group.
             Loop Until Data.Substring(n, 1) = "}"
-        End Sub
+            Return ""
+        End Function
 #End Region
 
     End Class

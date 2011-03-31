@@ -25,7 +25,7 @@
 
     Private Sub btnOpen_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnOpen.Click
         Dim sD As New SimpleD.SimpleD
-        sD.FromString(txtFile.Text)
+        txtError.Text = "Error:" & sD.FromString(txtFile.Text)
 
         Dim g As SimpleD.Group = sD.Get_Group("Test")
         If g Is Nothing Then Return

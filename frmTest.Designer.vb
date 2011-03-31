@@ -36,6 +36,7 @@ Partial Class frmTest
         Me.CheckBox2 = New System.Windows.Forms.CheckBox()
         Me.chkSplitNewLine = New System.Windows.Forms.CheckBox()
         Me.chkSplitTabs = New System.Windows.Forms.CheckBox()
+        Me.txtError = New System.Windows.Forms.TextBox()
         Me.GroupBox1.SuspendLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox2.SuspendLayout()
@@ -189,12 +190,21 @@ Partial Class frmTest
         Me.chkSplitTabs.Text = "Split using tabs"
         Me.chkSplitTabs.UseVisualStyleBackColor = True
         '
+        'txtError
+        '
+        Me.txtError.Location = New System.Drawing.Point(8, 287)
+        Me.txtError.Name = "txtError"
+        Me.txtError.Size = New System.Drawing.Size(224, 20)
+        Me.txtError.TabIndex = 1
+        Me.txtError.Text = "Error:"
+        '
         'frmTest
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(696, 387)
         Me.Controls.Add(Me.chkSplitTabs)
+        Me.Controls.Add(Me.txtError)
         Me.Controls.Add(Me.chkSplitNewLine)
         Me.Controls.Add(Me.GroupBox2)
         Me.Controls.Add(Me.btnOpen)
@@ -202,7 +212,7 @@ Partial Class frmTest
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.txtFile)
         Me.Name = "frmTest"
-        Me.Text = "Form1"
+        Me.Text = "SimpleD Test"
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).EndInit()
@@ -227,5 +237,6 @@ Partial Class frmTest
     Friend WithEvents CheckBox2 As System.Windows.Forms.CheckBox
     Friend WithEvents chkSplitNewLine As System.Windows.Forms.CheckBox
     Friend WithEvents chkSplitTabs As System.Windows.Forms.CheckBox
+    Friend WithEvents txtError As System.Windows.Forms.TextBox
 
 End Class
