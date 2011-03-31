@@ -189,7 +189,7 @@ Partial Class frmTest
         Me.chkSplitTabs.Text = "Split using tabs"
         Me.chkSplitTabs.UseVisualStyleBackColor = True
         '
-        'Form1
+        'frmTest
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
@@ -201,7 +201,7 @@ Partial Class frmTest
         Me.Controls.Add(Me.btnSave)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.txtFile)
-        Me.Name = "Form1"
+        Me.Name = "frmTest"
         Me.Text = "Form1"
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()

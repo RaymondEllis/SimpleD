@@ -32,17 +32,23 @@
 Namespace SimpleD
     Module Info
         Public Const IllegalCharacters As String = "{}=;"
-        Public Const Version = 0.99
+        Public Const Version = 0.991
         Public Const FileVersion = 1
-        '0.99
+        '0.991  *InDev*
+        'Clean  : This version log. Also added known dates and stable status.
+        'Fixed  : Can now compile using dot net 2+  (could only compile on 4.0 before)
+
+        '0.99   1-10-2011 *Stable*
         'Added  : Can now have groups inside of groups.
         'Added  : GetValue(Control,Value)  Gets the property from the control name. Then sets the contols value, if the control is known.
         'Changed: Spliting is now done with a few options not a string.
         'Fixed  : SetValue(Control) now check throgh known controls for the right value.
-        '0.986
+
+        '0.986  12-27-2010
         'Added: default value to Set_Value.
         'Changed: Control to Windows.Forms.Control
-        '0.985
+
+        '0.985  11-5-2010 *Stable*
         'Added  : FileVersion So I can easley tell if the file has changed.
         'Added  : IllegalCharacters property names and values can NOT have any of the characters in IllegalCharacters.
         'Fixed  : Only allows one group with the same names. will combine groups if names match.
@@ -51,22 +57,31 @@ Namespace SimpleD
         'Changed: Does not add if a value or name is empty.
         'Changed: Get_Group returns Nothing if no group found.
         'Removed: Group.Add because set_value will create if not found.
-        '0.983
+
+        '0.983  9-30-2010
         'Fixed: Spelling.
-        '0.982
+
+        '0.982  9-25-2010
         'Added: Add_Group
-        '0.981
+
+        '0.981  9-23-2010~
         'Changed: Get_Value(Name, Value) No longer throws a error if no value found.
         'Clean up.
         'Added: Linense and contact.
-        '0.98
+
+        '0.98   9-7-2010
         'Fixed: Spelling
         'Added: New get value with byref value
-        '0.97
+
+        '0.97   1-1-2010 *Stable*
         'Added: ToFile
         'Added: Check exists in FromFile
-        '0.96
+
+        '0.96   7-28-2009
         'Added: FromFile
+
+        '0.952  1-22-2009
+        '0.95   1-22-2009
     End Module
 
     Public Class SimpleD
@@ -393,7 +408,7 @@ Namespace SimpleD
 
         ''' <summary>
         ''' Sets the value of the control to the proprety with the same name.
-        ''' Known controls: TextBox,Label,CheckBox,RadioButton,NumericUpDown,NumericUpDownAcceleration,ProgressBar
+        ''' Known controls: TextBox,Label,CheckBox,RadioButton,NumericUpDown,ProgressBar
         ''' </summary>
         ''' <param name="Control">The control to get the property from.</param>
         ''' <param name="Value">Returns value if control is unknown.</param>
@@ -401,20 +416,19 @@ Namespace SimpleD
             Dim TempValue As String = Find(Control.Name).Value 'Find the property from the control name.
 
             Dim obj As Object = Control
-            Select Case Control.GetType
-                Case GetType(Windows.Forms.TextBox), GetType(Windows.Forms.Label)
-                    obj.Text = TempValue
+            If TypeOf Control Is Windows.Forms.TextBox Or TypeOf Control Is Windows.Forms.Label Then
+                obj.Text = TempValue
 
-                Case GetType(Windows.Forms.CheckBox), GetType(Windows.Forms.RadioButton)
-                    obj.Checked = TempValue
+            ElseIf TypeOf Control Is Windows.Forms.CheckBox Or TypeOf Control Is Windows.Forms.RadioButton Then
+                obj.Checked = TempValue
 
-                Case GetType(Windows.Forms.NumericUpDown), GetType(Windows.Forms.NumericUpDownAcceleration), GetType(Windows.Forms.ProgressBar)
-                    obj.Value = TempValue
+            ElseIf TypeOf Control Is Windows.Forms.NumericUpDown Or TypeOf Control Is Windows.Forms.ProgressBar Then
+                obj.Value = TempValue
 
-                Case Else
-                    'Throw New Exception("Could not find object type.")
-                    Value = TempValue
-            End Select
+            Else
+                'Throw New Exception("Could not find object type.")
+                Value = TempValue
+            End If
         End Sub
         ''' <summary>
         ''' Uses the name of the control to find the property value.
@@ -435,17 +449,16 @@ Namespace SimpleD
         ''' <remarks></remarks>
         Private Function GetValueFromObject(ByVal Obj As Object) As String
            
-            Select Case Obj.GetType
-                Case GetType(Windows.Forms.TextBox), GetType(Windows.Forms.Label)
-                    Return Obj.Text
+            If TypeOf Obj Is Windows.Forms.TextBox Or TypeOf Obj Is Windows.Forms.Label Then
+                Return Obj.Text
 
-                Case GetType(Windows.Forms.CheckBox), GetType(Windows.Forms.RadioButton)
-                    Return Obj.Checked
+            ElseIf TypeOf Obj Is Windows.Forms.CheckBox Or TypeOf Obj Is Windows.Forms.RadioButton Then
+                Return Obj.Checked
 
-                Case GetType(Windows.Forms.NumericUpDown), GetType(Windows.Forms.NumericUpDownAcceleration), GetType(Windows.Forms.ProgressBar)
-                    Return Obj.Value
+            ElseIf TypeOf Obj Is Windows.Forms.NumericUpDown Or TypeOf Obj Is Windows.Forms.ProgressBar Then
+                Return Obj.Value
 
-            End Select
+            End If
 
             'Unknown control, so lets see if we can find the right value.
             Dim Value As String = "Could_Not_Find_Value"
