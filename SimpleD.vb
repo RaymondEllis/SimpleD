@@ -35,6 +35,7 @@ Namespace SimpleD
         Public Const Version = 0.991
         Public Const FileVersion = 1
         '0.991  *InDev*
+        'Added  : Error handling to FromString\FromFile
         'Clean  : This version log. Also added known dates and stable status.
         'Fixed  : Can now compile using dot net 2+  (could only compile on 4.0 before)
 
@@ -175,15 +176,15 @@ Namespace SimpleD
         ''' <summary>
         ''' Load the SimpleData from a file.
         ''' </summary>
-        ''' <param name="File"></param>
-        ''' <returns>True if loaded false if not.</returns>
+        ''' <param name="File">The file to load.</param>
+        ''' <returns>Error if any.</returns>
         ''' <remarks></remarks>
-        Public Function FromFile(ByVal File As String) As Boolean
-            If Not IO.File.Exists(File) Then Return False
+        Public Function FromFile(ByVal File As String) As String
+            If Not IO.File.Exists(File) Then Return "File does not exist:" & File
             Dim sr As New IO.StreamReader(File)
-            FromString(sr.ReadToEnd)
+            Dim data As String = sr.ReadToEnd
             sr.Close()
-            Return True
+            Return FromString(data)
         End Function
         Public Function FromString(ByVal Data As String) As String
             If Data.Length < 2 Then Return "Nothing in file."
