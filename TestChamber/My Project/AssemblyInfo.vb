@@ -8,17 +8,17 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("SimpleD")> 
-<Assembly: AssemblyDescription("")> 
+<Assembly: AssemblyTitle("TestChamber")> 
+<Assembly: AssemblyDescription("Just used to test SimpleD.")> 
 <Assembly: AssemblyCompany("")> 
-<Assembly: AssemblyProduct("SimpleD")> 
+<Assembly: AssemblyProduct("TestChamber")> 
 <Assembly: AssemblyCopyright("Copyright ©  2011")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
 
 'The following GUID is for the ID of the typelib if this project is exposed to COM
-<Assembly: Guid("15cdfee0-18d7-4461-b6c0-6889577bcf8d")> 
+<Assembly: Guid("750ac3c2-f8f3-46fa-8b9a-2f685b84fdae")> 
 
 ' Version information for an assembly consists of the following four values:
 '
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("0.9.9.1")> 
-<Assembly: AssemblyFileVersion("0.9.9.1")> 
+<Assembly: AssemblyVersion("1.0.0.0")> 
+<Assembly: AssemblyFileVersion("1.0.0.0")> 
