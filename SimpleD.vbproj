@@ -71,6 +71,13 @@
       <DependentUpon>frmTest.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmTime.Designer.vb">
+      <DependentUpon>frmTime.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmTime.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="highTimer.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -87,6 +94,9 @@
   <ItemGroup>
     <EmbeddedResource Include="frmTest.resx">
       <DependentUpon>frmTest.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmTime.resx">
+      <DependentUpon>frmTime.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />

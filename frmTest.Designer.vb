@@ -37,6 +37,13 @@ Partial Class frmTest
         Me.chkSplitNewLine = New System.Windows.Forms.CheckBox()
         Me.chkSplitTabs = New System.Windows.Forms.CheckBox()
         Me.txtError = New System.Windows.Forms.TextBox()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.lstProperties = New System.Windows.Forms.ListBox()
+        Me.lstGroups = New System.Windows.Forms.ListBox()
+        Me.chkAutoOpen = New System.Windows.Forms.CheckBox()
+        Me.lblTime = New System.Windows.Forms.Label()
+        Me.btnTimeTest = New System.Windows.Forms.Button()
         Me.GroupBox1.SuspendLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox2.SuspendLayout()
@@ -58,9 +65,9 @@ Partial Class frmTest
         Me.GroupBox1.Controls.Add(Me.NumericUpDown1)
         Me.GroupBox1.Controls.Add(Me.TextBox1)
         Me.GroupBox1.Controls.Add(Me.CheckBox1)
-        Me.GroupBox1.Location = New System.Drawing.Point(8, 24)
+        Me.GroupBox1.Location = New System.Drawing.Point(8, 0)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(224, 118)
+        Me.GroupBox1.Size = New System.Drawing.Size(224, 106)
         Me.GroupBox1.TabIndex = 1
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Stuff..."
@@ -117,9 +124,9 @@ Partial Class frmTest
         Me.GroupBox2.Controls.Add(Me.RadioButton4)
         Me.GroupBox2.Controls.Add(Me.NumericUpDown2)
         Me.GroupBox2.Controls.Add(Me.CheckBox2)
-        Me.GroupBox2.Location = New System.Drawing.Point(8, 148)
+        Me.GroupBox2.Location = New System.Drawing.Point(8, 112)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(224, 133)
+        Me.GroupBox2.Size = New System.Drawing.Size(224, 124)
         Me.GroupBox2.TabIndex = 4
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Stuff..."
@@ -192,17 +199,90 @@ Partial Class frmTest
         '
         'txtError
         '
-        Me.txtError.Location = New System.Drawing.Point(8, 287)
+        Me.txtError.Location = New System.Drawing.Point(8, 263)
         Me.txtError.Name = "txtError"
         Me.txtError.Size = New System.Drawing.Size(224, 20)
         Me.txtError.TabIndex = 1
         Me.txtError.Text = "Error:"
         '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(703, 0)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(44, 13)
+        Me.Label1.TabIndex = 6
+        Me.Label1.Text = "Groups:"
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(883, 0)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(90, 13)
+        Me.Label2.TabIndex = 6
+        Me.Label2.Text = "Properties=Value:"
+        '
+        'lstProperties
+        '
+        Me.lstProperties.FormattingEnabled = True
+        Me.lstProperties.HorizontalScrollbar = True
+        Me.lstProperties.Location = New System.Drawing.Point(829, 16)
+        Me.lstProperties.Name = "lstProperties"
+        Me.lstProperties.Size = New System.Drawing.Size(205, 368)
+        Me.lstProperties.TabIndex = 7
+        '
+        'lstGroups
+        '
+        Me.lstGroups.FormattingEnabled = True
+        Me.lstGroups.HorizontalScrollbar = True
+        Me.lstGroups.Location = New System.Drawing.Point(703, 17)
+        Me.lstGroups.Name = "lstGroups"
+        Me.lstGroups.Size = New System.Drawing.Size(120, 368)
+        Me.lstGroups.TabIndex = 7
+        '
+        'chkAutoOpen
+        '
+        Me.chkAutoOpen.AutoSize = True
+        Me.chkAutoOpen.Checked = True
+        Me.chkAutoOpen.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkAutoOpen.Location = New System.Drawing.Point(8, 313)
+        Me.chkAutoOpen.Name = "chkAutoOpen"
+        Me.chkAutoOpen.Size = New System.Drawing.Size(74, 17)
+        Me.chkAutoOpen.TabIndex = 8
+        Me.chkAutoOpen.Text = "AutoOpen"
+        Me.chkAutoOpen.UseVisualStyleBackColor = True
+        '
+        'lblTime
+        '
+        Me.lblTime.AutoSize = True
+        Me.lblTime.Location = New System.Drawing.Point(8, 290)
+        Me.lblTime.Name = "lblTime"
+        Me.lblTime.Size = New System.Drawing.Size(33, 13)
+        Me.lblTime.TabIndex = 9
+        Me.lblTime.Text = "Time:"
+        '
+        'btnTimeTest
+        '
+        Me.btnTimeTest.Location = New System.Drawing.Point(184, 301)
+        Me.btnTimeTest.Name = "btnTimeTest"
+        Me.btnTimeTest.Size = New System.Drawing.Size(75, 23)
+        Me.btnTimeTest.TabIndex = 10
+        Me.btnTimeTest.Text = "Time Test"
+        Me.btnTimeTest.UseVisualStyleBackColor = True
+        '
         'frmTest
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(696, 387)
+        Me.ClientSize = New System.Drawing.Size(1040, 387)
+        Me.Controls.Add(Me.btnTimeTest)
+        Me.Controls.Add(Me.lblTime)
+        Me.Controls.Add(Me.chkAutoOpen)
+        Me.Controls.Add(Me.lstGroups)
+        Me.Controls.Add(Me.lstProperties)
+        Me.Controls.Add(Me.Label2)
+        Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.chkSplitTabs)
         Me.Controls.Add(Me.txtError)
         Me.Controls.Add(Me.chkSplitNewLine)
@@ -238,5 +318,12 @@ Partial Class frmTest
     Friend WithEvents chkSplitNewLine As System.Windows.Forms.CheckBox
     Friend WithEvents chkSplitTabs As System.Windows.Forms.CheckBox
     Friend WithEvents txtError As System.Windows.Forms.TextBox
+    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents Label2 As System.Windows.Forms.Label
+    Friend WithEvents lstProperties As System.Windows.Forms.ListBox
+    Friend WithEvents lstGroups As System.Windows.Forms.ListBox
+    Friend WithEvents chkAutoOpen As System.Windows.Forms.CheckBox
+    Friend WithEvents lblTime As System.Windows.Forms.Label
+    Friend WithEvents btnTimeTest As System.Windows.Forms.Button
 
 End Class

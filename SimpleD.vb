@@ -36,8 +36,13 @@ Namespace SimpleD
         Public Const FileVersion = 1
         '0.991  *InDev*
         'Added  : Error handling to FromString\FromFile
+        'Change : Groups and properties are now public.
+        'Rename : Propretys to Properties
+        'Rename : Set_Value to SetValue AND Get_Value to GetValue
+        'Rename : Get_Group to GetGroup AND Add_Group to AddGroup AND Create_Group to CreateGroup
         'Clean  : This version log. Also added known dates and stable status.
         'Fixed  : Can now compile using dot net 2+  (could only compile on 4.0 before)
+        'Fixed  : Was trimming the value.
 
         '0.99   1-10-2011 *Stable*
         'Added  : Can now have groups inside of groups.
@@ -86,7 +91,7 @@ Namespace SimpleD
     End Module
 
     Public Class SimpleD
-        Private Groups As New List(Of Group)
+        Public Groups As New List(Of Group)
 
 #Region "New"
         ''' <summary>
@@ -113,17 +118,17 @@ Namespace SimpleD
         ''' Will return other group if names match.
         ''' </summary>
         ''' <param name="Name">The name of the group.</param>
-        Public Function Create_Group(ByVal Name As String) As Group
-            Dim tmp As Group = Get_Group(Name) 'Search for a group with the name.
+        Public Function CreateGroup(ByVal Name As String) As Group
+            Dim tmp As Group = GetGroup(Name) 'Search for a group with the name.
             If tmp Is Nothing Then 'If group not found then.
                 tmp = New Group(Name) 'Create a new group.
                 Groups.Add(tmp) 'Add the new group to the list.
             End If
             Return tmp 'Return the group.
         End Function
-        Public Sub Add_Group(ByVal Group As Group)
+        Public Sub AddGroup(ByVal Group As Group)
             'First lets see if we can find a group.
-            Dim tmp As Group = Get_Group(Group.Name)
+            Dim tmp As Group = GetGroup(Group.Name)
             If tmp IsNot Nothing Then
                 'We found a group so lets combine them.
                 tmp.Combine(Group)
@@ -132,7 +137,7 @@ Namespace SimpleD
                 Groups.Add(Group)
             End If
         End Sub
-        Public Function Get_Group(ByVal Name As String) As Group
+        Public Function GetGroup(ByVal Name As String) As Group
             Name = LCase(Name)
             For Each Group As Group In Groups
                 If Name = LCase(Group.Name) Then
@@ -261,16 +266,16 @@ Namespace SimpleD
                         n = Equals
                         Dim PropEnd As Integer = Data.IndexOf(";", n)
                         If PropEnd = -1 Then Return "Could not find end of Prop:" & PropName
-                        Dim PropValue As String = Data.Substring(n + 1, PropEnd - n - 1).Trim
+                        Dim PropValue As String = Data.Substring(n + 1, PropEnd - n - 1)
                         n = PropEnd
-                        Group.Set_Value(PropName, PropValue)
+                        Group.SetValue(PropName, PropValue) 'ToDo: may want to use addvalue so you can have more then one of the same name.
 
                     ElseIf GroupStart > -1 Then
                         Dim gName As String = Trim(Data.Substring(n, GroupStart - n).Trim)
                         n = GroupStart + 1
 
                         Dim NewGroup As New Group(gName)
-                        Group.Add_Group(NewGroup)
+                        Group.AddGroup(NewGroup)
                         GetGroup(Data, n, NewGroup)
                     End If
                 End If
@@ -287,8 +292,8 @@ Namespace SimpleD
     Public Class Group
         Public Name As String
 
-        Private Propertys As New List(Of Prop)
-        Private Groups As New List(Of Group)
+        Public Properties As New List(Of Prop)
+        Public Groups As New List(Of Group)
 
         Public Sub New(ByVal Name As String)
             Me.Name = Name
@@ -297,23 +302,22 @@ Namespace SimpleD
 
 #Region "Group"
 
-
         ''' <summary>
         ''' Create a group.
         ''' Will return other group if names match.
         ''' </summary>
         ''' <param name="Name">The name of the group.</param>
-        Public Function Create_Group(ByVal Name As String) As Group
-            Dim tmp As Group = Get_Group(Name) 'Search for a group with the name.
+        Public Function CreateGroup(ByVal Name As String) As Group
+            Dim tmp As Group = GetGroup(Name) 'Search for a group with the name.
             If tmp Is Nothing Then 'If group not found then.
                 tmp = New Group(Name) 'Create a new group.
                 Groups.Add(tmp) 'Add the new group to the list.
             End If
             Return tmp 'Return the group.
         End Function
-        Public Sub Add_Group(ByVal Group As Group)
+        Public Sub AddGroup(ByVal Group As Group)
             'First lets see if we can find a group.
-            Dim tmp As Group = Get_Group(Group.Name)
+            Dim tmp As Group = GetGroup(Group.Name)
             If tmp IsNot Nothing Then
                 'We found a group so lets combine them.
                 tmp.Combine(Group)
@@ -322,7 +326,7 @@ Namespace SimpleD
                 Groups.Add(Group)
             End If
         End Sub
-        Public Function Get_Group(ByVal Name As String) As Group
+        Public Function GetGroup(ByVal Name As String) As Group
             Name = LCase(Name)
             For Each Group As Group In Groups
                 If Name = LCase(Group.Name) Then
@@ -339,12 +343,12 @@ Namespace SimpleD
         ''' </summary>
         ''' <param name="Group">Overides all the propertys with the propertys in the group.</param>
         Public Sub Combine(ByVal Group As Group)
-            For Each Prop As Prop In Group.Propertys
-                Set_Value(Prop.Name, Prop.Value)
+            For Each Prop As Prop In Group.Properties
+                SetValue(Prop.Name, Prop.Value)
             Next
 
             For Each Grp As Group In Group.Groups
-                Add_Group(Grp)
+                AddGroup(Grp)
             Next
         End Sub
 
@@ -354,11 +358,11 @@ Namespace SimpleD
         ''' This sets the value of a property.
         ''' If it can not find the property it creates it.
         ''' </summary>
-        Public Sub Set_Value(ByVal Name As String, ByVal Value As String)
+        Public Sub SetValue(ByVal Name As String, ByVal Value As String)
             If Name = "" Or Value = "" Then Return
             Dim tmp As Prop = Find(Name) 'Find the property.
             If tmp = Nothing Then 'If it could not find the property then.
-                Propertys.Add(New Prop(Name, Value)) 'Add the property.
+                Properties.Add(New Prop(Name, Value)) 'Add the property.
             Else
                 tmp.Value = Value 'Set the value.
             End If
@@ -366,14 +370,14 @@ Namespace SimpleD
         ''' <summary>
         ''' This sets the value of a property.
         ''' If it can not find the property it creates it.
-        ''' Does not create if value is eaqual to devault value.
+        ''' Does not create if value is equal to default value.
         ''' </summary>
-        Public Sub Set_Value(ByVal Name As String, ByVal Value As String, ByVal DefaultValue As String)
+        Public Sub SetValue(ByVal Name As String, ByVal Value As String, ByVal DefaultValue As String)
             If Name = "" Or Value = "" Then Return
             If Value = DefaultValue Then Return 'Return if the value is the default value.
             Dim tmp As Prop = Find(Name) 'Find the property.
             If tmp = Nothing Then 'If it could not find the property then.
-                Propertys.Add(New Prop(Name, Value)) 'Add the property.
+                Properties.Add(New Prop(Name, Value)) 'Add the property.
             Else
                 tmp.Value = Value 'Set the value.
             End If
@@ -382,11 +386,11 @@ Namespace SimpleD
         ''' This sets the value of a property.
         ''' If it can not find the property it creates it.
         ''' </summary>
-        Public Sub Set_Value(ByVal Control As Windows.Forms.Control)
-            Dim Value As String = GetValueFromObject(Control) 'Find the property from a object and set the value.
+        Public Sub SetValue(ByVal Control As Windows.Forms.Control)
+            Dim Value As String = GetValueFromControl(Control) 'Find the property from a object and set the value.
             Dim tmp As Prop = Find(Control.Name) 'Find the property.
             If tmp = Nothing Then 'If it could not find the property then.
-                Propertys.Add(New Prop(Control.Name, Value)) 'Add the property.
+                Properties.Add(New Prop(Control.Name, Value)) 'Add the property.
             Else
                 tmp.Value = Value 'Set the value.
             End If
@@ -398,7 +402,7 @@ Namespace SimpleD
         ''' Get the value from a property.
         ''' </summary>
         ''' <param name="Name">The name of the property to get the value from.</param>
-        Public Function Get_Value(ByVal Name As String) As String
+        Public Function GetValue(ByVal Name As String) As String
             Return Find(Name).Value 'Find the property and return the value.
         End Function
         ''' <summary>
@@ -407,7 +411,7 @@ Namespace SimpleD
         ''' <param name="Name"></param>
         ''' <param name="Value"></param>
         ''' <param name="EmptyIfNotFound">Set value to nothing, if it can't find the property.</param>
-        Public Sub Get_Value(ByVal Name As String, ByRef Value As Object, Optional ByVal EmptyIfNotFound As Boolean = True)
+        Public Sub GetValue(ByVal Name As String, ByRef Value As Object, Optional ByVal EmptyIfNotFound As Boolean = True)
             Dim prop As Prop = Find(Name)
             If prop = Nothing Then
                 If EmptyIfNotFound Then Value = Nothing
@@ -422,7 +426,7 @@ Namespace SimpleD
         ''' </summary>
         ''' <param name="Control">The control to get the property from.</param>
         ''' <param name="Value">Returns value if control is unknown.</param>
-        Public Sub Get_Value(ByRef Control As Windows.Forms.Control, ByRef Value As String)
+        Public Sub GetValue(ByRef Control As Windows.Forms.Control, ByRef Value As String)
             Dim TempValue As String = Find(Control.Name).Value 'Find the property from the control name.
 
             Dim obj As Object = Control
@@ -445,29 +449,18 @@ Namespace SimpleD
         ''' </summary>
         ''' <param name="Control"></param>
         ''' <returns>Property value.</returns>
-        Public Function Get_Value(ByVal Control As Windows.Forms.Control) As String
+        Public Function GetValue(ByVal Control As Windows.Forms.Control) As String
             Return Find(Control.Name).Value 'Find the property from a object and return the value.
         End Function
 #End Region
 
-
-        ''' <summary>
-        ''' Retuns "Could_Not_Find_Value" if it can not find the value.
-        ''' </summary>
-        ''' <param name="Obj"></param>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        Private Function GetValueFromObject(ByVal Obj As Object) As String
-           
+        Private Function GetValueFromControl(ByVal Obj As Object) As String
             If TypeOf Obj Is Windows.Forms.TextBox Or TypeOf Obj Is Windows.Forms.Label Then
                 Return Obj.Text
-
             ElseIf TypeOf Obj Is Windows.Forms.CheckBox Or TypeOf Obj Is Windows.Forms.RadioButton Then
                 Return Obj.Checked
-
             ElseIf TypeOf Obj Is Windows.Forms.NumericUpDown Or TypeOf Obj Is Windows.Forms.ProgressBar Then
                 Return Obj.Value
-
             End If
 
             'Unknown control, so lets see if we can find the right value.
@@ -484,7 +477,7 @@ Namespace SimpleD
                         Try
                             Value = Obj.ToString
                         Catch
-                            Throw New Exception("Could not get value from object!")
+                            Throw New Exception("Could not get value from object:" & Obj.name)
                         End Try
                     End Try
                 End Try
@@ -499,7 +492,7 @@ Namespace SimpleD
         ''' <returns>The property.</returns>
         Public Function Find(ByVal Name As String) As Prop
             'Very simple,  loop through each property until the names match. then return the matching property.
-            For Each Prop As Prop In Propertys
+            For Each Prop As Prop In Properties
                 If LCase(Prop.Name) = LCase(Name) Then
                     Return Prop
                 End If
@@ -508,13 +501,13 @@ Namespace SimpleD
         End Function
 
         ''' <summary>
-        ''' 
+        ''' Returns a string with all the properties and sub groups.
         ''' </summary>
         ''' <param name="SplitWithNewLine">Split propertys and groups using a newline?</param>
         ''' <param name="TabCount">Split propertys and groups using tabs?
         ''' Does not use tabs if newline is disabled.</param>
         Public Overloads Function ToString(Optional ByVal SplitWithNewLine As Boolean = True, Optional ByVal TabCount As Integer = 1) As String
-            If Propertys.Count = 0 Then Return ""
+            If Properties.Count = 0 Then Return ""
             If TabCount < 0 Then TabCount = 0
 
             'Setup spliting.
@@ -527,8 +520,8 @@ Namespace SimpleD
             Dim tmp As String = Name & "{"
 
             'Add the properys from the group.
-            For n As Integer = 0 To Propertys.Count - 1
-                tmp &= Split & Propertys(n).Name & "=" & Propertys(n).Value & ";"
+            For n As Integer = 0 To Properties.Count - 1
+                tmp &= Split & Properties(n).Name & "=" & Properties(n).Value & ";"
             Next
 
             'Get all the groups in the group.
@@ -538,7 +531,6 @@ Namespace SimpleD
 
             '} end of group.
             tmp &= If(SplitWithNewLine, vbNewLine, "") & If(TabCount - 1 > 0, New String(vbTab, TabCount - 1), "") & "}"
-
             Return tmp
         End Function
 
