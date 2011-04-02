@@ -36,11 +36,14 @@ Namespace SimpleD
         Public Const FileVersion = 1
         '0.991  *InDev*
         'Added  : Error handling to FromString\FromFile
+        'Added  : AddValue AND FindArray
         'Change : Groups and properties are now public.
+        'Change : Can now have duplcate properties.
         'Rename : Propretys to Properties
         'Rename : Set_Value to SetValue AND Get_Value to GetValue
         'Rename : Get_Group to GetGroup AND Add_Group to AddGroup AND Create_Group to CreateGroup
         'Clean  : This version log. Also added known dates and stable status.
+        'Fixed  : Issue#2 g{p=;g2{ would lockup.
         'Fixed  : Can now compile using dot net 2+  (could only compile on 4.0 before)
         'Fixed  : Was trimming the value.
         'Fixed  : GetValue Would try and set a value it could not set.
@@ -257,7 +260,7 @@ Namespace SimpleD
                     Dim GroupStart As Integer = Data.IndexOf("{", n) 'Search for the NEXT group.
                     If Equals = -1 AndAlso GroupStart = -1 Then Return "" 'If there is no more groups and propertys then we are at the end of file.
                     Dim GroupEnd As Integer = Data.IndexOf("}", n)
-                    If GroupEnd < GroupStart And GroupEnd < Equals Then 'Are we at the end of this group?
+                    If GroupEnd > -1 And GroupEnd < GroupStart And GroupEnd < Equals Then 'Are we at the end of this group?
                         n = GroupEnd
                         Return ""
                     End If
@@ -269,7 +272,7 @@ Namespace SimpleD
                         If PropEnd = -1 Then Return "Could not find end of Prop:" & PropName
                         Dim PropValue As String = Data.Substring(n + 1, PropEnd - n - 1)
                         n = PropEnd
-                        Group.SetValue(PropName, PropValue) 'ToDo: may want to use addvalue so you can have more then one of the same name.
+                        Group.AddValue(PropName, PropValue)
 
                     ElseIf GroupStart > -1 Then
                         Dim gName As String = Trim(Data.Substring(n, GroupStart - n).Trim)
@@ -396,6 +399,14 @@ Namespace SimpleD
                 tmp.Value = Value 'Set the value.
             End If
         End Sub
+
+        ''' <summary>
+        ''' Creates a new property and adds it to the list.
+        ''' </summary>
+        Public Sub AddValue(ByVal Name As String, ByVal Value As String)
+            If Name = "" Then Return
+            Properties.Add(New Prop(Name, Value))
+        End Sub
 #End Region
 
 #Region "GetValue"
@@ -407,7 +418,7 @@ Namespace SimpleD
             Return Find(Name).Value 'Find the property and return the value.
         End Function
         ''' <summary>
-        ''' Will not get value if no value found.
+        ''' Will only set the value if the property is found.
         ''' </summary>
         ''' <param name="Name"></param>
         ''' <param name="Value"></param>
@@ -493,7 +504,7 @@ Namespace SimpleD
         End Function
 
         ''' <summary>
-        ''' Find a property from the name.
+        ''' Find a property from the name. returns the first property found.
         ''' </summary>
         ''' <param name="Name">The name of the property.</param>
         ''' <returns>The property.</returns>
@@ -505,6 +516,19 @@ Namespace SimpleD
                 End If
             Next
             Return Nothing
+        End Function
+        ''' <summary>
+        ''' Find a properties from the name. returns all properties found.
+        ''' </summary>
+        ''' <param name="Name">The name of the property.</param>
+        Public Function FindArray(ByVal Name As String) As Prop()
+            Dim tmp As New List(Of Prop)
+            For Each Prop As Prop In Properties
+                If LCase(Prop.Name) = LCase(Name) Then
+                    tmp.Add(Prop)
+                End If
+            Next
+            Return tmp.ToArray
         End Function
 
         ''' <summary>
