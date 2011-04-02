@@ -24,18 +24,14 @@
     Dim OpenSD As SimpleD.SimpleD
     Private Sub btnOpen_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnOpen.Click
         Dim LastSelected As Integer = lstGroups.SelectedIndex
-        Dim h As New highTimer
-        h.StartTimer()
         'Dim sD As New SimpleD.SimpleD
         OpenSD = New SimpleD.SimpleD
-        h.StopTimer()
-        lblTime.Text = "Time ms:" & h.TimeElapsed(highTimer.PerformanceValue.pvMilliSecond)
         txtError.Text = "Error:" & OpenSD.FromString(txtFile.Text)
 
         lstGroups.Items.Clear()
 
-        For Each g As SimpleD.Group In OpenSD.Groups
-            DoGroup(g, "Main")
+        For Each grp As SimpleD.Group In OpenSD.Groups
+            DoGroup(grp, "")
         Next
 
         If LastSelected < lstGroups.Items.Count Then
@@ -45,29 +41,32 @@
         End If
 
 
-
-        'Dim g As SimpleD.Group = sD.GetGroup("Test")
-        'If g Is Nothing Then Return
+        On Error Resume Next
+        Dim g As SimpleD.Group = OpenSD.GetGroup("Test")
+        If g Is Nothing Then Return
 
         'g.GetValue(TextBox1, "")
         'g.GetValue(NumericUpDown1, "")
         'g.GetValue(CheckBox1, "")
 
-        'For Each Control As Object In GroupBox1.Controls
-        '    g.GetValue(Control, "")
-        'Next
+        For Each Control As Object In GroupBox1.Controls
+            g.GetValue(Control, "")
+        Next
 
-
-        'g = sD.GetGroup("test2")
-        'If g Is Nothing Then Return
-        'For Each Control As Object In GroupBox2.Controls
-        '    g.GetValue(Control, "")
-        'Next
+        g = OpenSD.GetGroup("test2")
+        If g Is Nothing Then Return
+        For Each Control As Object In GroupBox2.Controls
+            g.GetValue(Control, "")
+        Next
 
     End Sub
 
     Private Sub DoGroup(ByVal g As SimpleD.Group, ByVal Level As String)
-        Level &= "," & g.Name
+        If Level = "" Then
+            Level &= g.Name
+        Else
+            Level &= "," & g.Name
+        End If
         lstGroups.Items.Add(Level)
 
         For Each grp As SimpleD.Group In g.Groups
@@ -83,8 +82,8 @@
         If lstGroups.SelectedIndex < 0 Then Return
         Dim lev() As String = Split(lstGroups.SelectedItem, ",")
 
-        Dim g As SimpleD.Group = OpenSD.GetGroup(lev(1))
-        For i As Integer = 2 To lev.Length - 1
+        Dim g As SimpleD.Group = OpenSD.GetGroup(lev(0))
+        For i As Integer = 1 To lev.Length - 1
             g = g.GetGroup(lev(i))
         Next
         If g Is Nothing Then

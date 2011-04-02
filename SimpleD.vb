@@ -43,6 +43,7 @@ Namespace SimpleD
         'Clean  : This version log. Also added known dates and stable status.
         'Fixed  : Can now compile using dot net 2+  (could only compile on 4.0 before)
         'Fixed  : Was trimming the value.
+        'Fixed  : GetValue Would try and set a value it could not set.
 
         '0.99   1-10-2011 *Stable*
         'Added  : Can now have groups inside of groups.
@@ -434,10 +435,16 @@ Namespace SimpleD
                 obj.Text = TempValue
 
             ElseIf TypeOf Control Is Windows.Forms.CheckBox Or TypeOf Control Is Windows.Forms.RadioButton Then
-                obj.Checked = TempValue
+                If Not Boolean.TryParse(TempValue, obj.Checked) Then Value = TempValue
 
             ElseIf TypeOf Control Is Windows.Forms.NumericUpDown Or TypeOf Control Is Windows.Forms.ProgressBar Then
-                obj.Value = TempValue
+                If TempValue > obj.Maximum Then
+                    obj.Value = obj.Maximum
+                ElseIf TempValue < obj.Minimum Then
+                    obj.Value = obj.Minimum
+                Else
+                    obj.Value = TempValue
+                End If
 
             Else
                 'Throw New Exception("Could not find object type.")

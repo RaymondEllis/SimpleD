@@ -42,7 +42,6 @@ Partial Class frmTest
         Me.lstProperties = New System.Windows.Forms.ListBox()
         Me.lstGroups = New System.Windows.Forms.ListBox()
         Me.chkAutoOpen = New System.Windows.Forms.CheckBox()
-        Me.lblTime = New System.Windows.Forms.Label()
         Me.btnTimeTest = New System.Windows.Forms.Button()
         Me.GroupBox1.SuspendLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -253,15 +252,6 @@ Partial Class frmTest
         Me.chkAutoOpen.Text = "AutoOpen"
         Me.chkAutoOpen.UseVisualStyleBackColor = True
         '
-        'lblTime
-        '
-        Me.lblTime.AutoSize = True
-        Me.lblTime.Location = New System.Drawing.Point(8, 290)
-        Me.lblTime.Name = "lblTime"
-        Me.lblTime.Size = New System.Drawing.Size(33, 13)
-        Me.lblTime.TabIndex = 9
-        Me.lblTime.Text = "Time:"
-        '
         'btnTimeTest
         '
         Me.btnTimeTest.Location = New System.Drawing.Point(184, 301)
@@ -277,7 +267,6 @@ Partial Class frmTest
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1040, 387)
         Me.Controls.Add(Me.btnTimeTest)
-        Me.Controls.Add(Me.lblTime)
         Me.Controls.Add(Me.chkAutoOpen)
         Me.Controls.Add(Me.lstGroups)
         Me.Controls.Add(Me.lstProperties)
@@ -323,7 +312,6 @@ Partial Class frmTest
     Friend WithEvents lstProperties As System.Windows.Forms.ListBox
     Friend WithEvents lstGroups As System.Windows.Forms.ListBox
     Friend WithEvents chkAutoOpen As System.Windows.Forms.CheckBox
-    Friend WithEvents lblTime As System.Windows.Forms.Label
     Friend WithEvents btnTimeTest As System.Windows.Forms.Button
 
 End Class
