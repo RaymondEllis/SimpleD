@@ -26,6 +26,7 @@
 'Contact:
 '   Raymond Ellis
 '   Email: RaymondEllis@live.com
+'   Website: https://sites.google.com/site/raymondellis89/
 #End Region
 
 
@@ -48,50 +49,8 @@ Namespace SimpleD
         'Fixed  : Was trimming the value.
         'Fixed  : GetValue Would try and set a value it could not set.
 
-        '0.99   1-10-2011 *Stable*
-        'Added  : Can now have groups inside of groups.
-        'Added  : GetValue(Control,Value)  Gets the property from the control name. Then sets the contols value, if the control is known.
-        'Changed: Spliting is now done with a few options not a string.
-        'Fixed  : SetValue(Control) now check throgh known controls for the right value.
-
-        '0.986  12-27-2010
-        'Added: default value to Set_Value.
-        'Changed: Control to Windows.Forms.Control
-
-        '0.985  11-5-2010 *Stable*
-        'Added  : FileVersion So I can easley tell if the file has changed.
-        'Added  : IllegalCharacters property names and values can NOT have any of the characters in IllegalCharacters.
-        'Fixed  : Only allows one group with the same names. will combine groups if names match.
-        'Changed: Prop from a class to a structure.
-        'Changed: Everything returns empty if not found.
-        'Changed: Does not add if a value or name is empty.
-        'Changed: Get_Group returns Nothing if no group found.
-        'Removed: Group.Add because set_value will create if not found.
-
-        '0.983  9-30-2010
-        'Fixed: Spelling.
-
-        '0.982  9-25-2010
-        'Added: Add_Group
-
-        '0.981  9-23-2010~
-        'Changed: Get_Value(Name, Value) No longer throws a error if no value found.
-        'Clean up.
-        'Added: Linense and contact.
-
-        '0.98   9-7-2010
-        'Fixed: Spelling
-        'Added: New get value with byref value
-
-        '0.97   1-1-2010 *Stable*
-        'Added: ToFile
-        'Added: Check exists in FromFile
-
-        '0.96   7-28-2009
-        'Added: FromFile
-
-        '0.952  1-22-2009
-        '0.95   1-22-2009
+        'Old change logs at:
+        'https://code.google.com/p/simpled/wiki/Versions
     End Module
 
     Public Class SimpleD
