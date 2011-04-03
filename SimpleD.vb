@@ -37,13 +37,13 @@ Namespace SimpleD
         Public Const FileVersion = 1
         '0.991  *InDev*
         'Added  : Error handling to FromString\FromFile
-        'Added  : AddValue AND FindArray
+        'Added  : Properties and Groups can now have duplcate names.
+        'Added  : AddValue AND FindArray AND GetValueArray AND GetGroupArray
         'Change : Groups and properties are now public.
-        'Change : Can now have duplcate properties.
         'Rename : Propretys to Properties
         'Rename : Set_Value to SetValue AND Get_Value to GetValue
         'Rename : Get_Group to GetGroup AND Add_Group to AddGroup AND Create_Group to CreateGroup
-        'Clean  : This version log. Also added known dates and stable status.
+        'Cleaned: This version log.
         'Fixed  : Issue#2 g{p=;g2{ would lockup.
         'Fixed  : Can now compile using dot net 2+  (could only compile on 4.0 before)
         'Fixed  : Was trimming the value.
@@ -89,15 +89,19 @@ Namespace SimpleD
             End If
             Return tmp 'Return the group.
         End Function
-        Public Sub AddGroup(ByVal Group As Group)
-            'First lets see if we can find a group.
-            Dim tmp As Group = GetGroup(Group.Name)
-            If tmp IsNot Nothing Then
-                'We found a group so lets combine them.
-                tmp.Combine(Group)
-            Else
-                'We did not find any other groups so add it to the list.
+        Public Sub AddGroup(ByVal Group As Group, Optional ByVal CombineDuplicates As Boolean = False)
+            If Not CombineDuplicates Then
                 Groups.Add(Group)
+            Else
+                'First lets see if we can find a group.
+                Dim tmp As Group = GetGroup(Group.Name)
+                If tmp IsNot Nothing Then
+                    'We found a group so lets combine them.
+                    tmp.Combine(Group)
+                Else
+                    'We did not find any other groups so add it to the list.
+                    Groups.Add(Group)
+                End If
             End If
         End Sub
         Public Function GetGroup(ByVal Name As String) As Group
@@ -109,11 +113,19 @@ Namespace SimpleD
             Next
             Return Nothing
         End Function
-
+        Public Function GetGroupArray(ByVal Name As String) As Group()
+            Dim Groups As New List(Of Group)
+            Name = LCase(Name)
+            For Each Group As Group In Groups
+                If Name = LCase(Group.Name) Then
+                    Groups.Add(Group)
+                End If
+            Next
+            Return Groups.ToArray
+        End Function
 #End Region
 
 #Region "To String/File"
-
         Public Sub ToFile(ByVal File As String, Optional ByVal SplitWithNewLine As Boolean = True, Optional ByVal SplitWithTabs As Boolean = True)
             Dim sw As New IO.StreamWriter(File)
             sw.Write(ToString(SplitWithNewLine, SplitWithTabs))
@@ -121,10 +133,10 @@ Namespace SimpleD
         End Sub
 
         ''' <summary>
-        ''' 
+        ''' Returns a string with all groups and properties.
         ''' </summary>
-        ''' <param name="SplitWithNewLine">Split propertys and groups using a newline?</param>
-        ''' <param name="SplitWithTabs">Split propertys and groups using tabs?
+        ''' <param name="SplitWithNewLine">Split properties and groups using a newline?</param>
+        ''' <param name="SplitWithTabs">Split properties and groups using tabs?
         ''' Does not use tabs if newline is disabled.</param>
         Public Overloads Function ToString(Optional ByVal SplitWithNewLine As Boolean = True, Optional ByVal SplitWithTabs As Boolean = True) As String
             If Groups.Count = 0 Then Return ""
@@ -202,7 +214,7 @@ Namespace SimpleD
         Private Function GetGroup(ByVal Data As String, ByRef n As Integer, ByVal Group As Group) As String
             Dim tmp As String
             Dim InComment As Boolean = False
-            'Now lets get all of the propertys from the group.
+            'Now lets get all of the properties from the group.
             Do
                 If n + 2 > Data.Length Then Return "Could not find end of group: " & Group.Name
                 tmp = Data.Substring(n, 2)
@@ -217,7 +229,7 @@ Namespace SimpleD
                 ElseIf Not InComment Then
                     Dim Equals As Integer = Data.IndexOf("=", n) 'Search for the next property.
                     Dim GroupStart As Integer = Data.IndexOf("{", n) 'Search for the NEXT group.
-                    If Equals = -1 AndAlso GroupStart = -1 Then Return "" 'If there is no more groups and propertys then we are at the end of file.
+                    If Equals = -1 AndAlso GroupStart = -1 Then Return "" 'If there is no more groups and properties then we are at the end of file.
                     Dim GroupEnd As Integer = Data.IndexOf("}", n)
                     If GroupEnd > -1 And GroupEnd < GroupStart And GroupEnd < Equals Then 'Are we at the end of this group?
                         n = GroupEnd
@@ -238,7 +250,7 @@ Namespace SimpleD
                         n = GroupStart + 1
 
                         Dim NewGroup As New Group(gName)
-                        Group.AddGroup(NewGroup)
+                        Group.AddGroup(NewGroup, False)
                         GetGroup(Data, n, NewGroup)
                     End If
                 End If
@@ -252,6 +264,7 @@ Namespace SimpleD
 
     End Class
 
+
     Public Class Group
         Public Name As String
 
@@ -263,8 +276,7 @@ Namespace SimpleD
         End Sub
 
 
-#Region "Group"
-
+#Region "Group" 'Note: To make it easyer change the group region in SimpleD first, then copy over this.
         ''' <summary>
         ''' Create a group.
         ''' Will return other group if names match.
@@ -278,15 +290,19 @@ Namespace SimpleD
             End If
             Return tmp 'Return the group.
         End Function
-        Public Sub AddGroup(ByVal Group As Group)
-            'First lets see if we can find a group.
-            Dim tmp As Group = GetGroup(Group.Name)
-            If tmp IsNot Nothing Then
-                'We found a group so lets combine them.
-                tmp.Combine(Group)
-            Else
-                'We did not find any other groups so add it to the list.
+        Public Sub AddGroup(ByVal Group As Group, Optional ByVal CombineDuplicates As Boolean = False)
+            If Not CombineDuplicates Then
                 Groups.Add(Group)
+            Else
+                'First lets see if we can find a group.
+                Dim tmp As Group = GetGroup(Group.Name)
+                If tmp IsNot Nothing Then
+                    'We found a group so lets combine them.
+                    tmp.Combine(Group)
+                Else
+                    'We did not find any other groups so add it to the list.
+                    Groups.Add(Group)
+                End If
             End If
         End Sub
         Public Function GetGroup(ByVal Name As String) As Group
@@ -298,23 +314,17 @@ Namespace SimpleD
             Next
             Return Nothing
         End Function
-
+        Public Function GetGroupArray(ByVal Name As String) As Group()
+            Dim Groups As New List(Of Group)
+            Name = LCase(Name)
+            For Each Group As Group In Groups
+                If Name = LCase(Group.Name) Then
+                    Groups.Add(Group)
+                End If
+            Next
+            Return Groups.ToArray
+        End Function
 #End Region
-
-        ''' <summary>
-        ''' Conbines the group with this group.
-        ''' </summary>
-        ''' <param name="Group">Overides all the propertys with the propertys in the group.</param>
-        Public Sub Combine(ByVal Group As Group)
-            For Each Prop As Prop In Group.Properties
-                SetValue(Prop.Name, Prop.Value)
-            Next
-
-            For Each Grp As Group In Group.Groups
-                AddGroup(Grp)
-            Next
-        End Sub
-
 
 #Region "SetValue"
         ''' <summary>
@@ -367,7 +377,6 @@ Namespace SimpleD
             Properties.Add(New Prop(Name, Value))
         End Sub
 #End Region
-
 #Region "GetValue"
         ''' <summary>
         ''' Get the value from a property.
@@ -375,6 +384,15 @@ Namespace SimpleD
         ''' <param name="Name">The name of the property to get the value from.</param>
         Public Function GetValue(ByVal Name As String) As String
             Return Find(Name).Value 'Find the property and return the value.
+        End Function
+        Public Function GetValueArray(ByVal Name As String) As String()
+            Dim tmp As New List(Of String)
+            For Each Prop As Prop In Properties
+                If LCase(Prop.Name) = LCase(Name) Then
+                    tmp.Add(Prop.Value)
+                End If
+            Next
+            Return tmp.ToArray
         End Function
         ''' <summary>
         ''' Will only set the value if the property is found.
@@ -493,8 +511,8 @@ Namespace SimpleD
         ''' <summary>
         ''' Returns a string with all the properties and sub groups.
         ''' </summary>
-        ''' <param name="SplitWithNewLine">Split propertys and groups using a newline?</param>
-        ''' <param name="TabCount">Split propertys and groups using tabs?
+        ''' <param name="SplitWithNewLine">Split properties and groups using a newline?</param>
+        ''' <param name="TabCount">Split properties and groups using tabs?
         ''' Does not use tabs if newline is disabled.</param>
         Public Overloads Function ToString(Optional ByVal SplitWithNewLine As Boolean = True, Optional ByVal TabCount As Integer = 1) As String
             If Properties.Count = 0 Then Return ""
@@ -524,12 +542,27 @@ Namespace SimpleD
             Return tmp
         End Function
 
+        ''' <summary>
+        ''' Conbines the group with this group.
+        ''' </summary>
+        ''' <param name="Group">Overides all the properties with the properties in the group.</param>
+        Public Sub Combine(ByVal Group As Group)
+            For Each Prop As Prop In Group.Properties
+                SetValue(Prop.Name, Prop.Value)
+            Next
+            For Each Grp As Group In Group.Groups
+                AddGroup(Grp)
+            Next
+        End Sub
         Overloads Shared Operator +(ByVal left As Group, ByVal right As Group) As Group
             left.Combine(right)
             Return left
         End Operator
     End Class
 
+    ''' <summary>
+    ''' Holds a properties name and value.
+    ''' </summary>
     Public Structure Prop
         Public Name As String
         Public Value As String
@@ -544,8 +577,5 @@ Namespace SimpleD
         Shared Operator <>(ByVal left As Prop, ByVal right As Prop) As Boolean
             Return Not left = right
         End Operator
-
     End Structure
-
-
 End Namespace

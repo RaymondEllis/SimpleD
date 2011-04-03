@@ -1,4 +1,5 @@
-﻿Public Class frmTest
+﻿'Note: This file is for TESTING it is not clean.
+Public Class frmTest
 
     Private Sub btnSave_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnSave.Click
         Dim sD As New SimpleD.SimpleD
@@ -60,6 +61,18 @@
         Next
 
     End Sub
+#Region "Group list box en stuff.)"
+    Private Structure gItem
+        Public Group As SimpleD.Group
+        Public Level As String
+        Public Sub New(ByVal Level As String, ByVal Group As SimpleD.Group)
+            Me.Level = Level
+            Me.Group = Group
+        End Sub
+        Public Overrides Function ToString() As String
+            Return Level
+        End Function
+    End Structure
 
     Private Sub DoGroup(ByVal g As SimpleD.Group, ByVal Level As String)
         If Level = "" Then
@@ -67,34 +80,27 @@
         Else
             Level &= "," & g.Name
         End If
-        lstGroups.Items.Add(Level)
+
+        lstGroups.Items.Add(New gItem(Level, g))
 
         For Each grp As SimpleD.Group In g.Groups
             DoGroup(grp, Level)
         Next
     End Sub
 
-    Private Sub chkSplitNewLine_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkSplitNewLine.CheckedChanged
-        chkSplitTabs.Enabled = chkSplitNewLine.Checked
-    End Sub
-
     Private Sub lstGroups_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lstGroups.SelectedIndexChanged
         If lstGroups.SelectedIndex < 0 Then Return
-        Dim lev() As String = Split(lstGroups.SelectedItem, ",")
 
-        Dim g As SimpleD.Group = OpenSD.GetGroup(lev(0))
-        For i As Integer = 1 To lev.Length - 1
-            g = g.GetGroup(lev(i))
-        Next
-        If g Is Nothing Then
-            txtError.Text &= " Could not load group##"
-            Return
-        End If
         'Set properties.
         lstProperties.Items.Clear()
-        For Each prop As SimpleD.Prop In g.Properties
+        For Each prop As SimpleD.Prop In lstGroups.SelectedItem.Group.Properties
             lstProperties.Items.Add(prop.Name & "=" & prop.Value)
         Next
+    End Sub
+#End Region
+
+    Private Sub chkSplitNewLine_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkSplitNewLine.CheckedChanged
+        chkSplitTabs.Enabled = chkSplitNewLine.Checked
     End Sub
 
     Private Sub txtFile_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles txtFile.TextChanged
