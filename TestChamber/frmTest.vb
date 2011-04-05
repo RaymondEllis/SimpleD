@@ -1,4 +1,4 @@
-﻿'Note: This file is for TESTING it is not clean.
+﻿'Note: This file is for TESTING only it is not at all clean.
 Public Class frmTest
 
     Private Sub btnSave_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnSave.Click

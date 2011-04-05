@@ -114,14 +114,14 @@ Namespace SimpleD
             Return Nothing
         End Function
         Public Function GetGroupArray(ByVal Name As String) As Group()
-            Dim Groups As New List(Of Group)
+            Dim tmp As New List(Of Group)
             Name = LCase(Name)
             For Each Group As Group In Groups
                 If Name = LCase(Group.Name) Then
-                    Groups.Add(Group)
+                    tmp.Add(Group)
                 End If
             Next
-            Return Groups.ToArray
+            Return tmp.ToArray
         End Function
 #End Region
 
@@ -315,14 +315,14 @@ Namespace SimpleD
             Return Nothing
         End Function
         Public Function GetGroupArray(ByVal Name As String) As Group()
-            Dim Groups As New List(Of Group)
+            Dim tmp As New List(Of Group)
             Name = LCase(Name)
             For Each Group As Group In Groups
                 If Name = LCase(Group.Name) Then
-                    Groups.Add(Group)
+                    tmp.Add(Group)
                 End If
             Next
-            Return Groups.ToArray
+            Return tmp.ToArray
         End Function
 #End Region
 
