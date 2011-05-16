@@ -1,5 +1,4 @@
-﻿
-#Region "License & Contact"
+﻿#Region "License & Contact"
 'License:
 '   Copyright (c) 2010 Raymond Ellis
 '   
@@ -29,26 +28,16 @@
 '   Website: https://sites.google.com/site/raymondellis89/
 #End Region
 
-
+Option Explicit On
+Option Strict Off
 Namespace SimpleD
     Module Info
         Public Const IllegalCharacters As String = "{}=;"
-        Public Const Version = 0.991
+        Public Const Version = 1
         Public Const FileVersion = 1
-        '0.991  *InDev*
-        'Added  : Error handling to FromString\FromFile
-        'Added  : Properties and Groups can now have duplcate names.
-        'Added  : AddValue AND FindArray AND GetValueArray AND GetGroupArray
-        'Change : Groups and properties are now public.
-        'Change : Clarified that the version on the top of the string is the SimpleD version.
-        'Rename : Propretys to Properties
-        'Rename : Set_Value to SetValue AND Get_Value to GetValue
-        'Rename : Get_Group to GetGroup AND Add_Group to AddGroup AND Create_Group to CreateGroup
-        'Cleaned: This version log.
-        'Fixed  : Issue#2 g{p=;g2{ would lockup.
-        'Fixed  : Can now compile using dot net 2+  (could only compile on 4.0 before)
-        'Fixed  : Was trimming the value.
-        'Fixed  : GetValue Would try and set a value it could not set.
+        '1      *InDev*
+        'Added  : Compile options to top of file so it will compile with other options set.
+        'Fixed  : Prop is now a class. Fixed a few bugs because structures are not reference type.
 
         'Old change logs at:
         'https://code.google.com/p/simpled/wiki/Versions
@@ -563,7 +552,7 @@ Namespace SimpleD
     ''' <summary>
     ''' Holds a properties name and value.
     ''' </summary>
-    Public Structure Prop
+    Public Class Prop
         Public Name As String
         Public Value As String
         Public Sub New(ByVal Name As String, ByVal Value As String)
@@ -572,10 +561,12 @@ Namespace SimpleD
         End Sub
 
         Shared Operator =(ByVal left As Prop, ByVal right As Prop) As Boolean
+            If left Is Nothing And right Is Nothing Then Return True
+            If left Is Nothing Or right Is Nothing Then Return False
             Return left.Name = right.Name And left.Value = right.Value
         End Operator
         Shared Operator <>(ByVal left As Prop, ByVal right As Prop) As Boolean
             Return Not left = right
         End Operator
-    End Structure
+    End Class
 End Namespace
