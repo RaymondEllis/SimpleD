@@ -323,7 +323,7 @@ Namespace SimpleD
         Public Sub SetValue(ByVal Name As String, ByVal Value As String)
             If Name = "" Or Value = "" Then Return
             Dim tmp As Prop = Find(Name) 'Find the property.
-            If tmp = Nothing Then 'If it could not find the property then.
+            If tmp Is Nothing Then 'If it could not find the property then.
                 Properties.Add(New Prop(Name, Value)) 'Add the property.
             Else
                 tmp.Value = Value 'Set the value.
@@ -338,7 +338,7 @@ Namespace SimpleD
             If Name = "" Or Value = "" Then Return
             If Value = DefaultValue Then Return 'Return if the value is the default value.
             Dim tmp As Prop = Find(Name) 'Find the property.
-            If tmp = Nothing Then 'If it could not find the property then.
+            If tmp Is Nothing Then 'If it could not find the property then.
                 Properties.Add(New Prop(Name, Value)) 'Add the property.
             Else
                 tmp.Value = Value 'Set the value.
@@ -351,7 +351,7 @@ Namespace SimpleD
         Public Sub SetValue(ByVal Control As Windows.Forms.Control)
             Dim Value As String = GetValueFromControl(Control) 'Find the property from a object and set the value.
             Dim tmp As Prop = Find(Control.Name) 'Find the property.
-            If tmp = Nothing Then 'If it could not find the property then.
+            If tmp Is Nothing Then 'If it could not find the property then.
                 Properties.Add(New Prop(Control.Name, Value)) 'Add the property.
             Else
                 tmp.Value = Value 'Set the value.
@@ -372,7 +372,9 @@ Namespace SimpleD
         ''' </summary>
         ''' <param name="Name">The name of the property to get the value from.</param>
         Public Function GetValue(ByVal Name As String) As String
-            Return Find(Name).Value 'Find the property and return the value.
+            Dim prop As Prop = Find(Name) 'Find the property and return the value.
+            If prop IsNot Nothing Then Return prop.Value
+            Return Nothing
         End Function
         Public Function GetValueArray(ByVal Name As String) As String()
             Dim tmp As New List(Of String)
@@ -391,7 +393,7 @@ Namespace SimpleD
         ''' <param name="EmptyIfNotFound">Set value to nothing, if it can't find the property.</param>
         Public Sub GetValue(ByVal Name As String, ByRef Value As Object, Optional ByVal EmptyIfNotFound As Boolean = True)
             Dim prop As Prop = Find(Name)
-            If prop = Nothing Then
+            If prop Is Nothing Then
                 If EmptyIfNotFound Then Value = Nothing
             Else
                 Value = prop.Value 'Find the property and return the value.
@@ -434,7 +436,7 @@ Namespace SimpleD
         ''' <param name="Control"></param>
         ''' <returns>Property value.</returns>
         Public Function GetValue(ByVal Control As Windows.Forms.Control) As String
-            Return Find(Control.Name).Value 'Find the property from a object and return the value.
+            Return GetValue(Control.Name)
         End Function
 #End Region
 
