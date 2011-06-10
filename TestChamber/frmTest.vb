@@ -2,7 +2,7 @@
 Public Class frmTest
 
     Private Sub btnSave_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnSave.Click
-        Dim sD As New SimpleD.SimpleD
+        Dim sD As New SimpleD.Group
 
         Dim g As SimpleD.Group = sD.CreateGroup("Test")
 
@@ -22,11 +22,11 @@ Public Class frmTest
         txtFile.Text = sD.ToString(chkSplitNewLine.Checked, chkSplitTabs.Checked)
     End Sub
 
-    Dim OpenSD As SimpleD.SimpleD
+    Dim OpenSD As SimpleD.Group
     Private Sub btnOpen_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnOpen.Click
         Dim LastSelected As Integer = lstGroups.SelectedIndex
         'Dim sD As New SimpleD.SimpleD
-        OpenSD = New SimpleD.SimpleD
+        OpenSD = New SimpleD.Group
         txtError.Text = "Error:" & OpenSD.FromString(txtFile.Text)
 
         lstGroups.Items.Clear()

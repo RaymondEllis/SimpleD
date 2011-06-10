@@ -10,7 +10,7 @@
         TotalTimer.StartTimer()
         For i As Integer = 1 To numCount.Value
             timer.StartTimer()
-            Dim sd As New SimpleD.SimpleD(str)
+            Dim sd As New SimpleD.Group(str)
             timer.StopTimer()
             time += timer.TimeElapsed(highTimer.PerformanceValue.pvMilliSecond)
         Next
