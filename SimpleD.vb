@@ -48,9 +48,6 @@ Namespace SimpleD
 
 
     Public Class Group
-        ''' <summary>
-        ''' If name is empry then it will merge with parent group.
-        ''' </summary>
         Public Name As String
 
         Public Properties As New List(Of Prop)
