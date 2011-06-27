@@ -88,7 +88,7 @@ Namespace SimpleD
             'Name and start of group.
             If Name <> "" Then tmp &= Name & "{"
 
-            'Add the properys from the group.
+            'Add the properies from the group.
             For n As Integer = 0 To Properties.Count - 1
                 tmp &= Split & Properties(n).Name & "=" & Properties(n).Value & ";"
             Next
