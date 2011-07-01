@@ -215,7 +215,9 @@ Namespace SimpleD
         ''' <param name="Control">The control to get the property from.</param>
         ''' <param name="Value">Returns value if control is unknown.</param>
         Public Sub GetValue(ByRef Control As Windows.Forms.Control, ByRef Value As String)
-            Dim TempValue As String = Find(Control.Name).Value 'Find the property from the control name.
+            Dim Prop As Prop = Find(Control.Name) 'Find the property from the control name.
+            If Prop Is Nothing Then Return
+            Dim TempValue As String = Prop.Value
 
             Dim obj As Object = Control
             If TypeOf Control Is Windows.Forms.TextBox Or TypeOf Control Is Windows.Forms.Label Then
@@ -225,18 +227,23 @@ Namespace SimpleD
                 If Not Boolean.TryParse(TempValue, obj.Checked) Then Value = TempValue
 
             ElseIf TypeOf Control Is Windows.Forms.NumericUpDown Or TypeOf Control Is Windows.Forms.ProgressBar Then
-                If TempValue > obj.Maximum Then
-                    obj.Value = obj.Maximum
-                ElseIf TempValue < obj.Minimum Then
-                    obj.Value = obj.Minimum
+                Dim tValue As Decimal = 0
+                If Decimal.TryParse(TempValue, tValue) Then
+                    If tValue > obj.Maximum Then
+                        obj.Value = obj.Maximum
+                    ElseIf tValue < obj.Minimum Then
+                        obj.Value = obj.Minimum
+                    Else
+                        obj.Value = tValue
+                    End If
                 Else
-                    obj.Value = TempValue
+                    Value = TempValue
                 End If
 
-            Else
-                'Throw New Exception("Could not find object type.")
-                Value = TempValue
-            End If
+                Else
+                    'Throw New Exception("Could not find object type.")
+                    Value = TempValue
+                End If
         End Sub
         ''' <summary>
         ''' Uses the name of the control to find the property value.

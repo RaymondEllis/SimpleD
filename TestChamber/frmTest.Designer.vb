@@ -200,7 +200,7 @@ Partial Class frmTest
         '
         Me.txtError.Location = New System.Drawing.Point(8, 263)
         Me.txtError.Name = "txtError"
-        Me.txtError.Size = New System.Drawing.Size(224, 20)
+        Me.txtError.Size = New System.Drawing.Size(250, 20)
         Me.txtError.TabIndex = 1
         Me.txtError.Text = "Error:"
         '

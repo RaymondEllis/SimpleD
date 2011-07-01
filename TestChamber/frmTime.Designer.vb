@@ -32,6 +32,11 @@ Partial Class frmTime
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.txtTotalTime = New System.Windows.Forms.TextBox()
+        Me.Label5 = New System.Windows.Forms.Label()
+        Me.Label6 = New System.Windows.Forms.Label()
+        Me.txtTime2 = New System.Windows.Forms.TextBox()
+        Me.txtTotalTime2 = New System.Windows.Forms.TextBox()
+        Me.Label7 = New System.Windows.Forms.Label()
         CType(Me.numCount, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         Me.SuspendLayout()
@@ -54,7 +59,7 @@ Partial Class frmTime
         Me.numCount.Name = "numCount"
         Me.numCount.Size = New System.Drawing.Size(120, 20)
         Me.numCount.TabIndex = 1
-        Me.numCount.Value = New Decimal(New Integer() {100, 0, 0, 0})
+        Me.numCount.Value = New Decimal(New Integer() {1000, 0, 0, 0})
         '
         'Label2
         '
@@ -127,15 +132,61 @@ Partial Class frmTime
         Me.txtTotalTime.Size = New System.Drawing.Size(202, 20)
         Me.txtTotalTime.TabIndex = 5
         '
+        'Label5
+        '
+        Me.Label5.AutoSize = True
+        Me.Label5.Location = New System.Drawing.Point(220, 174)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(70, 13)
+        Me.Label5.TabIndex = 4
+        Me.Label5.Text = "avg ms Time:"
+        '
+        'Label6
+        '
+        Me.Label6.AutoSize = True
+        Me.Label6.Location = New System.Drawing.Point(220, 224)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(64, 13)
+        Me.Label6.TabIndex = 4
+        Me.Label6.Text = "total s Time:"
+        '
+        'txtTime2
+        '
+        Me.txtTime2.Location = New System.Drawing.Point(220, 190)
+        Me.txtTime2.Name = "txtTime2"
+        Me.txtTime2.Size = New System.Drawing.Size(202, 20)
+        Me.txtTime2.TabIndex = 5
+        '
+        'txtTotalTime2
+        '
+        Me.txtTotalTime2.Location = New System.Drawing.Point(220, 240)
+        Me.txtTotalTime2.Name = "txtTotalTime2"
+        Me.txtTotalTime2.Size = New System.Drawing.Size(202, 20)
+        Me.txtTotalTime2.TabIndex = 5
+        '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Location = New System.Drawing.Point(284, 161)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(63, 13)
+        Me.Label7.TabIndex = 7
+        Me.Label7.Text = "FromString2"
+        '
         'frmTime
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(230, 269)
+        Me.ClientSize = New System.Drawing.Size(435, 269)
+        Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.Panel1)
+        Me.Controls.Add(Me.txtTotalTime2)
         Me.Controls.Add(Me.txtTotalTime)
+        Me.Controls.Add(Me.txtTime2)
         Me.Controls.Add(Me.txtTime)
+        Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.Label4)
+        Me.Controls.Add(Me.Label5)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.Label1)
         Me.Name = "frmTime"
@@ -157,4 +208,9 @@ Partial Class frmTime
     Friend WithEvents Panel1 As System.Windows.Forms.Panel
     Friend WithEvents Label4 As System.Windows.Forms.Label
     Friend WithEvents txtTotalTime As System.Windows.Forms.TextBox
+    Friend WithEvents Label5 As System.Windows.Forms.Label
+    Friend WithEvents Label6 As System.Windows.Forms.Label
+    Friend WithEvents txtTime2 As System.Windows.Forms.TextBox
+    Friend WithEvents txtTotalTime2 As System.Windows.Forms.TextBox
+    Friend WithEvents Label7 As System.Windows.Forms.Label
 End Class

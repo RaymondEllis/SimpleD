@@ -36,12 +36,14 @@ Namespace SimpleD
         Public Const Version = 1
         Public Const FileVersion = 2
         '1      *InDev*
+        'New    : FromString is now faster.
         'New    : Can now have properties with out any groups in a file.
         'New    : Checks for empty data in "Group.FromString".
         'Change : Now saves the version of SimpleD as a group on the top of the file. (was saved as a comment before.)
         'Change : Removed "SimpleD.SimpleD" now just use "SimpleD.Group".
         'Change : The helper functions are now in a seperate file. (Can be put in same file if desired.)
         'Fixed  : Prop is now a class. Fixed a few bugs because structures are not reference type.
+        'Fixed  : GetValue(ByRef Control, ByRef Value) Nolonger crashes if value did not convert properly.
         'Fixed  : ToFile now creates dir if it does not exist.
 
         'Old change logs at:
@@ -152,6 +154,87 @@ Namespace SimpleD
                 If Index >= Data.Length Then Return "" 'The end of the string is also the end of the group.
             Loop Until Data.Substring(Index, 1) = "}"
             Return ""
+        End Function
+
+        Public Function FromString2(Data As String, Optional ByRef Index As Integer = 0) As String
+            If Data = "" Then Return "Data is empty!"
+
+            Dim Results As String = ""
+
+            'Group{Property=Value;}
+
+            Dim State As Byte = 0
+            '0 = Nothing
+            '1 = In property
+            '2 = In comment
+
+            Dim StartIndex As Integer = Index 'The start of the group.
+            Dim PropertyIndex As Integer = 0 'Used for error handling.
+            Dim tName As String = "" 'Group or property name
+            Dim tValue As String = ""
+            Dim LastChr As Char = " "c
+
+            Do Until Index > Data.Length - 1
+                Dim chr As Char = Data(Index)
+
+                Select Case State
+                    Case 0 'In nothing
+
+                        Select Case chr
+                            Case "="c
+                                PropertyIndex = Index
+                                State = 1
+
+                            Case "{"c
+                                Index += 1
+                                Dim newGroup As New Group(tName.Trim)
+                                Results &= newGroup.FromString2(Data, Index)
+                                Groups.Add(newGroup)
+                                LastChr = " "c
+                                tName = ""
+
+                            Case "}"c 'End of current group
+                                Return Results
+
+                            Case "/"c
+                                If LastChr = "/"c Then
+                                    tName = ""
+                                    State = 2
+                                End If
+
+                            Case Else
+                                tName &= chr
+                        End Select
+
+
+                    Case 1 'In property
+                        If chr = ";"c Then
+                            Properties.Add(New Prop(tName.Trim, tValue))
+                            tName = ""
+                            tValue = ""
+                            State = 0
+                        Else
+                            tValue &= chr
+                        End If
+
+                    Case 2 'In comment
+                        If chr = "\"c And LastChr = "\c" Then
+                            State = 0
+                        End If
+
+                End Select
+
+                Index += 1
+                LastChr = chr
+            Loop
+
+            If State = 1 Then
+                Results &= "  #Missing end of property " & tName.Trim & " at index: " & PropertyIndex
+            ElseIf Not Name = "" Then
+                Results &= "  #Missing end of group " & Name.Trim & " at index: " & StartIndex
+            End If
+
+            Return Results
         End Function
     End Class
 

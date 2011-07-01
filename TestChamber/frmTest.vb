@@ -27,7 +27,7 @@ Public Class frmTest
         Dim LastSelected As Integer = lstGroups.SelectedIndex
         'Dim sD As New SimpleD.SimpleD
         OpenSD = New SimpleD.Group
-        txtError.Text = "Error:" & OpenSD.FromString(txtFile.Text)
+        txtError.Text = "Error:" & OpenSD.FromString2(txtFile.Text)
 
         lstGroups.Items.Clear()
 
