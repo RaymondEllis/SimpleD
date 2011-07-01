@@ -69,6 +69,7 @@
     Public ReadOnly Property TimeElapsed(ByVal ReturnAccuracy As PerformanceValue) As Double
         Get
             If m_Start And m_Stop Then Return (m_Stop - m_Start - m_ApiOverhead) / m_CountsPerSecond * ReturnAccuracy
+            Return 0
         End Get
     End Property
    

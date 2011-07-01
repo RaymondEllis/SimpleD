@@ -32,13 +32,15 @@ Option Explicit On
 Option Strict On
 Namespace SimpleD
     Module Info
-        Public Const IllegalCharacters As String = "{}=;" 'ToDo: Property names should beable to contain {}= and just not ;  group names should beable to have }=; in them. (in other words there should be a check.)
+        Public Const IllegalCharacters As String = "{}=;" 'ToDo: Property names should beable to contain {}= and just not ;  group names should beable to have }=; in them. (in other words there should be a check.) Need to do more testing.
         Public Const Version = 1
         Public Const FileVersion = 2
         '1      *InDev*
-        'Added  : Compile options to top of file so it will compile with other options set.
-        'Change : Removed SimpleD.SimpleD  can now just use SimpleD.Group
-        'Change : The helper functions are now in a seperate file.
+        'New    : Can now have properties with out any groups in a file.
+        'New    : Checks for empty data in "Group.FromString".
+        'Change : Now saves the version of SimpleD as a group on the top of the file. (was saved as a comment before.)
+        'Change : Removed "SimpleD.SimpleD" now just use "SimpleD.Group".
+        'Change : The helper functions are now in a seperate file. (Can be put in same file if desired.)
         'Fixed  : Prop is now a class. Fixed a few bugs because structures are not reference type.
         'Fixed  : ToFile now creates dir if it does not exist.
 
@@ -101,8 +103,9 @@ Namespace SimpleD
         End Function
 
         Public Function FromString(Data As String, Optional ByRef Index As Integer = 0) As String
+            If Data = "" Then Return "Data is empty!"
             Dim tmp As String
-            Dim InComment As Boolean = False
+            Dim InComment As Boolean = False 'ToDo: Allow comments to be saved.
             'Now lets get all of the properties from the group.
             Do
                 If Index + 2 > Data.Length Then Return "Could not find end of group: " & Name

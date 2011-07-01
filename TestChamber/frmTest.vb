@@ -31,9 +31,7 @@ Public Class frmTest
 
         lstGroups.Items.Clear()
 
-        For Each grp As SimpleD.Group In OpenSD.Groups
-            DoGroup(grp, "")
-        Next
+        DoGroup(OpenSD, "")
 
         If LastSelected < lstGroups.Items.Count Then
             lstGroups.SelectedIndex = LastSelected
