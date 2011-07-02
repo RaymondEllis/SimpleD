@@ -156,7 +156,16 @@ Namespace SimpleD
             Return ""
         End Function
 
-        Public Function FromString2(Data As String, Optional ByRef Index As Integer = 0) As String
+
+        ''' <summary>
+        ''' Note: FromString2 is Not strict at all.
+        ''' It will load anything even with errors.
+        ''' </summary>
+        ''' <param name="Data"></param>
+        ''' <param name="Index"></param>
+        ''' <returns>Errors if any.</returns>
+        ''' <remarks></remarks>
+        Public Function FromString2(Data As String, Optional ByRef Index As Integer = 0) As String 'ToDo: FromString2 will need a debugger. (or better error handling)
             If Data = "" Then Return "Data is empty!"
 
             Dim Results As String = ""
@@ -169,7 +178,7 @@ Namespace SimpleD
             '2 = In comment
 
             Dim StartIndex As Integer = Index 'The start of the group.
-            Dim PropertyIndex As Integer = 0 'Used for error handling.
+            Dim ErrorIndex As Integer = 0 'Used for error handling.
             Dim tName As String = "" 'Group or property name
             Dim tValue As String = ""
             Dim LastChr As Char = " "c
@@ -182,8 +191,8 @@ Namespace SimpleD
 
                         Select Case chr
                             Case "="c
-                                PropertyIndex = Index
-                                State = 1
+                                ErrorIndex = Index
+                                State = 1 'In property
 
                             Case "{"c
                                 Index += 1
@@ -199,7 +208,8 @@ Namespace SimpleD
                             Case "/"c
                                 If LastChr = "/"c Then
                                     tName = ""
-                                    State = 2
+                                    State = 2 'In comment
+                                    ErrorIndex = Index
                                 End If
 
                             Case Else
@@ -218,7 +228,7 @@ Namespace SimpleD
                         End If
 
                     Case 2 'In comment
-                        If chr = "\"c And LastChr = "\c" Then
+                        If chr = "\"c And LastChr = "\"c Then
                             State = 0
                         End If
 
@@ -229,7 +239,9 @@ Namespace SimpleD
             Loop
 
             If State = 1 Then
-                Results &= "  #Missing end of property " & tName.Trim & " at index: " & PropertyIndex
+                Results &= "  #Missing end of property " & tName.Trim & " at index: " & ErrorIndex
+            ElseIf State = 2 Then
+                Results &= "  #Missing end of comment " & tName.Trim & " at index: " & ErrorIndex
             ElseIf Not Name = "" Then
                 Results &= "  #Missing end of group " & Name.Trim & " at index: " & StartIndex
             End If
