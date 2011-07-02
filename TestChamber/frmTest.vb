@@ -27,7 +27,12 @@ Public Class frmTest
         Dim LastSelected As Integer = lstGroups.SelectedIndex
         'Dim sD As New SimpleD.SimpleD
         OpenSD = New SimpleD.Group
-        txtError.Text = "Error:" & OpenSD.FromString2(txtFile.Text)
+        If chkFromString2.Checked Then
+            txtError.Text = "Error:" & OpenSD.FromString2(txtFile.Text)
+        Else
+            txtError.Text = "Error:" & OpenSD.FromString(txtFile.Text)
+        End If
+
 
         lstGroups.Items.Clear()
 
@@ -39,6 +44,9 @@ Public Class frmTest
             lstGroups.SelectedIndex = 0
         End If
 
+        If chkResave.Checked Then
+            txtResave.Text = OpenSD.ToString(chkSplitNewLine.Checked, chkSplitTabs.Checked, False)
+        End If
 
         On Error Resume Next
         Dim g As SimpleD.Group = OpenSD.GetGroup("Test")
@@ -101,7 +109,7 @@ Public Class frmTest
         chkSplitTabs.Enabled = chkSplitNewLine.Checked
     End Sub
 
-    Private Sub txtFile_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles txtFile.TextChanged
+    Private Sub txtFile_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles txtFile.TextChanged, txtResave.TextChanged
         If chkAutoOpen.Checked Then
             btnOpen_Click(sender, e)
         End If
@@ -109,5 +117,14 @@ Public Class frmTest
 
     Private Sub btnTimeTest_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnTimeTest.Click
         frmTime.Show()
+    End Sub
+
+    Private Sub chkFromString2_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles chkFromString2.CheckedChanged
+        btnOpen_Click(sender, e)
+    End Sub
+
+    Private Sub chkResave_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles chkResave.CheckedChanged
+        panResize.Visible = chkResave.Checked
+        btnOpen_Click(sender, e)
     End Sub
 End Class

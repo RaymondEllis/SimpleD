@@ -61,8 +61,8 @@ Namespace SimpleD
             Me.Name = Name
         End Sub
 
-        Public Overloads Function ToString(Optional ByVal SplitWithNewLine As Boolean = True, Optional ByVal SplitWithTabs As Boolean = True) As String
-            Return ToString(SplitWithNewLine, If(SplitWithTabs, 0, -1), True)
+        Public Overloads Function ToString(Optional ByVal SplitWithNewLine As Boolean = True, Optional ByVal SplitWithTabs As Boolean = True, Optional ByVal AddVersion As Boolean = True) As String
+            Return ToString(SplitWithNewLine, If(SplitWithTabs, 0, -1), AddVersion)
         End Function
 
         ''' <summary>
@@ -71,7 +71,7 @@ Namespace SimpleD
         ''' <param name="SplitWithNewLine">Split properties and groups using a newline?</param>
         ''' <param name="TabCount">Split properties and groups using tabs?
         ''' Does not use tabs if newline is disabled.</param>
-        Public Overloads Function ToString(ByVal SplitWithNewLine As Boolean, ByVal TabCount As Integer, IsStart As Boolean) As String
+        Public Overloads Function ToString(ByVal SplitWithNewLine As Boolean, ByVal TabCount As Integer, AddVersion As Boolean) As String
             If Properties.Count = 0 And Groups.Count = 0 Then Return ""
             If TabCount < -1 Then TabCount = -1
 
@@ -84,7 +84,7 @@ Namespace SimpleD
 
             Dim tmp As String = ""
 
-            If IsStart Then tmp &= "SimpleD{Version=" & Version & ";FormatVersion=" & FileVersion & ";}"
+            If AddVersion Then tmp &= "SimpleD{Version=" & Version & ";FormatVersion=" & FileVersion & ";}"
 
             'Name and start of group.
             If Name <> "" Then tmp &= Name & "{"
@@ -168,14 +168,12 @@ Namespace SimpleD
         Public Function FromString2(Data As String, Optional ByRef Index As Integer = 0) As String 'ToDo: FromString2 will need a debugger. (or better error handling)
             If Data = "" Then Return "Data is empty!"
 
-            Dim Results As String = ""
+            'Property name & value can not contain = or ;
+            'Group names can not contain { or }
+            'p=g{};
 
-            'Group{Property=Value;}
-
-            Dim State As Byte = 0
-            '0 = Nothing
-            '1 = In property
-            '2 = In comment
+            Dim Results As String = "" 'Holds errors to be returned later.
+            Dim State As Byte = 0 '0 = Nothing    1 = In property 2 = In comment
 
             Dim StartIndex As Integer = Index 'The start of the group.
             Dim ErrorIndex As Integer = 0 'Used for error handling.
@@ -223,6 +221,13 @@ Namespace SimpleD
                             tName = ""
                             tValue = ""
                             State = 0
+
+                        ElseIf chr = "="c Then 'error
+                            Results &= "  #Missing end of property " & tName.Trim & " at index: " & ErrorIndex
+                            ErrorIndex = Index
+                            tName = ""
+                            tValue = ""
+
                         Else
                             tValue &= chr
                         End If

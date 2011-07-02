@@ -43,15 +43,21 @@ Partial Class frmTest
         Me.lstGroups = New System.Windows.Forms.ListBox()
         Me.chkAutoOpen = New System.Windows.Forms.CheckBox()
         Me.btnTimeTest = New System.Windows.Forms.Button()
+        Me.chkFromString2 = New System.Windows.Forms.CheckBox()
+        Me.txtResave = New System.Windows.Forms.TextBox()
+        Me.chkResave = New System.Windows.Forms.CheckBox()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.panResize = New System.Windows.Forms.Panel()
         Me.GroupBox1.SuspendLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox2.SuspendLayout()
         CType(Me.NumericUpDown2, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.panResize.SuspendLayout()
         Me.SuspendLayout()
         '
         'txtFile
         '
-        Me.txtFile.Location = New System.Drawing.Point(264, 0)
+        Me.txtFile.Location = New System.Drawing.Point(290, -1)
         Me.txtFile.Multiline = True
         Me.txtFile.Name = "txtFile"
         Me.txtFile.ScrollBars = System.Windows.Forms.ScrollBars.Both
@@ -66,10 +72,10 @@ Partial Class frmTest
         Me.GroupBox1.Controls.Add(Me.CheckBox1)
         Me.GroupBox1.Location = New System.Drawing.Point(8, 0)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(224, 106)
+        Me.GroupBox1.Size = New System.Drawing.Size(135, 114)
         Me.GroupBox1.TabIndex = 1
         Me.GroupBox1.TabStop = False
-        Me.GroupBox1.Text = "Stuff..."
+        Me.GroupBox1.Text = "Group Test"
         '
         'NumericUpDown1
         '
@@ -101,7 +107,7 @@ Partial Class frmTest
         '
         'btnSave
         '
-        Me.btnSave.Location = New System.Drawing.Point(184, 360)
+        Me.btnSave.Location = New System.Drawing.Point(206, 334)
         Me.btnSave.Name = "btnSave"
         Me.btnSave.Size = New System.Drawing.Size(75, 23)
         Me.btnSave.TabIndex = 2
@@ -110,7 +116,7 @@ Partial Class frmTest
         '
         'btnOpen
         '
-        Me.btnOpen.Location = New System.Drawing.Point(184, 336)
+        Me.btnOpen.Location = New System.Drawing.Point(206, 310)
         Me.btnOpen.Name = "btnOpen"
         Me.btnOpen.Size = New System.Drawing.Size(75, 23)
         Me.btnOpen.TabIndex = 2
@@ -123,17 +129,17 @@ Partial Class frmTest
         Me.GroupBox2.Controls.Add(Me.RadioButton4)
         Me.GroupBox2.Controls.Add(Me.NumericUpDown2)
         Me.GroupBox2.Controls.Add(Me.CheckBox2)
-        Me.GroupBox2.Location = New System.Drawing.Point(8, 112)
+        Me.GroupBox2.Location = New System.Drawing.Point(149, 0)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(224, 124)
+        Me.GroupBox2.Size = New System.Drawing.Size(135, 114)
         Me.GroupBox2.TabIndex = 4
         Me.GroupBox2.TabStop = False
-        Me.GroupBox2.Text = "Stuff..."
+        Me.GroupBox2.Text = "Group: Test2"
         '
         'RadioButton3
         '
         Me.RadioButton3.AutoSize = True
-        Me.RadioButton3.Location = New System.Drawing.Point(8, 97)
+        Me.RadioButton3.Location = New System.Drawing.Point(8, 89)
         Me.RadioButton3.Name = "RadioButton3"
         Me.RadioButton3.Size = New System.Drawing.Size(90, 17)
         Me.RadioButton3.TabIndex = 4
@@ -144,7 +150,7 @@ Partial Class frmTest
         '
         Me.RadioButton4.AutoSize = True
         Me.RadioButton4.Checked = True
-        Me.RadioButton4.Location = New System.Drawing.Point(8, 74)
+        Me.RadioButton4.Location = New System.Drawing.Point(8, 68)
         Me.RadioButton4.Name = "RadioButton4"
         Me.RadioButton4.Size = New System.Drawing.Size(90, 17)
         Me.RadioButton4.TabIndex = 3
@@ -154,7 +160,7 @@ Partial Class frmTest
         '
         'NumericUpDown2
         '
-        Me.NumericUpDown2.Location = New System.Drawing.Point(8, 48)
+        Me.NumericUpDown2.Location = New System.Drawing.Point(6, 42)
         Me.NumericUpDown2.Maximum = New Decimal(New Integer() {100000, 0, 0, 0})
         Me.NumericUpDown2.Minimum = New Decimal(New Integer() {10000, 0, 0, -2147483648})
         Me.NumericUpDown2.Name = "NumericUpDown2"
@@ -165,7 +171,7 @@ Partial Class frmTest
         'CheckBox2
         '
         Me.CheckBox2.AutoSize = True
-        Me.CheckBox2.Location = New System.Drawing.Point(8, 24)
+        Me.CheckBox2.Location = New System.Drawing.Point(8, 19)
         Me.CheckBox2.Name = "CheckBox2"
         Me.CheckBox2.Size = New System.Drawing.Size(81, 17)
         Me.CheckBox2.TabIndex = 0
@@ -177,7 +183,7 @@ Partial Class frmTest
         Me.chkSplitNewLine.AutoSize = True
         Me.chkSplitNewLine.Checked = True
         Me.chkSplitNewLine.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkSplitNewLine.Location = New System.Drawing.Point(8, 336)
+        Me.chkSplitNewLine.Location = New System.Drawing.Point(8, 120)
         Me.chkSplitNewLine.Name = "chkSplitNewLine"
         Me.chkSplitNewLine.Size = New System.Drawing.Size(121, 17)
         Me.chkSplitNewLine.TabIndex = 5
@@ -189,7 +195,7 @@ Partial Class frmTest
         Me.chkSplitTabs.AutoSize = True
         Me.chkSplitTabs.Checked = True
         Me.chkSplitTabs.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkSplitTabs.Location = New System.Drawing.Point(8, 358)
+        Me.chkSplitTabs.Location = New System.Drawing.Point(8, 142)
         Me.chkSplitTabs.Name = "chkSplitTabs"
         Me.chkSplitTabs.Size = New System.Drawing.Size(97, 17)
         Me.chkSplitTabs.TabIndex = 5
@@ -198,16 +204,16 @@ Partial Class frmTest
         '
         'txtError
         '
-        Me.txtError.Location = New System.Drawing.Point(8, 263)
+        Me.txtError.Location = New System.Drawing.Point(8, 363)
         Me.txtError.Name = "txtError"
-        Me.txtError.Size = New System.Drawing.Size(250, 20)
+        Me.txtError.Size = New System.Drawing.Size(276, 20)
         Me.txtError.TabIndex = 1
         Me.txtError.Text = "Error:"
         '
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(703, 0)
+        Me.Label1.Location = New System.Drawing.Point(728, -1)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(44, 13)
         Me.Label1.TabIndex = 6
@@ -216,17 +222,17 @@ Partial Class frmTest
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(883, 0)
+        Me.Label2.Location = New System.Drawing.Point(908, -1)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(90, 13)
+        Me.Label2.Size = New System.Drawing.Size(82, 13)
         Me.Label2.TabIndex = 6
-        Me.Label2.Text = "Properties=Value:"
+        Me.Label2.Text = "Property=Value:"
         '
         'lstProperties
         '
         Me.lstProperties.FormattingEnabled = True
         Me.lstProperties.HorizontalScrollbar = True
-        Me.lstProperties.Location = New System.Drawing.Point(829, 16)
+        Me.lstProperties.Location = New System.Drawing.Point(854, 15)
         Me.lstProperties.Name = "lstProperties"
         Me.lstProperties.Size = New System.Drawing.Size(205, 368)
         Me.lstProperties.TabIndex = 7
@@ -235,7 +241,7 @@ Partial Class frmTest
         '
         Me.lstGroups.FormattingEnabled = True
         Me.lstGroups.HorizontalScrollbar = True
-        Me.lstGroups.Location = New System.Drawing.Point(703, 17)
+        Me.lstGroups.Location = New System.Drawing.Point(728, 16)
         Me.lstGroups.Name = "lstGroups"
         Me.lstGroups.Size = New System.Drawing.Size(120, 368)
         Me.lstGroups.TabIndex = 7
@@ -245,7 +251,7 @@ Partial Class frmTest
         Me.chkAutoOpen.AutoSize = True
         Me.chkAutoOpen.Checked = True
         Me.chkAutoOpen.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkAutoOpen.Location = New System.Drawing.Point(8, 313)
+        Me.chkAutoOpen.Location = New System.Drawing.Point(118, 293)
         Me.chkAutoOpen.Name = "chkAutoOpen"
         Me.chkAutoOpen.Size = New System.Drawing.Size(74, 17)
         Me.chkAutoOpen.TabIndex = 8
@@ -254,19 +260,75 @@ Partial Class frmTest
         '
         'btnTimeTest
         '
-        Me.btnTimeTest.Location = New System.Drawing.Point(184, 301)
+        Me.btnTimeTest.Location = New System.Drawing.Point(206, 275)
         Me.btnTimeTest.Name = "btnTimeTest"
         Me.btnTimeTest.Size = New System.Drawing.Size(75, 23)
         Me.btnTimeTest.TabIndex = 10
         Me.btnTimeTest.Text = "Time Test"
         Me.btnTimeTest.UseVisualStyleBackColor = True
         '
+        'chkFromString2
+        '
+        Me.chkFromString2.AutoSize = True
+        Me.chkFromString2.Checked = True
+        Me.chkFromString2.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkFromString2.Location = New System.Drawing.Point(118, 316)
+        Me.chkFromString2.Name = "chkFromString2"
+        Me.chkFromString2.Size = New System.Drawing.Size(82, 17)
+        Me.chkFromString2.TabIndex = 8
+        Me.chkFromString2.Text = "FromString2"
+        Me.chkFromString2.UseVisualStyleBackColor = True
+        '
+        'txtResave
+        '
+        Me.txtResave.Location = New System.Drawing.Point(3, 16)
+        Me.txtResave.Multiline = True
+        Me.txtResave.Name = "txtResave"
+        Me.txtResave.ScrollBars = System.Windows.Forms.ScrollBars.Both
+        Me.txtResave.Size = New System.Drawing.Size(432, 384)
+        Me.txtResave.TabIndex = 0
+        Me.txtResave.WordWrap = False
+        '
+        'chkResave
+        '
+        Me.chkResave.AutoSize = True
+        Me.chkResave.Location = New System.Drawing.Point(8, 315)
+        Me.chkResave.Name = "chkResave"
+        Me.chkResave.Size = New System.Drawing.Size(102, 17)
+        Me.chkResave.TabIndex = 11
+        Me.chkResave.Text = "Resave opened"
+        Me.chkResave.UseVisualStyleBackColor = True
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(3, 0)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(47, 13)
+        Me.Label3.TabIndex = 12
+        Me.Label3.Text = "Resave:"
+        '
+        'panResize
+        '
+        Me.panResize.Controls.Add(Me.Label3)
+        Me.panResize.Controls.Add(Me.txtResave)
+        Me.panResize.Location = New System.Drawing.Point(290, 389)
+        Me.panResize.Name = "panResize"
+        Me.panResize.Size = New System.Drawing.Size(439, 406)
+        Me.panResize.TabIndex = 13
+        Me.panResize.Visible = False
+        '
         'frmTest
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1040, 387)
+        Me.AutoSize = True
+        Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.ClientSize = New System.Drawing.Size(1062, 797)
+        Me.Controls.Add(Me.panResize)
+        Me.Controls.Add(Me.chkResave)
         Me.Controls.Add(Me.btnTimeTest)
+        Me.Controls.Add(Me.chkFromString2)
         Me.Controls.Add(Me.chkAutoOpen)
         Me.Controls.Add(Me.lstGroups)
         Me.Controls.Add(Me.lstProperties)
@@ -288,6 +350,8 @@ Partial Class frmTest
         Me.GroupBox2.ResumeLayout(False)
         Me.GroupBox2.PerformLayout()
         CType(Me.NumericUpDown2, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.panResize.ResumeLayout(False)
+        Me.panResize.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -313,5 +377,10 @@ Partial Class frmTest
     Friend WithEvents lstGroups As System.Windows.Forms.ListBox
     Friend WithEvents chkAutoOpen As System.Windows.Forms.CheckBox
     Friend WithEvents btnTimeTest As System.Windows.Forms.Button
+    Friend WithEvents chkFromString2 As System.Windows.Forms.CheckBox
+    Friend WithEvents txtResave As System.Windows.Forms.TextBox
+    Friend WithEvents chkResave As System.Windows.Forms.CheckBox
+    Friend WithEvents Label3 As System.Windows.Forms.Label
+    Friend WithEvents panResize As System.Windows.Forms.Panel
 
 End Class

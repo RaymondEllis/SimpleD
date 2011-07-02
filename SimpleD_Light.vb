@@ -103,7 +103,52 @@ Namespace SimpleD
             Loop Until Data.Substring(Index, 1) = "}"
             Return ""
         End Function
+
+        Public Function FromString2(Data As String, ByRef Index As Integer) As String
+            If Data = "" Then Return "Data is empty!"
+            Dim Results As String = "" 'Holds errors to be returned later.
+            Dim State As Byte = 0 '0 = Nothing    1 = In property 2 = In comment
+            Dim tName As String = "" 'Group or property name
+            Dim tValue As String = ""
+            Do Until Index > Data.Length - 1
+                Dim chr As Char = Data(Index)
+                Select Case State
+                    Case 0 'In nothing
+                        Select Case chr
+                            Case "="c
+                                State = 1 'In property
+                            Case "{"c
+                                Index += 1
+                                Dim newGroup As New lGroup(tName.Trim)
+                                Results &= newGroup.FromString2(Data, Index)
+                                Groups.Add(newGroup)
+                                tName = ""
+                            Case "}"c 'End of current group
+                                Return Results
+                            Case Else
+                                tName &= chr
+                        End Select
+                    Case 1 'In property
+                        If chr = ";"c Then
+                            Properties.Add(New lProp(tName.Trim, tValue))
+                            tName = ""
+                            tValue = ""
+                            State = 0
+                        Else
+                            tValue &= chr
+                        End If
+                End Select
+                Index += 1
+            Loop
+            If State = 1 Then
+                Results &= "  #Missing end of property " & tName.Trim
+            ElseIf Not Name = "" Then
+                Results &= "  #Missing end of group " & Name.Trim
+            End If
+            Return Results
+        End Function
     End Class
+
 
     ''' <summary>Missing =</summary>
     Public Class lProp
