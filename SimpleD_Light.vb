@@ -35,7 +35,6 @@ Namespace SimpleD
     ''' <summary>LightGroups Missing formating and can not contain any comments.</summary>
     Public Class lGroup
         Public Name As String
-
         Public Properties As New List(Of lProp)
         Public Groups As New List(Of lGroup)
 

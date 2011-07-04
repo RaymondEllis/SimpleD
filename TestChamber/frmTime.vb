@@ -9,6 +9,7 @@
         Dim time As Double = 0
         TotalTimer.Start()
         For i As Integer = 1 To numCount.Value
+            timer.Reset()
             timer.Start()
             Dim sd As New SimpleD.Group()
             sd.FromString(str)
@@ -18,7 +19,7 @@
         TotalTimer.Stop()
 
         txtTime.Text = time / numCount.Value
-        txtTotalTime.Text = TotalTimer.Elapsed.Seconds
+        txtTotalTime.Text = TotalTimer.ElapsedMilliseconds
 
 
         'Time2
@@ -29,6 +30,7 @@
 
         TotalTimer.Start()
         For i As Integer = 1 To numCount.Value
+            timer.Reset()
             timer.Start()
             Dim sd As New SimpleD.Group()
             sd.FromString2(str)
@@ -38,7 +40,7 @@
         TotalTimer.Stop()
 
         txtTime2.Text = time / numCount.Value
-        txtTotalTime2.Text = TotalTimer.Elapsed.Seconds
+        txtTotalTime2.Text = TotalTimer.ElapsedMilliseconds
 
         Panel1.Enabled = True
     End Sub

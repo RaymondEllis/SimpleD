@@ -168,18 +168,18 @@ Namespace SimpleD
         Public Function FromString2(Data As String, Optional ByRef Index As Integer = 0) As String 'ToDo: FromString2 will need a debugger. (or better error handling)
             If Data = "" Then Return "Data is empty!"
 
-            'Property name & value can not contain = or ;
-            'Group names can not contain { or }
+            'Group names can not contain { or } or //
+            'Property names can not contain // or = or ; or { or }
             'p=g{};
 
             Dim Results As String = "" 'Holds errors to be returned later.
-            Dim State As Byte = 0 '0 = Nothing    1 = In property 2 = In comment
+            Dim State As Byte = 0 '0 = Nothing    1 = In property   2 = In comment
 
             Dim StartIndex As Integer = Index 'The start of the group.
             Dim ErrorIndex As Integer = 0 'Used for error handling.
             Dim tName As String = "" 'Group or property name
             Dim tValue As String = ""
-            Dim LastChr As Char = " "c
+            Dim LastChr As Char = " "c 'Only needed for comments because they use two chars. //
 
             Do Until Index > Data.Length - 1
                 Dim chr As Char = Data(Index)
@@ -191,6 +191,11 @@ Namespace SimpleD
                             Case "="c
                                 ErrorIndex = Index
                                 State = 1 'In property
+
+                            Case ";"c
+                                tName = ""
+                                tValue = ""
+                                Results &= " #Found end of property but no beginning at index: " & Index
 
                             Case "{"c
                                 Index += 1
@@ -244,9 +249,9 @@ Namespace SimpleD
             Loop
 
             If State = 1 Then
-                Results &= "  #Missing end of property " & tName.Trim & " at index: " & ErrorIndex
+                Results &= " #Missing end of property " & tName.Trim & " at index: " & ErrorIndex
             ElseIf State = 2 Then
-                Results &= "  #Missing end of comment " & tName.Trim & " at index: " & ErrorIndex
+                Results &= " #Missing end of comment " & tName.Trim & " at index: " & ErrorIndex
             ElseIf Not Name = "" Then
                 Results &= "  #Missing end of group " & Name.Trim & " at index: " & StartIndex
             End If
