@@ -35,7 +35,8 @@ Namespace SimpleD
         Public Const IllegalCharacters As String = "{}=;" 'ToDo: Property names should beable to contain {}= and just not ;  group names should beable to have }=; in them. (in other words there should be a check.) Need to do more testing.
         Public Const Version = 1
         Public Const FileVersion = 2
-        '1      *InDev*
+        '1      *InDev* Before release there should be no ToDo: 
+        'New    : ToString now has brace styling.
         'New    : FromString is now faster.
         'New    : Can now have properties with out any groups in a file.
         'New    : Checks for empty data in "Group.FromString".
@@ -61,10 +62,11 @@ Namespace SimpleD
             Me.Name = Name
         End Sub
 
-        Public Overloads Function ToString(Optional ByVal SplitWithNewLine As Boolean = True, Optional ByVal SplitWithTabs As Boolean = True, Optional ByVal AddVersion As Boolean = True) As String
+
+        'ToDo: Remove old ToString
+        Public Overloads Function ToString(ByVal SplitWithNewLine As Boolean, ByVal SplitWithTabs As Boolean, Optional ByVal AddVersion As Boolean = True) As String
             Return ToString(SplitWithNewLine, If(SplitWithTabs, 0, -1), AddVersion)
         End Function
-
         ''' <summary>
         ''' Returns a string with all the properties and sub groups.
         ''' </summary>
@@ -104,6 +106,89 @@ Namespace SimpleD
             Return tmp
         End Function
 
+        Enum Style
+            None
+            Whitesmiths
+            BSD_Allman
+        End Enum
+        Public BraceStyle As Style = Style.BSD_Allman
+
+        ''' <summary>
+        ''' Returns a string with all the properties and sub groups.
+        ''' </summary>
+        ''' <param name="AddVersion">Add the version of SimpleD to start of string?</param>
+        ''' <param name="OverrideStyle">If not None then it will override BraceStyle.</param>
+        Public Overloads Function ToString(Optional AddVersion As Boolean = True, Optional OverrideStyle As Style = Style.None) As String
+            Return ToString(-1, AddVersion, OverrideStyle)
+        End Function
+        Private Overloads Function ToString(ByVal TabCount As Integer, AddVersion As Boolean, Optional OverrideStyle As Style = Style.None) As String
+            If Properties.Count = 0 And Groups.Count = 0 Then Return ""
+            If TabCount < -1 Then TabCount = -2 'Tab count Below -1 means use zero tabs.
+
+            Dim CurrentStyle As Style = BraceStyle
+            If OverrideStyle = Style.None Then CurrentStyle = BraceStyle
+
+         
+            Dim tmp As String = ""
+
+            If AddVersion Then tmp = "SimpleD{Version=" & Version & ";FormatVersion=" & FileVersion & ";}"
+
+
+            'Name and start of group. Name{
+            If Name <> "" Then
+                Select Case CurrentStyle
+                    Case Style.None
+                        tmp &= Name & "{"
+                    Case Style.Whitesmiths
+                        tmp &= Name & Environment.NewLine & GetTabs(TabCount + 1) & "{"
+                    Case Style.BSD_Allman
+                        tmp &= Name & Environment.NewLine & GetTabs(TabCount) & "{"
+                End Select
+            End If
+
+
+            'Groups and properties
+            Select Case CurrentStyle
+                Case Style.None
+                    For n As Integer = 0 To Properties.Count - 1
+                        tmp &= Properties(n).Name & "=" & Properties(n).Value & ";"
+                    Next
+                    For Each Grp As Group In Groups
+                        tmp &= Grp.ToString(TabCount + 1, False, OverrideStyle)
+                    Next
+
+                Case Style.Whitesmiths, Style.BSD_Allman
+                    For n As Integer = 0 To Properties.Count - 1
+                        tmp &= Environment.NewLine & GetTabs(TabCount + 1) & Properties(n).Name & "=" & Properties(n).Value & ";"
+                    Next
+                    For Each Grp As Group In Groups
+                        tmp &= Environment.NewLine & GetTabs(TabCount + 1) & Grp.ToString(TabCount + 1, False, OverrideStyle)
+                    Next
+            End Select
+
+
+            '} end of group.
+            If Name <> "" Then
+                Select Case CurrentStyle
+                    Case Style.None
+                        tmp &= "}"
+                    Case Style.Whitesmiths
+                        tmp &= Environment.NewLine & GetTabs(TabCount + 1) & "}"
+                    Case Style.BSD_Allman
+                        tmp &= Environment.NewLine & GetTabs(TabCount) & "}"
+                End Select
+            End If
+
+
+            Return tmp
+        End Function
+
+        Private Function GetTabs(Count As Integer) As String
+            If Count < 1 Then Return ""
+            Return New String(CChar(vbTab), Count)
+        End Function
+
+        'ToDo: Remove old FromString
         Public Function FromString(Data As String, Optional ByRef Index As Integer = 0) As String
             If Data = "" Then Return "Data is empty!"
             Dim tmp As String

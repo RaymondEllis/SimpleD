@@ -63,7 +63,8 @@ Namespace SimpleD
             Return FromString(data)
         End Function
 
-        Public Sub ToFile(ByVal File As String, Optional ByVal SplitWithNewLine As Boolean = True, Optional ByVal SplitWithTabs As Boolean = True)
+        'ToDo: Remove old ToFile
+        Public Sub ToFile(ByVal File As String, ByVal SplitWithNewLine As Boolean, Optional ByVal SplitWithTabs As Boolean = True)
             'Create the folder if it does not exist.
             If Not IO.Directory.Exists(IO.Path.GetDirectoryName(File)) Then
                 IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(File))
@@ -73,6 +74,15 @@ Namespace SimpleD
             sw.Close()
         End Sub
 
+        Public Sub ToFile(ByVal File As String)
+            'Create the folder if it does not exist.
+            If Not IO.Directory.Exists(IO.Path.GetDirectoryName(File)) Then
+                IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(File))
+            End If
+            Dim sw As New IO.StreamWriter(File)
+            sw.Write(ToString)
+            sw.Close()
+        End Sub
 #Region "Group"
         ''' <summary>
         ''' Create a group.

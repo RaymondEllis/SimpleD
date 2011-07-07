@@ -19,7 +19,7 @@ Public Class frmTest
             g.SetValue(Control)
         Next
 
-        txtFile.Text = sD.ToString(chkSplitNewLine.Checked, chkSplitTabs.Checked)
+        txtFile.Text = sD.ToString 'sD.ToString(chkSplitNewLine.Checked, chkSplitTabs.Checked)
     End Sub
 
     Dim OpenSD As SimpleD.Group
