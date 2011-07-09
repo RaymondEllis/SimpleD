@@ -70,6 +70,7 @@ Namespace SimpleD
             None
             Whitesmiths
             BSD_Allman
+            GroupsOnNewLine
         End Enum
         Public BraceStyle As Style = Style.BSD_Allman
 
@@ -102,12 +103,14 @@ Namespace SimpleD
                         tmp &= Name & Environment.NewLine & GetTabs(TabCount + 1) & "{"
                     Case Style.BSD_Allman
                         tmp &= Name & Environment.NewLine & GetTabs(TabCount) & "{"
+                    Case Style.GroupsOnNewLine
+                        tmp &= Environment.NewLine & GetTabs(TabCount + 1) & Name & "{"
                 End Select
             End If
 
             'Groups and properties
             Select Case CurrentStyle
-                Case Style.None
+                Case Style.None, Style.GroupsOnNewLine
                     For n As Integer = 0 To Properties.Count - 1
                         tmp &= Properties(n).Name & "=" & Properties(n).Value & ";"
                     Next
@@ -127,7 +130,7 @@ Namespace SimpleD
             '} end of group.
             If Not IsFirst Then
                 Select Case CurrentStyle
-                    Case Style.None
+                    Case Style.None, Style.GroupsOnNewLine
                         tmp &= "}"
                     Case Style.Whitesmiths
                         tmp &= Environment.NewLine & GetTabs(TabCount + 1) & "}"

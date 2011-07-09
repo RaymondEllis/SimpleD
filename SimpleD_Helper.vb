@@ -67,7 +67,7 @@ Namespace SimpleD
                 IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(File))
             End If
             Dim sw As New IO.StreamWriter(File)
-            sw.Write(ToString())
+            sw.Write(ToString(AddVersion, OverrideStyle))
             sw.Close()
         End Sub
 #Region "Group"
