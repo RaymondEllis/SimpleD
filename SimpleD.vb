@@ -104,7 +104,7 @@ Namespace SimpleD
                     Case Style.BSD_Allman
                         tmp &= Name & Environment.NewLine & GetTabs(TabCount) & "{"
                     Case Style.GroupsOnNewLine
-                        tmp &= Environment.NewLine & GetTabs(TabCount + 1) & Name & "{"
+                        tmp &= Environment.NewLine & GetTabs(TabCount - 1) & Name & "{"
                 End Select
             End If
 
