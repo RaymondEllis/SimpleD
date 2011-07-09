@@ -19,24 +19,25 @@ Public Class frmTest
             g.SetValue(Control)
         Next
 
-        txtFile.Text = sD.ToString 'sD.ToString(chkSplitNewLine.Checked, chkSplitTabs.Checked)
+        txtFile.Text = sD.ToString(, comBraceStyle.SelectedIndex) 'sD.ToString(chkSplitNewLine.Checked, chkSplitTabs.Checked)
     End Sub
 
-    Dim OpenSD As SimpleD.Group
+
     Private Sub btnOpen_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnOpen.Click
         Dim LastSelected As Integer = lstGroups.SelectedIndex
-        'Dim sD As New SimpleD.SimpleD
-        OpenSD = New SimpleD.Group
+        If LastSelected = -1 Then LastSelected = 0
+
+        Dim sd As New SimpleD.Group
         If chkFromString2.Checked Then
-            txtError.Text = "Error:" & OpenSD.FromString2(txtFile.Text)
+            txtError.Text = "Error:" & sd.FromString(txtFile.Text, chkAllowEqualsInValue.Checked)
         Else
-            txtError.Text = "Error:" & OpenSD.FromString(txtFile.Text)
+            txtError.Text = "Error:" & sd.FromStringOLD(txtFile.Text)
         End If
 
 
         lstGroups.Items.Clear()
 
-        DoGroup(OpenSD, "")
+        DoGroup(sd, "")
 
         If LastSelected < lstGroups.Items.Count Then
             lstGroups.SelectedIndex = LastSelected
@@ -45,11 +46,11 @@ Public Class frmTest
         End If
 
         If chkResave.Checked Then
-            txtResave.Text = OpenSD.ToString(chkSplitNewLine.Checked, chkSplitTabs.Checked, False)
+            txtResave.Text = sd.ToString(False, comBraceStyle.SelectedIndex)
         End If
 
         On Error Resume Next
-        Dim g As SimpleD.Group = OpenSD.GetGroup("Test")
+        Dim g As SimpleD.Group = sd.GetGroup("Test")
         If g Is Nothing Then Return
 
         'g.GetValue(TextBox1, "")
@@ -60,7 +61,7 @@ Public Class frmTest
             g.GetValue(Control, "")
         Next
 
-        g = OpenSD.GetGroup("test2")
+        g = sd.GetGroup("test2")
         If g Is Nothing Then Return
         For Each Control As Object In GroupBox2.Controls
             g.GetValue(Control, "")
@@ -123,8 +124,13 @@ Public Class frmTest
         btnOpen_Click(sender, e)
     End Sub
 
-    Private Sub chkResave_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles chkResave.CheckedChanged
+    Private Sub chkResave_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles chkResave.CheckedChanged, chkAllowEqualsInValue.CheckedChanged
         panResize.Visible = chkResave.Checked
         btnOpen_Click(sender, e)
+    End Sub
+
+    Private Sub frmTest_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+        comBraceStyle.Items.AddRange([Enum].GetNames(GetType(SimpleD.Group.Style)))
+        comBraceStyle.SelectedIndex = 0
     End Sub
 End Class

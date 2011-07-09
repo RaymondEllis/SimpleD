@@ -31,7 +31,6 @@
 Option Explicit On
 Option Strict Off
 Namespace SimpleD
-
     Partial Public Class Group
 
         ''' <summary>
@@ -40,13 +39,12 @@ Namespace SimpleD
         ''' <param name="Data"></param>
         ''' <param name="FromFile">If set to true then it will load from the file specfied in data</param>
         ''' <remarks></remarks>
-        Public Sub New(ByVal Data As String, ByVal FromFile As Boolean)
+        Public Sub New(ByVal Data As String, ByVal FromFile As Boolean, Optional ByVal AllowEqualsInValue As Boolean = False)
             If Not FromFile Then
-                FromString(Data)
+                FromString(Data, AllowEqualsInValue)
             Else
-                Me.FromFile(Data)
+                Me.FromFile(Data, AllowEqualsInValue)
             End If
-
         End Sub
 
         ''' <summary>
@@ -55,32 +53,21 @@ Namespace SimpleD
         ''' <param name="File">The file to load.</param>
         ''' <returns>Error if any.</returns>
         ''' <remarks></remarks>
-        Public Function FromFile(ByVal File As String) As String
+        Public Function FromFile(ByVal File As String, Optional ByVal AllowEqualsInValue As Boolean = False) As String
             If Not IO.File.Exists(File) Then Return "File does not exist:" & File
             Dim sr As New IO.StreamReader(File)
             Dim data As String = sr.ReadToEnd
             sr.Close()
-            Return FromString(data)
+            Return FromString(data, AllowEqualsInValue)
         End Function
 
-        'ToDo: Remove old ToFile
-        Public Sub ToFile(ByVal File As String, ByVal SplitWithNewLine As Boolean, Optional ByVal SplitWithTabs As Boolean = True)
+        Public Sub ToFile(ByVal File As String, Optional AddVersion As Boolean = True, Optional OverrideStyle As Style = Style.None)
             'Create the folder if it does not exist.
             If Not IO.Directory.Exists(IO.Path.GetDirectoryName(File)) Then
                 IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(File))
             End If
             Dim sw As New IO.StreamWriter(File)
-            sw.Write(ToString(SplitWithNewLine, SplitWithTabs))
-            sw.Close()
-        End Sub
-
-        Public Sub ToFile(ByVal File As String)
-            'Create the folder if it does not exist.
-            If Not IO.Directory.Exists(IO.Path.GetDirectoryName(File)) Then
-                IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(File))
-            End If
-            Dim sw As New IO.StreamWriter(File)
-            sw.Write(ToString)
+            sw.Write(ToString())
             sw.Close()
         End Sub
 #Region "Group"
@@ -342,5 +329,4 @@ Namespace SimpleD
             Return left
         End Operator
     End Class
-
 End Namespace

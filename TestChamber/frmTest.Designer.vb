@@ -48,6 +48,8 @@ Partial Class frmTest
         Me.chkResave = New System.Windows.Forms.CheckBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.panResize = New System.Windows.Forms.Panel()
+        Me.comBraceStyle = New System.Windows.Forms.ComboBox()
+        Me.chkAllowEqualsInValue = New System.Windows.Forms.CheckBox()
         Me.GroupBox1.SuspendLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox2.SuspendLayout()
@@ -57,6 +59,8 @@ Partial Class frmTest
         '
         'txtFile
         '
+        Me.txtFile.AcceptsReturn = True
+        Me.txtFile.AcceptsTab = True
         Me.txtFile.Location = New System.Drawing.Point(290, -1)
         Me.txtFile.Multiline = True
         Me.txtFile.Name = "txtFile"
@@ -251,7 +255,7 @@ Partial Class frmTest
         Me.chkAutoOpen.AutoSize = True
         Me.chkAutoOpen.Checked = True
         Me.chkAutoOpen.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkAutoOpen.Location = New System.Drawing.Point(118, 293)
+        Me.chkAutoOpen.Location = New System.Drawing.Point(99, 291)
         Me.chkAutoOpen.Name = "chkAutoOpen"
         Me.chkAutoOpen.Size = New System.Drawing.Size(74, 17)
         Me.chkAutoOpen.TabIndex = 8
@@ -272,11 +276,11 @@ Partial Class frmTest
         Me.chkFromString2.AutoSize = True
         Me.chkFromString2.Checked = True
         Me.chkFromString2.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkFromString2.Location = New System.Drawing.Point(118, 316)
+        Me.chkFromString2.Location = New System.Drawing.Point(99, 314)
         Me.chkFromString2.Name = "chkFromString2"
-        Me.chkFromString2.Size = New System.Drawing.Size(82, 17)
+        Me.chkFromString2.Size = New System.Drawing.Size(101, 17)
         Me.chkFromString2.TabIndex = 8
-        Me.chkFromString2.Text = "FromString2"
+        Me.chkFromString2.Text = "New FromString"
         Me.chkFromString2.UseVisualStyleBackColor = True
         '
         'txtResave
@@ -292,7 +296,7 @@ Partial Class frmTest
         'chkResave
         '
         Me.chkResave.AutoSize = True
-        Me.chkResave.Location = New System.Drawing.Point(8, 315)
+        Me.chkResave.Location = New System.Drawing.Point(99, 334)
         Me.chkResave.Name = "chkResave"
         Me.chkResave.Size = New System.Drawing.Size(102, 17)
         Me.chkResave.TabIndex = 11
@@ -318,6 +322,24 @@ Partial Class frmTest
         Me.panResize.TabIndex = 13
         Me.panResize.Visible = False
         '
+        'comBraceStyle
+        '
+        Me.comBraceStyle.FormattingEnabled = True
+        Me.comBraceStyle.Location = New System.Drawing.Point(157, 202)
+        Me.comBraceStyle.Name = "comBraceStyle"
+        Me.comBraceStyle.Size = New System.Drawing.Size(121, 21)
+        Me.comBraceStyle.TabIndex = 14
+        '
+        'chkAllowEqualsInValue
+        '
+        Me.chkAllowEqualsInValue.AutoSize = True
+        Me.chkAllowEqualsInValue.Location = New System.Drawing.Point(157, 179)
+        Me.chkAllowEqualsInValue.Name = "chkAllowEqualsInValue"
+        Me.chkAllowEqualsInValue.Size = New System.Drawing.Size(128, 17)
+        Me.chkAllowEqualsInValue.TabIndex = 11
+        Me.chkAllowEqualsInValue.Text = "Allow Equals In Value"
+        Me.chkAllowEqualsInValue.UseVisualStyleBackColor = True
+        '
         'frmTest
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -325,7 +347,9 @@ Partial Class frmTest
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.ClientSize = New System.Drawing.Size(1062, 797)
+        Me.Controls.Add(Me.comBraceStyle)
         Me.Controls.Add(Me.panResize)
+        Me.Controls.Add(Me.chkAllowEqualsInValue)
         Me.Controls.Add(Me.chkResave)
         Me.Controls.Add(Me.btnTimeTest)
         Me.Controls.Add(Me.chkFromString2)
@@ -382,5 +406,7 @@ Partial Class frmTest
     Friend WithEvents chkResave As System.Windows.Forms.CheckBox
     Friend WithEvents Label3 As System.Windows.Forms.Label
     Friend WithEvents panResize As System.Windows.Forms.Panel
+    Friend WithEvents comBraceStyle As System.Windows.Forms.ComboBox
+    Friend WithEvents chkAllowEqualsInValue As System.Windows.Forms.CheckBox
 
 End Class

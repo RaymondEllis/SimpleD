@@ -1,6 +1,6 @@
 ﻿#Region "License & Contact"
 'License:
-'   Copyright (c) 2010 Raymond Ellis
+'   Copyright (c) 2011 Raymond Ellis
 '   
 '   This software is provided 'as-is', without any express or implied
 '   warranty. In no event will the authors be held liable for any damages
@@ -32,12 +32,15 @@ Option Explicit On
 Option Strict On
 Namespace SimpleD
     Module Info
-        Public Const IllegalCharacters As String = "{}=;" 'ToDo: Property names should beable to contain {}= and just not ;  group names should beable to have }=; in them. (in other words there should be a check.) Need to do more testing.
+        'What things can NOT contain.
+        '   Property names { // =
+        '   Property values ; = (Equals is allowed if specafied)
+        '   Group names { // = ;
         Public Const Version = 1
         Public Const FileVersion = 2
         '1      *InDev* Before release there should be no ToDo: 
         'New    : ToString now has brace styling.
-        'New    : FromString is now faster.
+        'New    : FromString(Now Parse) is now faster. (Have seen 14x better speed. Bigger strings will have a bigger difference.)
         'New    : Can now have properties with out any groups in a file.
         'New    : Checks for empty data in "Group.FromString".
         'Change : Now saves the version of SimpleD as a group on the top of the file. (was saved as a comment before.)
@@ -51,7 +54,6 @@ Namespace SimpleD
         'https://code.google.com/p/simpled/wiki/Versions
     End Module
 
-
     Public Class Group
         Public Name As String
 
@@ -62,49 +64,7 @@ Namespace SimpleD
             Me.Name = Name
         End Sub
 
-
-        'ToDo: Remove old ToString
-        Public Overloads Function ToString(ByVal SplitWithNewLine As Boolean, ByVal SplitWithTabs As Boolean, Optional ByVal AddVersion As Boolean = True) As String
-            Return ToString(SplitWithNewLine, If(SplitWithTabs, 0, -1), AddVersion)
-        End Function
-        ''' <summary>
-        ''' Returns a string with all the properties and sub groups.
-        ''' </summary>
-        ''' <param name="SplitWithNewLine">Split properties and groups using a newline?</param>
-        ''' <param name="TabCount">Split properties and groups using tabs?
-        ''' Does not use tabs if newline is disabled.</param>
-        Public Overloads Function ToString(ByVal SplitWithNewLine As Boolean, ByVal TabCount As Integer, AddVersion As Boolean) As String
-            If Properties.Count = 0 And Groups.Count = 0 Then Return ""
-            If TabCount < -1 Then TabCount = -1
-
-            'Setup spliting.
-            Dim Split As String = ""
-            If SplitWithNewLine Then
-                Split = vbNewLine & If(TabCount > 0, New String(CChar(vbTab), TabCount), "")
-            End If
-
-
-            Dim tmp As String = ""
-
-            If AddVersion Then tmp &= "SimpleD{Version=" & Version & ";FormatVersion=" & FileVersion & ";}"
-
-            'Name and start of group.
-            If Name <> "" Then tmp &= Name & "{"
-
-            'Add the properies from the group.
-            For n As Integer = 0 To Properties.Count - 1
-                tmp &= Split & Properties(n).Name & "=" & Properties(n).Value & ";"
-            Next
-
-            'Get all the groups in the group.
-            For Each Grp As Group In Groups
-                tmp &= Split & Grp.ToString(SplitWithNewLine, If(TabCount = -1, 0, TabCount + 1), False)
-            Next
-
-            '} end of group.
-            If Name <> "" Then tmp &= If(SplitWithNewLine, vbNewLine, "") & If(TabCount - 1 > 0, New String(CChar(vbTab), TabCount - 1), "") & "}"
-            Return tmp
-        End Function
+#Region "ToString"
 
         Enum Style
             None
@@ -118,24 +78,23 @@ Namespace SimpleD
         ''' </summary>
         ''' <param name="AddVersion">Add the version of SimpleD to start of string?</param>
         ''' <param name="OverrideStyle">If not None then it will override BraceStyle.</param>
-        Public Overloads Function ToString(Optional AddVersion As Boolean = True, Optional OverrideStyle As Style = Style.None) As String
-            Return ToString(-1, AddVersion, OverrideStyle)
+        Public Overloads Function ToString(Optional ByVal AddVersion As Boolean = True, Optional ByVal OverrideStyle As Style = Style.None) As String
+            Return ToStringBase(True, -1, AddVersion, OverrideStyle)
         End Function
-        Private Overloads Function ToString(ByVal TabCount As Integer, AddVersion As Boolean, Optional OverrideStyle As Style = Style.None) As String
+
+        Private Function ToStringBase(ByVal IsFirst As Boolean, ByVal TabCount As Integer, ByVal AddVersion As Boolean, ByVal OverrideStyle As Style) As String
             If Properties.Count = 0 And Groups.Count = 0 Then Return ""
             If TabCount < -1 Then TabCount = -2 'Tab count Below -1 means use zero tabs.
 
             Dim CurrentStyle As Style = BraceStyle
-            If OverrideStyle = Style.None Then CurrentStyle = BraceStyle
+            If OverrideStyle <> Style.None Then CurrentStyle = OverrideStyle
 
-         
             Dim tmp As String = ""
 
             If AddVersion Then tmp = "SimpleD{Version=" & Version & ";FormatVersion=" & FileVersion & ";}"
 
-
             'Name and start of group. Name{
-            If Name <> "" Then
+            If Not IsFirst Then
                 Select Case CurrentStyle
                     Case Style.None
                         tmp &= Name & "{"
@@ -146,7 +105,6 @@ Namespace SimpleD
                 End Select
             End If
 
-
             'Groups and properties
             Select Case CurrentStyle
                 Case Style.None
@@ -154,7 +112,7 @@ Namespace SimpleD
                         tmp &= Properties(n).Name & "=" & Properties(n).Value & ";"
                     Next
                     For Each Grp As Group In Groups
-                        tmp &= Grp.ToString(TabCount + 1, False, OverrideStyle)
+                        tmp &= Grp.ToStringBase(False, TabCount + 1, False, OverrideStyle)
                     Next
 
                 Case Style.Whitesmiths, Style.BSD_Allman
@@ -162,13 +120,12 @@ Namespace SimpleD
                         tmp &= Environment.NewLine & GetTabs(TabCount + 1) & Properties(n).Name & "=" & Properties(n).Value & ";"
                     Next
                     For Each Grp As Group In Groups
-                        tmp &= Environment.NewLine & GetTabs(TabCount + 1) & Grp.ToString(TabCount + 1, False, OverrideStyle)
+                        tmp &= Environment.NewLine & GetTabs(TabCount + 1) & Grp.ToStringBase(False, TabCount + 1, False, OverrideStyle)
                     Next
             End Select
 
-
             '} end of group.
-            If Name <> "" Then
+            If Not IsFirst Then
                 Select Case CurrentStyle
                     Case Style.None
                         tmp &= "}"
@@ -179,7 +136,6 @@ Namespace SimpleD
                 End Select
             End If
 
-
             Return tmp
         End Function
 
@@ -188,11 +144,14 @@ Namespace SimpleD
             Return New String(CChar(vbTab), Count)
         End Function
 
-        'ToDo: Remove old FromString
-        Public Function FromString(Data As String, Optional ByRef Index As Integer = 0) As String
+#End Region
+
+#Region "Parse(FromString)"
+        'ToDo: Remove old FromString (After Parse has been fully tested.)
+        Public Function FromStringOLD(Data As String, Optional ByRef Index As Integer = 0) As String
             If Data = "" Then Return "Data is empty!"
             Dim tmp As String
-            Dim InComment As Boolean = False 'ToDo: Allow comments to be saved.
+            Dim InComment As Boolean = False
             'Now lets get all of the properties from the group.
             Do
                 If Index + 2 > Data.Length Then Return "Could not find end of group: " & Name
@@ -230,7 +189,7 @@ Namespace SimpleD
 
                         Dim NewGroup As New Group(gName)
                         Groups.Add(NewGroup)
-                        Dim result As String = NewGroup.FromString(Data, Index)
+                        Dim result As String = NewGroup.FromStringOLD(Data, Index)
                         If result <> "" Then Return result
                     End If
                 End If
@@ -243,14 +202,16 @@ Namespace SimpleD
 
 
         ''' <summary>
-        ''' Note: FromString2 is Not strict at all.
-        ''' It will load anything even with errors.
+        ''' Note: It will continue loading even with errors.
         ''' </summary>
-        ''' <param name="Data"></param>
-        ''' <param name="Index"></param>
+        ''' <param name="Data">The string to parse.</param>
         ''' <returns>Errors if any.</returns>
         ''' <remarks></remarks>
-        Public Function FromString2(Data As String, Optional ByRef Index As Integer = 0) As String 'ToDo: FromString2 will need a debugger. (or better error handling)
+        Public Function FromString(ByVal Data As String, Optional ByVal AllowEqualsInValue As Boolean = False) As String
+            Return FromStringBase(True, Data, 0, AllowEqualsInValue)
+        End Function
+
+        Private Function FromStringBase(ByVal IsFirst As Boolean, ByVal Data As String, ByRef Index As Integer, ByVal AllowEqualsInValue As Boolean) As String
             If Data = "" Then Return "Data is empty!"
 
             'Group names can not contain { or } or //
@@ -285,13 +246,18 @@ Namespace SimpleD
                             Case "{"c
                                 Index += 1
                                 Dim newGroup As New Group(tName.Trim)
-                                Results &= newGroup.FromString2(Data, Index)
+                                Results &= newGroup.FromStringBase(False, Data, Index, AllowEqualsInValue)
                                 Groups.Add(newGroup)
                                 LastChr = " "c
                                 tName = ""
 
                             Case "}"c 'End of current group
-                                Return Results
+                                If IsFirst Then 'The first group does not have name or braces.
+                                    tName &= chr
+                                Else
+                                    Return Results
+                                End If
+
 
                             Case "/"c
                                 If LastChr = "/"c Then
@@ -313,11 +279,14 @@ Namespace SimpleD
                             State = 0
 
                         ElseIf chr = "="c Then 'error
-                            Results &= "  #Missing end of property " & tName.Trim & " at index: " & ErrorIndex
-                            ErrorIndex = Index
-                            tName = ""
-                            tValue = ""
-
+                            If AllowEqualsInValue Then
+                                tValue &= chr
+                            Else
+                                Results &= "  #Missing end of property " & tName.Trim & " at index: " & ErrorIndex
+                                ErrorIndex = Index
+                                tName = ""
+                                tValue = ""
+                            End If
                         Else
                             tValue &= chr
                         End If
@@ -337,12 +306,20 @@ Namespace SimpleD
                 Results &= " #Missing end of property " & tName.Trim & " at index: " & ErrorIndex
             ElseIf State = 2 Then
                 Results &= " #Missing end of comment " & tName.Trim & " at index: " & ErrorIndex
-            ElseIf Not Name = "" Then
+            ElseIf Not IsFirst Then
                 Results &= "  #Missing end of group " & Name.Trim & " at index: " & StartIndex
             End If
 
             Return Results
         End Function
+
+        Shared Function Parse(ByVal Data As String, Optional ByVal AllowEqualsInValue As Boolean = False) As Group
+            Dim g As New Group
+            g.FromStringBase(True, Data, 0, AllowEqualsInValue)
+            Return g
+        End Function
+#End Region
+
     End Class
 
     ''' <summary>
