@@ -43,7 +43,7 @@ Partial Class frmMain
         Me.txtData.Multiline = True
         Me.txtData.Name = "txtData"
         Me.txtData.ScrollBars = System.Windows.Forms.ScrollBars.Both
-        Me.txtData.Size = New System.Drawing.Size(309, 167)
+        Me.txtData.Size = New System.Drawing.Size(309, 180)
         Me.txtData.TabIndex = 0
         '
         'btnOpen
@@ -124,7 +124,7 @@ Partial Class frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(539, 189)
+        Me.ClientSize = New System.Drawing.Size(539, 204)
         Me.Controls.Add(Me.grpOtherGroup)
         Me.Controls.Add(Me.grpGroup1)
         Me.Controls.Add(Me.btnSave)

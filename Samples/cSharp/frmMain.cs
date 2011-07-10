@@ -19,7 +19,7 @@ namespace cSharp
 
 		private void btnOpen_Click(object sender, EventArgs e)
 		{
-			SimpleD.SimpleD sd = new SimpleD.SimpleD();
+			SimpleD.Group sd = new SimpleD.Group();
 			//Open from the string.
 			sd.FromString(txtData.Text);
 
@@ -51,7 +51,7 @@ namespace cSharp
 
 		private void btnSave_Click(object sender, EventArgs e)
 		{
-			SimpleD.SimpleD sd = new SimpleD.SimpleD();
+			SimpleD.Group sd = new SimpleD.Group();
 
 			Group g = default(Group);
 			//The Group

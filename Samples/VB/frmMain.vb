@@ -2,7 +2,7 @@
 
 Public Class frmMain
     Private Sub btnOpen_Click(sender As System.Object, e As System.EventArgs) Handles btnOpen.Click
-        Dim sd As New SimpleD.SimpleD
+        Dim sd As New SimpleD.Group
         'Open from the string.
         sd.FromString(txtData.Text)
 
@@ -29,7 +29,7 @@ Public Class frmMain
     End Sub
 
     Private Sub btnSave_Click(sender As System.Object, e As System.EventArgs) Handles btnSave.Click
-        Dim sd As New SimpleD.SimpleD
+        Dim sd As New SimpleD.Group
 
         Dim g As Group
         'The Group

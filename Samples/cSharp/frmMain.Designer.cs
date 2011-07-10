@@ -125,14 +125,14 @@
 			this.txtData.Multiline = true;
 			this.txtData.Name = "txtData";
 			this.txtData.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.txtData.Size = new System.Drawing.Size(309, 167);
+			this.txtData.Size = new System.Drawing.Size(309, 186);
 			this.txtData.TabIndex = 4;
 			// 
 			// frmMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(539, 189);
+			this.ClientSize = new System.Drawing.Size(539, 210);
 			this.Controls.Add(this.grpOtherGroup);
 			this.Controls.Add(this.grpGroup1);
 			this.Controls.Add(this.btnSave);
