@@ -211,7 +211,7 @@ Namespace SimpleD
         ''' </summary>
         ''' <param name="Control">The control to get the property from.</param>
         ''' <param name="Value">Returns value if control is unknown.</param>
-        Public Sub GetValue(ByRef Control As Windows.Forms.Control, ByRef Value As String)
+        Public Sub GetValue(ByRef Control As Windows.Forms.Control, ByRef Value As String) 'ToDo: May want to remove this sub. (relys on Windows.Forms)
             Dim Prop As Prop = Find(Control.Name) 'Find the property from the control name.
             If Prop Is Nothing Then Return
             Dim TempValue As String = Prop.Value
@@ -237,10 +237,10 @@ Namespace SimpleD
                     Value = TempValue
                 End If
 
-                Else
-                    'Throw New Exception("Could not find object type.")
-                    Value = TempValue
-                End If
+            Else
+                'Throw New Exception("Could not find object type.")
+                Value = TempValue
+            End If
         End Sub
         ''' <summary>
         ''' Uses the name of the control to find the property value.
