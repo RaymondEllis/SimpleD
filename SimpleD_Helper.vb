@@ -110,47 +110,59 @@ Namespace SimpleD
             Return tmp.ToArray
         End Function
 
-        'ToDo: Test RemoveDuplicateGroups (Both)
         ''' <summary>
         ''' Will keep the first group with a given name.
         ''' </summary>
         ''' <remarks></remarks>
-        Public Sub RemoveDuplicateGroups()
+        Public Sub RemoveDuplicateGroups(ByVal SubGroups As Boolean)
             Dim names As New List(Of String)
             Dim i As Integer = 0
-            While i < Groups.Count - 1
+            While i < Groups.Count
                 Dim RemoveGroup As Boolean = False
                 For Each n As String In names
                     If LCase(Groups(i).Name) = n Then RemoveGroup = True
                 Next
                 If RemoveGroup Then
                     Groups.RemoveAt(i)
+                    i -= 1
                 Else
                     names.Add(LCase(Groups(i).Name))
                 End If
                 i += 1
             End While
             names.Clear()
+            'Do sub groups.
+            If SubGroups Then
+                For Each g As Group In Groups
+                    g.RemoveDuplicateGroups(True)
+                Next
+            End If
         End Sub
         ''' <summary>
         ''' Will keep the first group with a given name.
         ''' </summary>
         ''' <remarks></remarks>
-        Public Sub RemoveDuplicateGroups(GroupName As String)
+        Public Sub RemoveDuplicateGroups(ByVal GroupName As String, ByVal SubGroups As Boolean)
             GroupName = LCase(GroupName)
             Dim FoundFirst As Boolean = False
             Dim i As Integer = 0
-            While i < Groups.Count - 1
+            While i < Groups.Count
                 Dim RemoveGroup As Boolean = False
                 If LCase(Groups(i).Name) = GroupName Then
                     If FoundFirst Then
                         Groups.RemoveAt(i)
+                        i -= 1
                     Else
                         FoundFirst = True
                     End If
                 End If
                 i += 1
             End While
+            If SubGroups Then
+                For Each g As Group In Groups
+                    g.RemoveDuplicateGroups(GroupName, True)
+                Next
+            End If
         End Sub
 #End Region
 

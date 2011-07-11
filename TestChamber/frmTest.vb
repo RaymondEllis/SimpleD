@@ -19,7 +19,7 @@ Public Class frmTest
             SetValue(Control, g)
         Next
 
-        txtFile.Text = sD.ToString(, comBraceStyle.SelectedIndex) 'sD.ToString(chkSplitNewLine.Checked, chkSplitTabs.Checked)
+        txtFile.Text = sD.ToString(, comBraceStyle.SelectedIndex)
     End Sub
 
 
@@ -33,6 +33,9 @@ Public Class frmTest
         Else
             txtError.Text = "Error:" & sd.FromStringOLD(txtFile.Text)
         End If
+
+        'sd.RemoveDuplicateGroups(True)
+        'sd.RemoveDuplicateGroups("Test", True)
 
 
         lstGroups.Items.Clear()
