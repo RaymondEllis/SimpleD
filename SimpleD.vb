@@ -43,11 +43,12 @@ Namespace SimpleD
         'New    : FromString(Now Parse) is now faster. (Have seen 14x better speed. Bigger strings will have a bigger difference.)
         'New    : Can now have properties with out any groups in a file.
         'New    : Checks for empty data in "Group.FromString".
+        'Removed: Windows.Forms and everything that used it.
         'Change : Now saves the version of SimpleD as a group on the top of the file. (was saved as a comment before.)
         'Change : Removed "SimpleD.SimpleD" now just use "SimpleD.Group".
         'Change : The helper functions are now in a seperate file. (Can be put in same file if desired.)
         'Fixed  : Prop is now a class. Fixed a few bugs because structures are not reference type.
-        'Fixed  : GetValue(ByRef Control, ByRef Value) Nolonger crashes if value did not convert properly.
+        'Fixed  : GetValue(ByRef Control, ByRef Value) Nolonger crashes if value did not convert properly. (Removed from SimpleD_Helper)
         'Fixed  : ToFile now creates dir if it does not exist.
 
         'Old change logs at:
