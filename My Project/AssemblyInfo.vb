@@ -12,7 +12,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("")> 
 <Assembly: AssemblyProduct("SimpleD")> 
-<Assembly: AssemblyCopyright("Copyright ©  2011")> 
+<Assembly: AssemblyCopyright("Copyright © Raymond Ellis 2011")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(True)> 
