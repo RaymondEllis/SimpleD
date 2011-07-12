@@ -27,7 +27,7 @@
             g.Groups.Add(DoChildNode(child))
         Next
         For Each ad As Xml.XmlNode In node.Attributes
-            g.Properties.Add(New SimpleD.Prop(ad.Name, ad.Value))
+            g.Properties.Add(New SimpleD.Property(ad.Name, ad.Value))
         Next
         Return g
     End Function

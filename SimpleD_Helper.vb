@@ -173,9 +173,9 @@ Namespace SimpleD
         ''' </summary>
         Public Sub SetValue(ByVal Name As String, ByVal Value As String)
             If Name = "" Or Value = "" Then Return
-            Dim tmp As Prop = Find(Name) 'Find the property.
+            Dim tmp As [Property] = Find(Name) 'Find the property.
             If tmp Is Nothing Then 'If it could not find the property then.
-                Properties.Add(New Prop(Name, Value)) 'Add the property.
+                Properties.Add(New [Property](Name, Value)) 'Add the property.
             Else
                 tmp.Value = Value 'Set the value.
             End If
@@ -188,9 +188,9 @@ Namespace SimpleD
         Public Sub SetValue(ByVal Name As String, ByVal Value As String, ByVal DefaultValue As String)
             If Name = "" Or Value = "" Then Return
             If Value = DefaultValue Then Return 'Return if the value is the default value.
-            Dim tmp As Prop = Find(Name) 'Find the property.
+            Dim tmp As [Property] = Find(Name) 'Find the property.
             If tmp Is Nothing Then 'If it could not find the property then.
-                Properties.Add(New Prop(Name, Value)) 'Add the property.
+                Properties.Add(New [Property](Name, Value)) 'Add the property.
             Else
                 tmp.Value = Value 'Set the value.
             End If
@@ -201,7 +201,7 @@ Namespace SimpleD
         ''' </summary>
         Public Sub AddValue(ByVal Name As String, ByVal Value As String)
             If Name = "" Then Return
-            Properties.Add(New Prop(Name, Value))
+            Properties.Add(New [Property](Name, Value))
         End Sub
 #End Region
 #Region "GetValue"
@@ -210,15 +210,15 @@ Namespace SimpleD
         ''' </summary>
         ''' <param name="Name">The name of the property to get the value from.</param>
         Public Function GetValue(ByVal Name As String) As String
-            Dim prop As Prop = Find(Name) 'Find the property and return the value.
+            Dim prop As [Property] = Find(Name) 'Find the property and return the value.
             If prop IsNot Nothing Then Return prop.Value
             Return Nothing
         End Function
         Public Function GetValueArray(ByVal Name As String) As String()
             Dim tmp As New List(Of String)
-            For Each Prop As Prop In Properties
-                If LCase(Prop.Name) = LCase(Name) Then
-                    tmp.Add(Prop.Value)
+            For Each [Property] As [Property] In Properties
+                If LCase([Property].Name) = LCase(Name) Then
+                    tmp.Add([Property].Value)
                 End If
             Next
             Return tmp.ToArray
@@ -230,7 +230,7 @@ Namespace SimpleD
         ''' <param name="Value"></param>
         ''' <param name="EmptyIfNotFound">Set value to nothing, if it can't find the property.</param>
         Public Sub GetValue(ByVal Name As String, ByRef Value As Object, ByVal EmptyIfNotFound As Boolean)
-            Dim prop As Prop = Find(Name)
+            Dim prop As [Property] = Find(Name)
             If prop Is Nothing Then
                 If EmptyIfNotFound Then Value = Nothing
             Else
@@ -245,11 +245,11 @@ Namespace SimpleD
         ''' </summary>
         ''' <param name="Name">The name of the property.</param>
         ''' <returns>The property.</returns>
-        Public Function Find(ByVal Name As String) As Prop
+        Public Function Find(ByVal Name As String) As [Property]
             'Very simple,  loop through each property until the names match. then return the matching property.
-            For Each Prop As Prop In Properties
-                If LCase(Prop.Name) = LCase(Name) Then
-                    Return Prop
+            For Each [Property] As [Property] In Properties
+                If LCase([Property].Name) = LCase(Name) Then
+                    Return [Property]
                 End If
             Next
             Return Nothing
@@ -258,11 +258,11 @@ Namespace SimpleD
         ''' Find a properties from the name. returns all properties found.
         ''' </summary>
         ''' <param name="Name">The name of the property.</param>
-        Public Function FindArray(ByVal Name As String) As Prop()
-            Dim tmp As New List(Of Prop)
-            For Each Prop As Prop In Properties
-                If LCase(Prop.Name) = LCase(Name) Then
-                    tmp.Add(Prop)
+        Public Function FindArray(ByVal Name As String) As [Property]()
+            Dim tmp As New List(Of [Property])
+            For Each [Property] As [Property] In Properties
+                If LCase([Property].Name) = LCase(Name) Then
+                    tmp.Add([Property])
                 End If
             Next
             Return tmp.ToArray

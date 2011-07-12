@@ -36,7 +36,6 @@ Partial Class frmTime
         Me.Label6 = New System.Windows.Forms.Label()
         Me.txtTime2 = New System.Windows.Forms.TextBox()
         Me.txtTotalTime2 = New System.Windows.Forms.TextBox()
-        Me.Label7 = New System.Windows.Forms.Label()
         CType(Me.numCount, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         Me.SuspendLayout()
@@ -135,6 +134,7 @@ Partial Class frmTime
         'Label5
         '
         Me.Label5.AutoSize = True
+        Me.Label5.Enabled = False
         Me.Label5.Location = New System.Drawing.Point(220, 174)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(70, 13)
@@ -144,6 +144,7 @@ Partial Class frmTime
         'Label6
         '
         Me.Label6.AutoSize = True
+        Me.Label6.Enabled = False
         Me.Label6.Location = New System.Drawing.Point(220, 224)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(72, 13)
@@ -152,6 +153,7 @@ Partial Class frmTime
         '
         'txtTime2
         '
+        Me.txtTime2.Enabled = False
         Me.txtTime2.Location = New System.Drawing.Point(220, 190)
         Me.txtTime2.Name = "txtTime2"
         Me.txtTime2.Size = New System.Drawing.Size(202, 20)
@@ -159,26 +161,17 @@ Partial Class frmTime
         '
         'txtTotalTime2
         '
+        Me.txtTotalTime2.Enabled = False
         Me.txtTotalTime2.Location = New System.Drawing.Point(220, 240)
         Me.txtTotalTime2.Name = "txtTotalTime2"
         Me.txtTotalTime2.Size = New System.Drawing.Size(202, 20)
         Me.txtTotalTime2.TabIndex = 5
-        '
-        'Label7
-        '
-        Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(284, 161)
-        Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(63, 13)
-        Me.Label7.TabIndex = 7
-        Me.Label7.Text = "FromString2"
         '
         'frmTime
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(435, 269)
-        Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.Panel1)
         Me.Controls.Add(Me.txtTotalTime2)
         Me.Controls.Add(Me.txtTotalTime)
@@ -212,5 +205,4 @@ Partial Class frmTime
     Friend WithEvents Label6 As System.Windows.Forms.Label
     Friend WithEvents txtTime2 As System.Windows.Forms.TextBox
     Friend WithEvents txtTotalTime2 As System.Windows.Forms.TextBox
-    Friend WithEvents Label7 As System.Windows.Forms.Label
 End Class

@@ -43,7 +43,6 @@ Partial Class frmTest
         Me.lstGroups = New System.Windows.Forms.ListBox()
         Me.chkAutoOpen = New System.Windows.Forms.CheckBox()
         Me.btnTimeTest = New System.Windows.Forms.Button()
-        Me.chkFromString2 = New System.Windows.Forms.CheckBox()
         Me.txtResave = New System.Windows.Forms.TextBox()
         Me.chkResave = New System.Windows.Forms.CheckBox()
         Me.Label3 = New System.Windows.Forms.Label()
@@ -255,7 +254,7 @@ Partial Class frmTest
         Me.chkAutoOpen.AutoSize = True
         Me.chkAutoOpen.Checked = True
         Me.chkAutoOpen.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkAutoOpen.Location = New System.Drawing.Point(99, 291)
+        Me.chkAutoOpen.Location = New System.Drawing.Point(72, 287)
         Me.chkAutoOpen.Name = "chkAutoOpen"
         Me.chkAutoOpen.Size = New System.Drawing.Size(74, 17)
         Me.chkAutoOpen.TabIndex = 8
@@ -271,18 +270,6 @@ Partial Class frmTest
         Me.btnTimeTest.Text = "Time Test"
         Me.btnTimeTest.UseVisualStyleBackColor = True
         '
-        'chkFromString2
-        '
-        Me.chkFromString2.AutoSize = True
-        Me.chkFromString2.Checked = True
-        Me.chkFromString2.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkFromString2.Location = New System.Drawing.Point(99, 314)
-        Me.chkFromString2.Name = "chkFromString2"
-        Me.chkFromString2.Size = New System.Drawing.Size(101, 17)
-        Me.chkFromString2.TabIndex = 8
-        Me.chkFromString2.Text = "New FromString"
-        Me.chkFromString2.UseVisualStyleBackColor = True
-        '
         'txtResave
         '
         Me.txtResave.Location = New System.Drawing.Point(3, 16)
@@ -296,7 +283,7 @@ Partial Class frmTest
         'chkResave
         '
         Me.chkResave.AutoSize = True
-        Me.chkResave.Location = New System.Drawing.Point(99, 334)
+        Me.chkResave.Location = New System.Drawing.Point(72, 340)
         Me.chkResave.Name = "chkResave"
         Me.chkResave.Size = New System.Drawing.Size(102, 17)
         Me.chkResave.TabIndex = 11
@@ -333,7 +320,7 @@ Partial Class frmTest
         'chkAllowEqualsInValue
         '
         Me.chkAllowEqualsInValue.AutoSize = True
-        Me.chkAllowEqualsInValue.Location = New System.Drawing.Point(157, 179)
+        Me.chkAllowEqualsInValue.Location = New System.Drawing.Point(72, 310)
         Me.chkAllowEqualsInValue.Name = "chkAllowEqualsInValue"
         Me.chkAllowEqualsInValue.Size = New System.Drawing.Size(128, 17)
         Me.chkAllowEqualsInValue.TabIndex = 11
@@ -352,7 +339,6 @@ Partial Class frmTest
         Me.Controls.Add(Me.chkAllowEqualsInValue)
         Me.Controls.Add(Me.chkResave)
         Me.Controls.Add(Me.btnTimeTest)
-        Me.Controls.Add(Me.chkFromString2)
         Me.Controls.Add(Me.chkAutoOpen)
         Me.Controls.Add(Me.lstGroups)
         Me.Controls.Add(Me.lstProperties)
@@ -401,7 +387,6 @@ Partial Class frmTest
     Friend WithEvents lstGroups As System.Windows.Forms.ListBox
     Friend WithEvents chkAutoOpen As System.Windows.Forms.CheckBox
     Friend WithEvents btnTimeTest As System.Windows.Forms.Button
-    Friend WithEvents chkFromString2 As System.Windows.Forms.CheckBox
     Friend WithEvents txtResave As System.Windows.Forms.TextBox
     Friend WithEvents chkResave As System.Windows.Forms.CheckBox
     Friend WithEvents Label3 As System.Windows.Forms.Label

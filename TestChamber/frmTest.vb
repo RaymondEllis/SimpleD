@@ -28,11 +28,7 @@ Public Class frmTest
         If LastSelected = -1 Then LastSelected = 0
 
         Dim sd As New SimpleD.Group
-        If chkFromString2.Checked Then
-            txtError.Text = "Error:" & sd.FromString(txtFile.Text, chkAllowEqualsInValue.Checked)
-        Else
-            txtError.Text = "Error:" & sd.FromStringOLD(txtFile.Text)
-        End If
+        txtError.Text = "Error:" & sd.FromString(txtFile.Text, chkAllowEqualsInValue.Checked)
 
         'sd.RemoveDuplicateGroups(True)
         'sd.RemoveDuplicateGroups("Test", True)
@@ -80,9 +76,9 @@ Public Class frmTest
     ''' <param name="Control">The control to get the property from.</param>
     ''' <param name="Group">The group to get the value from.</param>
     Public Sub GetValue(ByRef Control As Windows.Forms.Control, Group As SimpleD.Group)
-        Dim Prop As SimpleD.Prop = Group.Find(Control.Name) 'Find the property from the control name.
-        If Prop Is Nothing Then Return
-        Dim TempValue As String = Prop.Value
+        Dim [Property] As SimpleD.Property = Group.Find(Control.Name) 'Find the property from the control name.
+        If [Property] Is Nothing Then Return
+        Dim TempValue As String = [Property].Value
         Dim obj As Object = Control
         If TypeOf Control Is Windows.Forms.TextBox Or TypeOf Control Is Windows.Forms.Label Then
             obj.Text = TempValue
@@ -107,9 +103,9 @@ Public Class frmTest
     ''' </summary>
     Public Sub SetValue(ByVal Control As Windows.Forms.Control, Group As SimpleD.Group)
         Dim Value As String = GetValueFromControl(Control) 'Find the property from a object and set the value.
-        Dim tmp As SimpleD.Prop = Group.Find(Control.Name) 'Find the property.
+        Dim tmp As SimpleD.Property = Group.Find(Control.Name) 'Find the property.
         If tmp Is Nothing Then 'If it could not find the property then.
-            Group.Properties.Add(New SimpleD.Prop(Control.Name, Value)) 'Add the property.
+            Group.Properties.Add(New SimpleD.Property(Control.Name, Value)) 'Add the property.
         Else
             tmp.Value = Value 'Set the value.
         End If
@@ -179,7 +175,7 @@ Public Class frmTest
 
         'Set properties.
         lstProperties.Items.Clear()
-        For Each prop As SimpleD.Prop In lstGroups.SelectedItem.Group.Properties
+        For Each prop As SimpleD.Property In lstGroups.SelectedItem.Group.Properties
             lstProperties.Items.Add(prop.Name & "=" & prop.Value)
         Next
     End Sub
@@ -199,7 +195,7 @@ Public Class frmTest
         frmTime.Show()
     End Sub
 
-    Private Sub chkFromString2_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles chkFromString2.CheckedChanged
+    Private Sub chkFromString2_CheckedChanged(sender As System.Object, e As System.EventArgs)
         btnOpen_Click(sender, e)
     End Sub
 

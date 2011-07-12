@@ -6,28 +6,7 @@
 
         Dim TotalTimer As New Stopwatch
         Dim timer As New Stopwatch
-        Dim time As Double = 0
-        TotalTimer.Start()
-        For i As Integer = 1 To numCount.Value
-            timer.Reset()
-            timer.Start()
-            Dim sd As New SimpleD.Group()
-            sd.FromStringOLD(str)
-            timer.Stop()
-            time += timer.ElapsedMilliseconds
-        Next
-        TotalTimer.Stop()
-
-        txtTime.Text = time / numCount.Value
-        txtTotalTime.Text = TotalTimer.ElapsedMilliseconds
-
-
-        'Time2
-        time = 0
-        timer.Reset()
-        TotalTimer.Reset()
-
-
+        Dim time As Long = 0
         TotalTimer.Start()
         For i As Integer = 1 To numCount.Value
             timer.Reset()
@@ -39,8 +18,28 @@
         Next
         TotalTimer.Stop()
 
-        txtTime2.Text = time / numCount.Value
-        txtTotalTime2.Text = TotalTimer.ElapsedMilliseconds
+        txtTime.Text = time / numCount.Value
+        txtTotalTime.Text = TotalTimer.ElapsedMilliseconds
+
+
+        'Time2
+        'time = 0
+        'timer.Reset()
+        'TotalTimer.Reset()
+
+
+        'TotalTimer.Start()
+        'For i As Integer = 1 To numCount.Value
+        '    timer.Reset()
+        '    timer.Start()
+        '    'Somthing here.
+        '    timer.Stop()
+        '    time += timer.ElapsedMilliseconds
+        'Next
+        'TotalTimer.Stop()
+
+        'txtTime2.Text = time / numCount.Value
+        'txtTotalTime2.Text = TotalTimer.ElapsedMilliseconds
 
         Panel1.Enabled = True
     End Sub
