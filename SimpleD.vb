@@ -30,6 +30,12 @@
 
 Option Explicit On
 Option Strict On
+
+Imports System
+Imports System.Collections
+Imports System.Collections.Generic
+Imports Microsoft.VisualBasic
+
 Namespace SimpleD
     Module Info
         'What things can NOT contain.
@@ -43,6 +49,7 @@ Namespace SimpleD
         'New    : FromString(Now Parse) is now faster. (Have seen 14x better speed. Bigger strings will have a bigger difference.)
         'New    : Can now have properties with out any groups in a file.
         'New    : Checks for empty data in "Group.FromString".
+        'New    : Can now set what you want to use as a tab.
         'Renamed: Prop to Property
         'Removed: Windows.Forms and everything that used it.
         'Change : Now saves the version of SimpleD as a group on the top of the file. (was saved as a comment before.)
@@ -71,11 +78,13 @@ Namespace SimpleD
         Enum Style
             None
             Whitesmiths
+            GNU
             BSD_Allman
             K_R
             GroupsOnNewLine
         End Enum
         Public BraceStyle As Style = Style.BSD_Allman
+        Public Tab As String = vbTab
 
         ''' <summary>
         ''' Returns a string with all the properties and sub groups.
@@ -106,6 +115,8 @@ Namespace SimpleD
                         tmp &= Name & Environment.NewLine & GetTabs(TabCount + 1) & "{"
                     Case Style.BSD_Allman
                         tmp &= Name & Environment.NewLine & GetTabs(TabCount) & "{"
+                    Case Style.GNU
+                        tmp &= Name & Environment.NewLine & GetTabs(TabCount) & "  {"
                     Case Style.GroupsOnNewLine
                         tmp &= Environment.NewLine & GetTabs(TabCount - 1) & Name & "{"
                 End Select
@@ -120,7 +131,7 @@ Namespace SimpleD
                     For Each Grp As Group In Groups
                         tmp &= Grp.ToStringBase(False, TabCount + 1, False, OverrideStyle)
                     Next
-                Case Style.Whitesmiths, Style.BSD_Allman, Style.K_R
+                Case Style.Whitesmiths, Style.BSD_Allman, Style.K_R, Style.GNU
                     For n As Integer = 0 To Properties.Count - 1
                         tmp &= Environment.NewLine & GetTabs(TabCount + 1) & Properties(n).Name & "=" & Properties(n).Value & ";"
                     Next
@@ -138,6 +149,8 @@ Namespace SimpleD
                         tmp &= Environment.NewLine & GetTabs(TabCount + 1) & "}"
                     Case Style.BSD_Allman, Style.K_R
                         tmp &= Environment.NewLine & GetTabs(TabCount) & "}"
+                    Case Style.GNU
+                        tmp &= Environment.NewLine & GetTabs(TabCount) & "  }"
                 End Select
             End If
 
@@ -146,7 +159,11 @@ Namespace SimpleD
 
         Private Function GetTabs(Count As Integer) As String
             If Count < 1 Then Return ""
-            Return New String(CChar(vbTab), Count)
+            Dim str As String = Tab
+            For i As Integer = 2 To Count
+                str &= Tab
+            Next
+            Return str
         End Function
 
 #End Region

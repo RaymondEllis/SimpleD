@@ -30,6 +30,12 @@
 
 Option Explicit On
 Option Strict Off
+
+Imports System
+Imports System.Collections
+Imports System.Collections.Generic
+Imports Microsoft.VisualBasic
+
 Namespace SimpleD
     Partial Public Class Group
 
