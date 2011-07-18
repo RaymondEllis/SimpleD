@@ -44,7 +44,7 @@ Namespace SimpleD
         '   Group names { // = ;
         Public Const Version = 1
         Public Const FileVersion = 2
-        '1      *InDev* Before release there should be no ToDo: 
+        '1      7-18-2011
         'New    : ToString now has brace styling.
         'New    : FromString(Now Parse) is now faster. (Have seen 14x better speed. Bigger strings will have a bigger difference.)
         'New    : Can now have properties with out any groups in a file.
@@ -56,7 +56,7 @@ Namespace SimpleD
         'Change : Removed "SimpleD.SimpleD" now just use "SimpleD.Group".
         'Change : The helper functions are now in a seperate file. (Can be put in same file if desired.)
         'Fixed  : Property is now a class. Fixed a few bugs because structures are not reference type.
-        'Fixed  : GetValue(ByRef Control, ByRef Value) Nolonger crashes if value did not convert properly. (Removed from SimpleD_Helper)
+        'Fixed  : GetValue(ByRef Control, ByRef Value) Nolonger crashes if value did not convert properly. (Can be found at: https://code.google.com/p/simpled/wiki/control_helper)
         'Fixed  : ToFile now creates dir if it does not exist.
 
         'Old change logs at:

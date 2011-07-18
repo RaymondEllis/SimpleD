@@ -68,7 +68,7 @@ Public Class frmTest
 
     End Sub
 
-#Region "Get/Set value to/from control" 'ToDo: Add this region some place people can get it.
+#Region "Get/Set value to/from control v1" 'Update to https://code.google.com/p/simpled/wiki/control_helper
     ''' <summary>
     ''' Sets the value of the control to the proprety with the same name.
     ''' Known controls: TextBox,Label,CheckBox,RadioButton,NumericUpDown,ProgressBar
