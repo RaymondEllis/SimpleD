@@ -24,7 +24,7 @@
 '
 'Contact:
 '   Raymond Ellis
-'   Email: RaymondEllis@live.com
+'   Email: RaymondEllis*live.com
 '   Website: https://sites.google.com/site/raymondellis89/
 #End Region
 
@@ -42,9 +42,12 @@ Namespace SimpleD
         '   Property names { // =
         '   Property values ; = (Equals is allowed if specafied)
         '   Group names { // = ;
-        Public Const Version = 1
+        Public Const Version = 1.1
         Public Const FileVersion = 2
-        '1      7-18-2011
+        '1.1    <Not Released>
+        'Fixed  : Did not spefi that parse is the same as fromstring.
+        '
+        '1      7-18-2011 *Stable*
         'New    : ToString now has brace styling.
         'New    : FromString(Now Parse) is now faster. (Have seen 14x better speed. Bigger strings will have a bigger difference.)
         'New    : Can now have properties with out any groups in a file.
@@ -194,7 +197,7 @@ Namespace SimpleD
             Dim ErrorIndex As Integer = 0 'Used for error handling.
             Dim tName As String = "" 'Group or property name
             Dim tValue As String = ""
-            Dim LastChr As Char = " "c 'Only needed for comments because they use two chars. //
+            Dim LastChr As Char = " "c 'Only needed for comments because they use two chars. //     (But should not be needed. could use index-1)
 
             Do Until Index > Data.Length - 1
                 Dim chr As Char = Data(Index)
@@ -282,6 +285,12 @@ Namespace SimpleD
             Return Results
         End Function
 
+        ''' <summary>
+        ''' Note: It will continue loading even with errors.
+        ''' </summary>
+        ''' <param name="Data">The string to parse.</param>
+        ''' <returns>Errors if any.</returns>
+        ''' <remarks></remarks>
         Shared Function Parse(ByVal Data As String, Optional ByVal AllowEqualsInValue As Boolean = False) As Group
             Dim g As New Group
             g.FromStringBase(True, Data, 0, AllowEqualsInValue)
