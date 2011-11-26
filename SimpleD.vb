@@ -45,6 +45,7 @@ Namespace SimpleD
         Public Const Version = 1.1
         Public Const FileVersion = 2
         '1.1    <Not Released>
+        'Change : There is now NoStyle
         'Fixed  : Did not spefi that parse is the same as fromstring.
         '
         '1      7-18-2011 *Stable*
@@ -79,12 +80,13 @@ Namespace SimpleD
 #Region "ToString"
 
         Enum Style
-            None
-            Whitesmiths
-            GNU
-            BSD_Allman
-            K_R
-            GroupsOnNewLine
+            None = 0
+            NoStyle = 1
+            Whitesmiths = 2
+            GNU = 3
+            BSD_Allman = 4
+            K_R = 5
+            GroupsOnNewLine = 6
         End Enum
         Public BraceStyle As Style = Style.BSD_Allman
         Public Tab As String = vbTab
@@ -104,6 +106,7 @@ Namespace SimpleD
 
             Dim CurrentStyle As Style = BraceStyle
             If OverrideStyle <> Style.None Then CurrentStyle = OverrideStyle
+            If CurrentStyle = Style.None Then CurrentStyle = Style.NoStyle
 
             Dim tmp As String = ""
 
@@ -112,7 +115,7 @@ Namespace SimpleD
             'Name and start of group. Name{
             If Not IsFirst Then
                 Select Case CurrentStyle
-                    Case Style.None, Style.K_R
+                    Case Style.NoStyle, Style.K_R
                         tmp &= Name & "{"
                     Case Style.Whitesmiths
                         tmp &= Name & Environment.NewLine & GetTabs(TabCount + 1) & "{"
@@ -127,7 +130,7 @@ Namespace SimpleD
 
             'Groups and properties
             Select Case CurrentStyle
-                Case Style.None, Style.GroupsOnNewLine
+                Case Style.NoStyle, Style.GroupsOnNewLine
                     For n As Integer = 0 To Properties.Count - 1
                         tmp &= Properties(n).Name & "=" & Properties(n).Value & ";"
                     Next
@@ -146,7 +149,7 @@ Namespace SimpleD
             '} end of group.
             If Not IsFirst Then
                 Select Case CurrentStyle
-                    Case Style.None, Style.GroupsOnNewLine
+                    Case Style.NoStyle, Style.GroupsOnNewLine
                         tmp &= "}"
                     Case Style.Whitesmiths
                         tmp &= Environment.NewLine & GetTabs(TabCount + 1) & "}"
