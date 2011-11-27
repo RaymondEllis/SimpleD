@@ -39,12 +39,13 @@ Imports Microsoft.VisualBasic
 Namespace SimpleD
     Module Info
         'What things can NOT contain.
-        '   Property names { // =
+        '   Property names { /* =
         '   Property values ; = (Equals is allowed if specafied)
-        '   Group names { // = ;
+        '   Group names { /* = ;
         Public Const Version = 1.1
-        Public Const FileVersion = 2
+        Public Const FileVersion = 3
         '1.1    <Not Released>
+        'Change : Commants are now /*comment*/ (was //comment\\)
         'Change : There is now NoStyle
         'Fixed  : Did not spefi that parse is the same as fromstring.
         '
@@ -200,7 +201,6 @@ Namespace SimpleD
             Dim ErrorIndex As Integer = 0 'Used for error handling.
             Dim tName As String = "" 'Group or property name
             Dim tValue As String = ""
-            Dim LastChr As Char = " "c 'Only needed for comments because they use two chars. //     (But should not be needed. could use index-1)
 
             Do Until Index > Data.Length - 1
                 Dim chr As Char = Data(Index)
@@ -223,7 +223,6 @@ Namespace SimpleD
                                 Dim newGroup As New Group(tName.Trim)
                                 Results &= newGroup.FromStringBase(False, Data, Index, AllowEqualsInValue)
                                 Groups.Add(newGroup)
-                                LastChr = " "c
                                 tName = ""
 
                             Case "}"c 'End of current group
@@ -234,11 +233,14 @@ Namespace SimpleD
                                 End If
 
 
-                            Case "/"c
-                                If LastChr = "/"c Then
+                            Case "*"c
+                                'If LastChr = "/"c Then
+                                If Index - 1 >= 0 AndAlso Data(Index - 1) = "/"c Then
                                     tName = ""
                                     State = 2 'In comment
                                     ErrorIndex = Index
+                                Else
+                                    tName &= chr
                                 End If
 
                             Case Else
@@ -267,14 +269,16 @@ Namespace SimpleD
                         End If
 
                     Case 2 'In comment
-                        If chr = "\"c And LastChr = "\"c Then
-                            State = 0
+                        If Index - 1 >= 0 Then
+                            If Data(Index - 1) = "*"c AndAlso chr = "/"c Then
+                                State = 0
+                            End If
                         End If
+
 
                 End Select
 
                 Index += 1
-                LastChr = chr
             Loop
 
             If State = 1 Then
