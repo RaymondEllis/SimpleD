@@ -7,7 +7,7 @@
 			if($FromFile==true){
 				$this->FromFile($data, false);
 			}else{
-				$this->name = $name;
+				$this->name = $data;
 			}
 		}
 		
