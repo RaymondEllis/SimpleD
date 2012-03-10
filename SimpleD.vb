@@ -46,6 +46,7 @@ Namespace SimpleD
         Public Const FileVersion As Single = 3
         '1.1    <Not Released>
         'Change : Commants are now /*comment*/ (was //comment\\)
+        'Change : The brace styles are now a bit simpiler.   Uses last groups style if none is specfied. falls back to BSD_Allman if base group is none.
         'Change : There is now NoStyle
         'Fixed  : Did not spefi that parse is the same as fromstring.
         '
@@ -74,8 +75,9 @@ Namespace SimpleD
         Public Properties As New List(Of [Property])
         Public Groups As New List(Of Group)
 
-        Public Sub New(Optional ByVal Name As String = "")
+        Public Sub New(Optional ByVal Name As String = "", Optional braceStyle As Style = Style.None)
             Me.Name = Name
+            Me.BraceStyle = braceStyle
         End Sub
 
 #Region "ToString"
@@ -89,25 +91,25 @@ Namespace SimpleD
             K_R = 5
             GroupsOnNewLine = 6
         End Enum
-        Public BraceStyle As Style = Style.BSD_Allman
+        Public BraceStyle As Style = Style.None
         Public Tab As String = vbTab
 
         ''' <summary>
         ''' Returns a string with all the properties and sub groups.
         ''' </summary>
         ''' <param name="AddVersion">Add the version of SimpleD to start of string?</param>
-        ''' <param name="OverrideStyle">If not None then it will override BraceStyle.</param>
-        Public Overloads Function ToString(Optional ByVal AddVersion As Boolean = True, Optional ByVal OverrideStyle As Style = Style.None) As String
-            Return ToStringBase(True, -1, AddVersion, OverrideStyle)
+        Public Overloads Function ToString(Optional ByVal AddVersion As Boolean = True) As String
+            Return ToStringBase(True, -1, AddVersion, BraceStyle)
         End Function
 
-        Private Function ToStringBase(ByVal IsFirst As Boolean, ByVal TabCount As Integer, ByVal AddVersion As Boolean, ByVal OverrideStyle As Style) As String
+        Private Function ToStringBase(ByVal IsFirst As Boolean, ByVal TabCount As Integer, ByVal AddVersion As Boolean, ByVal braceStyle As Style) As String
             If Properties.Count = 0 And Groups.Count = 0 Then Return ""
             If TabCount < -1 Then TabCount = -2 'Tab count Below -1 means use zero tabs.
 
-            Dim CurrentStyle As Style = BraceStyle
-            If OverrideStyle <> Style.None Then CurrentStyle = OverrideStyle
-            If CurrentStyle = Style.None Then CurrentStyle = Style.NoStyle
+            If Me.BraceStyle <> Group.Style.None Then
+                braceStyle = Me.BraceStyle
+            End If
+            If braceStyle = Style.None Then braceStyle = Style.BSD_Allman
 
             Dim tmp As String = ""
 
@@ -115,7 +117,7 @@ Namespace SimpleD
 
             'Name and start of group. Name{
             If Not IsFirst Then
-                Select Case CurrentStyle
+                Select Case braceStyle
                     Case Style.NoStyle, Style.K_R
                         tmp &= Name & "{"
                     Case Style.Whitesmiths
@@ -130,26 +132,26 @@ Namespace SimpleD
             End If
 
             'Groups and properties
-            Select Case CurrentStyle
+            Select Case braceStyle
                 Case Style.NoStyle, Style.GroupsOnNewLine
                     For n As Integer = 0 To Properties.Count - 1
                         tmp &= Properties(n).Name & "=" & Properties(n).Value & ";"
                     Next
                     For Each Grp As Group In Groups
-                        tmp &= Grp.ToStringBase(False, TabCount + 1, False, OverrideStyle)
+                        tmp &= Grp.ToStringBase(False, TabCount + 1, False, braceStyle)
                     Next
                 Case Style.Whitesmiths, Style.BSD_Allman, Style.K_R, Style.GNU
                     For n As Integer = 0 To Properties.Count - 1
                         tmp &= Environment.NewLine & GetTabs(TabCount + 1) & Properties(n).Name & "=" & Properties(n).Value & ";"
                     Next
                     For Each Grp As Group In Groups
-                        tmp &= Environment.NewLine & GetTabs(TabCount + 1) & Grp.ToStringBase(False, TabCount + 1, False, OverrideStyle)
+                        tmp &= Environment.NewLine & GetTabs(TabCount + 1) & Grp.ToStringBase(False, TabCount + 1, False, braceStyle)
                     Next
             End Select
 
             '} end of group.
             If Not IsFirst Then
-                Select Case CurrentStyle
+                Select Case braceStyle
                     Case Style.NoStyle, Style.GroupsOnNewLine
                         tmp &= "}"
                     Case Style.Whitesmiths
@@ -178,6 +180,7 @@ Namespace SimpleD
 #Region "Parse(FromString)"
 
         ''' <summary>
+        ''' Does NOT clear groups/properties.
         ''' Note: It will continue loading even with errors.
         ''' </summary>
         ''' <param name="Data">The string to parse.</param>

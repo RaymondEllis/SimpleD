@@ -68,13 +68,13 @@ Namespace SimpleD
             Return FromString(data, AllowEqualsInValue)
         End Function
 
-        Public Sub ToFile(ByVal File As String, Optional AddVersion As Boolean = True, Optional OverrideStyle As Style = Style.None)
+        Public Sub ToFile(ByVal File As String, Optional AddVersion As Boolean = True)
             'Create the folder if it does not exist.
             If File.Contains("\") Or File.Contains("/") Then
                 IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(File))
             End If
             Dim sw As New IO.StreamWriter(File)
-            sw.Write(ToString(AddVersion, OverrideStyle))
+            sw.Write(ToString(AddVersion))
             sw.Close()
         End Sub
 #End Region

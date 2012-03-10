@@ -19,7 +19,8 @@ Public Class frmTest
             SetValue(Control, g)
         Next
 
-        txtFile.Text = sD.ToString(, comBraceStyle.SelectedIndex)
+        sD.BraceStyle = comBraceStyle.SelectedIndex
+        txtFile.Text = sD.ToString()
     End Sub
 
 
@@ -45,7 +46,8 @@ Public Class frmTest
         End If
 
         If chkResave.Checked Then
-            txtResave.Text = sd.ToString(False, comBraceStyle.SelectedIndex)
+            sd.BraceStyle = comBraceStyle.SelectedIndex
+            txtResave.Text = sd.ToString(False)
         End If
 
         'On Error Resume Next
