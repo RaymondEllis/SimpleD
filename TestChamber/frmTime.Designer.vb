@@ -134,7 +134,6 @@ Partial Class frmTime
         'Label5
         '
         Me.Label5.AutoSize = True
-        Me.Label5.Enabled = False
         Me.Label5.Location = New System.Drawing.Point(220, 174)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(70, 13)
@@ -144,7 +143,6 @@ Partial Class frmTime
         'Label6
         '
         Me.Label6.AutoSize = True
-        Me.Label6.Enabled = False
         Me.Label6.Location = New System.Drawing.Point(220, 224)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(72, 13)
@@ -153,7 +151,6 @@ Partial Class frmTime
         '
         'txtTime2
         '
-        Me.txtTime2.Enabled = False
         Me.txtTime2.Location = New System.Drawing.Point(220, 190)
         Me.txtTime2.Name = "txtTime2"
         Me.txtTime2.Size = New System.Drawing.Size(202, 20)
@@ -161,7 +158,6 @@ Partial Class frmTime
         '
         'txtTotalTime2
         '
-        Me.txtTotalTime2.Enabled = False
         Me.txtTotalTime2.Location = New System.Drawing.Point(220, 240)
         Me.txtTotalTime2.Name = "txtTotalTime2"
         Me.txtTotalTime2.Size = New System.Drawing.Size(202, 20)

@@ -30,6 +30,7 @@ Public Class frmTest
 
         Dim sd As New SimpleD.Group
         SimpleD.AllowEqualsInValue = chkAllowEqualsInValue.Checked
+        SimpleD.AllowSemicolonInValue = chkAllowSemicolon.Checked
         txtError.Text = "Error:" & sd.FromString(txtFile.Text)
 
         'sd.RemoveDuplicateGroups(True)
@@ -202,7 +203,7 @@ Public Class frmTest
         btnOpen_Click(sender, e)
     End Sub
 
-    Private Sub chkResave_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles chkResave.CheckedChanged, chkAllowEqualsInValue.CheckedChanged
+    Private Sub chkResave_CheckedChanged(sender As System.Object, e As System.EventArgs) Handles chkResave.CheckedChanged, chkAllowEqualsInValue.CheckedChanged, chkAllowSemicolon.CheckedChanged
         panResize.Visible = chkResave.Checked
         btnOpen_Click(sender, e)
     End Sub
@@ -210,5 +211,13 @@ Public Class frmTest
     Private Sub frmTest_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         comBraceStyle.Items.AddRange([Enum].GetNames(GetType(SimpleD.Group.Style)))
         comBraceStyle.SelectedIndex = 0
+
+        chkAllowEqualsInValue.Checked = SimpleD.AllowEqualsInValue
+        chkAllowSemicolon.Checked = SimpleD.AllowSemicolonInValue
+
+    End Sub
+
+    Private Sub comBraceStyle_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles comBraceStyle.SelectedIndexChanged
+        btnOpen_Click(sender, e)
     End Sub
 End Class

@@ -46,6 +46,7 @@ Namespace SimpleD
         Public Const FileVersion As Single = 3
         Public AllowEqualsInValue As Boolean = False
         Public AllowSemicolonInValue As Boolean = True
+        'Public CheckIllegalChars As Boolean = True 'Should be apart of the Helper.
         '
         '1.2    Redo the helper class.  It needs to folow some standers.
         '
@@ -53,7 +54,7 @@ Namespace SimpleD
         '1.1    <Not Released>
         'Added  : Can now make a empty property by just using a semicolon. p; is now the same as p=;
         'Change : AllowEqualsInValue is now in Info.
-        'Change : } can now end the base group. so "p=v;}p2=2;" would only load as "p=v;" because } ended the base group.
+        'Change : } can now end the base group. so "p=v;}p2=2;" would only parse as "p=v;" because } ended the base group.
         'Change : Commants are now /*comment*/ (was //comment\\)
         'Change : The brace styles are now a bit simpiler.   Uses last groups style if none is specfied. falls back to BSD_Allman if base group is none.
         'Change : There is now NoStyle
@@ -116,9 +117,7 @@ Namespace SimpleD
             'If Properties.Count = 0 And Groups.Count = 0 Then Return ""
             If TabCount < -1 Then TabCount = -2 'Tab count Below -1 means use zero tabs.
 
-            If Me.BraceStyle <> Group.Style.None Then
-                braceStyle = Me.BraceStyle
-            End If
+            If Me.BraceStyle <> Style.None Then braceStyle = Me.BraceStyle
             If braceStyle = Style.None Then braceStyle = Style.BSD_Allman
 
             Dim tmp As String = ""
@@ -145,14 +144,14 @@ Namespace SimpleD
             Select Case braceStyle
                 Case Style.NoStyle, Style.GroupsOnNewLine
                     For n As Integer = 0 To Properties.Count - 1
-                        tmp &= Properties(n).Name & "=" & Properties(n).Value & ";"
+                        tmp &= Properties(n).ToString()
                     Next
                     For Each Grp As Group In Groups
                         tmp &= Grp.ToStringBase(False, TabCount + 1, False, braceStyle)
                     Next
                 Case Style.Whitesmiths, Style.BSD_Allman, Style.K_R, Style.GNU
                     For n As Integer = 0 To Properties.Count - 1
-                        tmp &= Environment.NewLine & GetTabs(TabCount + 1) & Properties(n).Name & "=" & Properties(n).Value & ";"
+                        tmp &= Environment.NewLine & GetTabs(TabCount + 1) & Properties(n).ToString()
                     Next
                     For Each Grp As Group In Groups
                         tmp &= Environment.NewLine & GetTabs(TabCount + 1) & Grp.ToStringBase(False, TabCount + 1, False, braceStyle)
@@ -228,7 +227,11 @@ Namespace SimpleD
                                 State = 1 'In property
 
                             Case ";"c
-                                Properties.Add(New [Property](tName.Trim, ""))
+                                If tName.Trim = "" Then
+                                    Results &= " #Found end of property but no name&value at index: " & Index & " Could need AllowSemicolonInValue enabled."
+                                Else
+                                    Properties.Add(New [Property](tName.Trim, ""))
+                                End If
                                 tName = ""
                                 tValue = ""
 
@@ -258,11 +261,10 @@ Namespace SimpleD
 
 
                     Case 1 'get property value
-                        If chr = ";"c Then 'ToDo: Make ToString handle semicolons in the value. probley should make it remove them if set to false.(same for equals)
+                        If chr = ";"c Then
                             If (AllowSemicolonInValue And Index + 1 < Data.Length) AndAlso Data(Index + 1) = ";"c Then
                                 Index += 1
                                 tValue &= chr
-
                             Else
                                 Properties.Add(New [Property](tName.Trim, tValue))
                                 tName = ""
@@ -285,7 +287,7 @@ Namespace SimpleD
                         End If
 
                     Case 2 'In comment
-                        If Data(Index - 1) = "*"c AndAlso chr = "/"c Then
+                        If chr = "/"c AndAlso Data(Index - 1) = "*"c Then
                             State = 0
                         End If
 
@@ -299,7 +301,7 @@ Namespace SimpleD
                 Results &= " #Missing end of property " & tName.Trim & " at index: " & ErrorIndex
             ElseIf State = 2 Then
                 Results &= " #Missing end of comment " & tName.Trim & " at index: " & ErrorIndex
-            ElseIf Not IsFirst Then
+            ElseIf Not IsFirst Then 'The base group does not need to be ended.
                 Results &= "  #Missing end of group " & Name.Trim & " at index: " & StartIndex
             End If
 
@@ -331,6 +333,14 @@ Namespace SimpleD
             Me.Name = Name
             Me.Value = Value
         End Sub
+
+        Public Overrides Function ToString() As String
+            If AllowSemicolonInValue Then 'ToDo: maybe able to make this faster by using a loop. like fromString.
+                Value = Value.Replace(";", ";;")
+            End If
+            If Value = "" Then Return Name & ";"
+            Return Name & "=" & Value & ";"
+        End Function
 
         Shared Operator =(ByVal left As [Property], ByVal right As [Property]) As Boolean
             If left Is Nothing And right Is Nothing Then Return True

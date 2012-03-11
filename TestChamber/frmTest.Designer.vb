@@ -49,6 +49,7 @@ Partial Class frmTest
         Me.panResize = New System.Windows.Forms.Panel()
         Me.comBraceStyle = New System.Windows.Forms.ComboBox()
         Me.chkAllowEqualsInValue = New System.Windows.Forms.CheckBox()
+        Me.chkAllowSemicolon = New System.Windows.Forms.CheckBox()
         Me.GroupBox1.SuspendLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox2.SuspendLayout()
@@ -254,7 +255,7 @@ Partial Class frmTest
         Me.chkAutoOpen.AutoSize = True
         Me.chkAutoOpen.Checked = True
         Me.chkAutoOpen.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkAutoOpen.Location = New System.Drawing.Point(72, 287)
+        Me.chkAutoOpen.Location = New System.Drawing.Point(61, 317)
         Me.chkAutoOpen.Name = "chkAutoOpen"
         Me.chkAutoOpen.Size = New System.Drawing.Size(74, 17)
         Me.chkAutoOpen.TabIndex = 8
@@ -283,7 +284,7 @@ Partial Class frmTest
         'chkResave
         '
         Me.chkResave.AutoSize = True
-        Me.chkResave.Location = New System.Drawing.Point(72, 340)
+        Me.chkResave.Location = New System.Drawing.Point(61, 340)
         Me.chkResave.Name = "chkResave"
         Me.chkResave.Size = New System.Drawing.Size(102, 17)
         Me.chkResave.TabIndex = 11
@@ -320,12 +321,22 @@ Partial Class frmTest
         'chkAllowEqualsInValue
         '
         Me.chkAllowEqualsInValue.AutoSize = True
-        Me.chkAllowEqualsInValue.Location = New System.Drawing.Point(72, 310)
+        Me.chkAllowEqualsInValue.Location = New System.Drawing.Point(61, 271)
         Me.chkAllowEqualsInValue.Name = "chkAllowEqualsInValue"
         Me.chkAllowEqualsInValue.Size = New System.Drawing.Size(128, 17)
         Me.chkAllowEqualsInValue.TabIndex = 11
         Me.chkAllowEqualsInValue.Text = "Allow Equals In Value"
         Me.chkAllowEqualsInValue.UseVisualStyleBackColor = True
+        '
+        'chkAllowSemicolon
+        '
+        Me.chkAllowSemicolon.AutoSize = True
+        Me.chkAllowSemicolon.Location = New System.Drawing.Point(61, 294)
+        Me.chkAllowSemicolon.Name = "chkAllowSemicolon"
+        Me.chkAllowSemicolon.Size = New System.Drawing.Size(145, 17)
+        Me.chkAllowSemicolon.TabIndex = 11
+        Me.chkAllowSemicolon.Text = "Allow Semicolon In Value"
+        Me.chkAllowSemicolon.UseVisualStyleBackColor = True
         '
         'frmTest
         '
@@ -336,6 +347,7 @@ Partial Class frmTest
         Me.ClientSize = New System.Drawing.Size(1062, 797)
         Me.Controls.Add(Me.comBraceStyle)
         Me.Controls.Add(Me.panResize)
+        Me.Controls.Add(Me.chkAllowSemicolon)
         Me.Controls.Add(Me.chkAllowEqualsInValue)
         Me.Controls.Add(Me.chkResave)
         Me.Controls.Add(Me.btnTimeTest)
@@ -393,5 +405,6 @@ Partial Class frmTest
     Friend WithEvents panResize As System.Windows.Forms.Panel
     Friend WithEvents comBraceStyle As System.Windows.Forms.ComboBox
     Friend WithEvents chkAllowEqualsInValue As System.Windows.Forms.CheckBox
+    Friend WithEvents chkAllowSemicolon As System.Windows.Forms.CheckBox
 
 End Class
