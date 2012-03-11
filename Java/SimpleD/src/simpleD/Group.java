@@ -217,7 +217,7 @@ public class Group {
 		} else if(state == 2){
 			results += " #Missing end of comment " + tmpName.trim() + " at index: " + errorIndex;
 		} else if(!isFirst){
-			results += "  #Missing end of group " + tmpName.trim() + " at index: " + startIndex;
+			results += "  #Missing end of group " + name.trim() + " at index: " + startIndex;
 		}
 		
 		return new parseReturn(results, index);
