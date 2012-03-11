@@ -27,6 +27,11 @@ public class Group {
 		GroupsOnNewLine
 	}
 	
+	//###################### ToString ######################
+	@Override
+	public String toString(){
+		return toString(false);
+	}
 	public String toString(Boolean AddVersion){
 		return toString(true, -1, AddVersion, BraceStyle);
 	}
@@ -105,6 +110,7 @@ public class Group {
 		
 		return tmp;
 	}
+
 	
 	private String getTabs(int count){
 		StringBuilder sb = new StringBuilder();
@@ -112,5 +118,20 @@ public class Group {
 			sb.append(Tab);
 		}
 		return sb.toString();
+	}
+	
+	//###################### FromString ######################
+	public String fromString(String data){
+		return fromString(true,data,0,false);
+	}
+	private String fromString(boolean isFirst, String data, int index, boolean AllowEqualsInValue){
+		if(data.isEmpty()) return "Data is empty!";
+		
+		String results;
+		Byte state=0; //0=nothing 1= in property 2=in comment
+		
+		int startIndex=index;
+		
+		return "HAHA";
 	}
 }
