@@ -120,9 +120,9 @@ public class Group {
 	
 	//###################### FromString ######################
 	public String fromString(String data){
-		return fromString(true, data, 0, false).error;
+		return fromString(true, data, 0).error;
 	}
-	private parseReturn fromString(boolean isFirst, String data, int index, boolean AllowEqualsInValue){
+	private parseReturn fromString(boolean isFirst, String data, int index){
 		if(data.isEmpty()) return new parseReturn("Data is empty!",0);
 		
 		
@@ -152,7 +152,7 @@ public class Group {
 						case '{':
 							index++;
 							Group newGroup = new Group(tmpName.trim());
-							parseReturn pr = newGroup.fromString(false ,data, index, AllowEqualsInValue);
+							parseReturn pr = newGroup.fromString(false ,data, index);
 							index=pr.index;
 							results+=pr.error;
 							Groups.add(newGroup);
@@ -188,7 +188,7 @@ public class Group {
 						tmpValue="";
 						state=0;
 					} else if(chr=='='){
-						if(AllowEqualsInValue){
+						if(Info.AllowEqualsInValue){
 							tmpValue +=chr;
 						} else {
 							results+="  #Missing end of property " + tmpName.trim() + " at index: " + errorIndex;

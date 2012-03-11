@@ -37,14 +37,23 @@ Imports System.Collections.Generic
 Imports Microsoft.VisualBasic
 
 Namespace SimpleD
-    Module Info
+    Public Module Info
         'What things can NOT contain.
-        '   Property names { /* =
-        '   Property values ; = (Equals is allowed if specafied)
-        '   Group names { /* = ;
+        '   Property names { } /* =
+        '   Property values ;(is allowed if specafied) =(is allowed if specafied)
+        '   Group names { } /* = ;
         Public Const Version As Single = 1.1
         Public Const FileVersion As Single = 3
+        Public AllowEqualsInValue As Boolean = False
+        Public AllowSemicolonInValue As Boolean = True
+        '
+        '1.2    Redo the helper class.  It needs to folow some standers.
+        '
+        'ToDo: Update Java/PHP
         '1.1    <Not Released>
+        'Added  : Can now make a empty property by just using a semicolon. p; is now the same as p=;
+        'Change : AllowEqualsInValue is now in Info.
+        'Change : } can now end the base group. so "p=v;}p2=2;" would only load as "p=v;" because } ended the base group.
         'Change : Commants are now /*comment*/ (was //comment\\)
         'Change : The brace styles are now a bit simpiler.   Uses last groups style if none is specfied. falls back to BSD_Allman if base group is none.
         'Change : There is now NoStyle
@@ -187,16 +196,17 @@ Namespace SimpleD
         ''' <param name="Data">The string to parse.</param>
         ''' <returns>Errors if any.</returns>
         ''' <remarks></remarks>
-        Public Function FromString(ByVal Data As String, Optional ByVal AllowEqualsInValue As Boolean = False) As String
-            Return FromStringBase(True, Data, 0, AllowEqualsInValue)
+        Public Function FromString(ByVal Data As String) As String
+            Return FromStringBase(True, Data, 0)
         End Function
 
-        Private Function FromStringBase(ByVal IsFirst As Boolean, ByVal Data As String, ByRef Index As Integer, ByVal AllowEqualsInValue As Boolean) As String
+        Private Function FromStringBase(ByVal IsFirst As Boolean, ByVal Data As String, ByRef Index As Integer) As String
             If Data = "" Then Return "Data is empty!"
 
-            'Group names can not contain { or } or //
-            'Property names can not contain // or = or ; or { or }
+            'Names can not contain { } ; /*
+            'Property names can only contain = if AllowEqualsInValue is set to true.
             'p=g{};
+
 
             Dim Results As String = "" 'Holds errors to be returned later.
             Dim State As Byte = 0 '0 = Nothing    1 = In property   2 = In comment
@@ -218,27 +228,22 @@ Namespace SimpleD
                                 State = 1 'In property
 
                             Case ";"c
+                                Properties.Add(New [Property](tName.Trim, ""))
                                 tName = ""
                                 tValue = ""
-                                Results &= " #Found end of property but no beginning at index: " & Index
 
-                            Case "{"c
+                            Case "{"c 'New group
                                 Index += 1
                                 Dim newGroup As New Group(tName.Trim)
-                                Results &= newGroup.FromStringBase(False, Data, Index, AllowEqualsInValue)
+                                Results &= newGroup.FromStringBase(False, Data, Index)
                                 Groups.Add(newGroup)
                                 tName = ""
 
                             Case "}"c 'End of current group
-                                If IsFirst Then 'The first group does not have name or braces.
-                                    tName &= chr
-                                Else
-                                    Return Results
-                                End If
+                                Return Results
 
 
                             Case "*"c
-                                'If LastChr = "/"c Then
                                 If Index - 1 >= 0 AndAlso Data(Index - 1) = "/"c Then
                                     tName = ""
                                     State = 2 'In comment
@@ -252,12 +257,19 @@ Namespace SimpleD
                         End Select
 
 
-                    Case 1 'In property
-                        If chr = ";"c Then
-                            Properties.Add(New [Property](tName.Trim, tValue))
-                            tName = ""
-                            tValue = ""
-                            State = 0
+                    Case 1 'get property value
+                        If chr = ";"c Then 'ToDo: Make ToString handle semicolons in the value. probley should make it remove them if set to false.(same for equals)
+                            If (AllowSemicolonInValue And Index + 1 < Data.Length) AndAlso Data(Index + 1) = ";"c Then
+                                Index += 1
+                                tValue &= chr
+
+                            Else
+                                Properties.Add(New [Property](tName.Trim, tValue))
+                                tName = ""
+                                tValue = ""
+                                State = 0
+                            End If
+
 
                         ElseIf chr = "="c Then 'error
                             If AllowEqualsInValue Then
@@ -273,10 +285,8 @@ Namespace SimpleD
                         End If
 
                     Case 2 'In comment
-                        If Index - 1 >= 0 Then
-                            If Data(Index - 1) = "*"c AndAlso chr = "/"c Then
-                                State = 0
-                            End If
+                        If Data(Index - 1) = "*"c AndAlso chr = "/"c Then
+                            State = 0
                         End If
 
 
@@ -302,9 +312,9 @@ Namespace SimpleD
         ''' <param name="Data">The string to parse.</param>
         ''' <returns>Errors if any.</returns>
         ''' <remarks></remarks>
-        Shared Function Parse(ByVal Data As String, Optional ByVal AllowEqualsInValue As Boolean = False) As Group
+        Shared Function Parse(ByVal Data As String) As Group
             Dim g As New Group
-            g.FromStringBase(True, Data, 0, AllowEqualsInValue)
+            g.FromStringBase(True, Data, 0)
             Return g
         End Function
 #End Region

@@ -29,7 +29,8 @@ Public Class frmTest
         If LastSelected = -1 Then LastSelected = 0
 
         Dim sd As New SimpleD.Group
-        txtError.Text = "Error:" & sd.FromString(txtFile.Text, chkAllowEqualsInValue.Checked)
+        SimpleD.AllowEqualsInValue = chkAllowEqualsInValue.Checked
+        txtError.Text = "Error:" & sd.FromString(txtFile.Text)
 
         'sd.RemoveDuplicateGroups(True)
         'sd.RemoveDuplicateGroups("Test", True)
