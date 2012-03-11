@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 public class Group {
 	public String name;
 	
@@ -127,11 +128,90 @@ public class Group {
 	private String fromString(boolean isFirst, String data, int index, boolean AllowEqualsInValue){
 		if(data.isEmpty()) return "Data is empty!";
 		
-		String results;
+		String results="";
 		Byte state=0; //0=nothing 1= in property 2=in comment
 		
 		int startIndex=index;
+		int errorIndex=0;
+		String tmpName="";
+		String tmpValue="";
 		
-		return "HAHA";
+		while (index<data.length()){
+			char chr=data.charAt(index);
+			
+			switch(state){
+				case 0: //in nothing.
+					switch(chr){
+						case '=':
+							errorIndex=index;
+							state=1;
+							break;
+						case ';':
+							tmpName="";
+							tmpValue="";
+							results +=" #Found end of property but no beginning at index: " + index;
+							break;
+						case '{':
+							index++;
+							Group newGroup = new Group(tmpName.trim());
+							results+=newGroup.fromString(false ,data, index, AllowEqualsInValue);
+							Groups.add(newGroup);
+							tmpName="";
+							break;
+						case '*':
+							if(index-1>=0 && data.charAt(index-1)=='/'){
+								tmpName="";
+								state=2;
+								errorIndex=index;
+							} else {
+								tmpName+= chr;
+							}
+							break;
+						default :
+							tmpName+=chr;
+							break;
+					}
+					break;
+					
+				case 1://In property
+					if(chr==';'){
+						Properties.add(new Property(tmpName.trim(), tmpValue));
+						tmpName="";
+						tmpValue="";
+						state=0;
+					} else if(chr=='='){
+						if(AllowEqualsInValue){
+							tmpValue +=chr;
+						} else {
+							results+="  #Missing end of property " + tmpName.trim() + " at index: " + errorIndex;
+							errorIndex=index;
+							tmpName="";
+							tmpValue="";
+						}
+					} else {
+						tmpValue+=chr;
+					}
+					break;
+				case 2://in comment.
+					if(index-1>=0){
+						if(data.charAt(index-1)=='*' && chr=='/'){
+							state=0;
+						}
+					}
+					break;
+			}
+			
+			index++;
+			
+			if(state==1){
+				results += " #Missing end of property " + tmpName.trim() + " at index: " + errorIndex;
+			}  else if( state == 2){
+			       results += " #Missing end of comment " + tmpName.trim() + " at index: " + errorIndex;
+			} else if(!isFirst){
+				results += "  #Missing end of group " + tmpName.trim() + " at index: " + startIndex;
+			}
+		}
+		
+		return results;
 	}
 }
