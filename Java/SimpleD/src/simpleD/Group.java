@@ -37,9 +37,6 @@ public class Group {
 		return toString(true, -1, AddVersion, BraceStyle);
 	}
 	String toString(Boolean isFirst, int tabCount, Boolean AddVersion, Style braceStyle){
-		if(Properties.isEmpty() & Groups.isEmpty())
-			return "";
-		
 		if(tabCount <-1) tabCount=-2;
 		
 		//Brace styling
@@ -123,10 +120,11 @@ public class Group {
 	
 	//###################### FromString ######################
 	public String fromString(String data){
-		return fromString(true,data,0,false);
+		return fromString(true, data, 0, false).error;
 	}
-	private String fromString(boolean isFirst, String data, int index, boolean AllowEqualsInValue){
-		if(data.isEmpty()) return "Data is empty!";
+	private parseReturn fromString(boolean isFirst, String data, int index, boolean AllowEqualsInValue){
+		if(data.isEmpty()) return new parseReturn("Data is empty!",0);
+		
 		
 		String results="";
 		Byte state=0; //0=nothing 1= in property 2=in comment
@@ -154,10 +152,20 @@ public class Group {
 						case '{':
 							index++;
 							Group newGroup = new Group(tmpName.trim());
-							results+=newGroup.fromString(false ,data, index, AllowEqualsInValue);
+							parseReturn pr = newGroup.fromString(false ,data, index, AllowEqualsInValue);
+							index=pr.index;
+							results+=pr.error;
 							Groups.add(newGroup);
 							tmpName="";
 							break;
+						case '}':
+							if(isFirst){
+								tmpName+=chr;
+							} else {
+								return new parseReturn(results,index);
+							}
+							break;
+						
 						case '*':
 							if(index-1>=0 && data.charAt(index-1)=='/'){
 								tmpName="";
@@ -202,16 +210,24 @@ public class Group {
 			}
 			
 			index++;
-			
-			if(state==1){
-				results += " #Missing end of property " + tmpName.trim() + " at index: " + errorIndex;
-			}  else if( state == 2){
-			       results += " #Missing end of comment " + tmpName.trim() + " at index: " + errorIndex;
-			} else if(!isFirst){
-				results += "  #Missing end of group " + tmpName.trim() + " at index: " + startIndex;
-			}
 		}
 		
-		return results;
+		if(state==1){
+			results += " #Missing end of property " + tmpName.trim() + " at index: " + errorIndex;
+		} else if(state == 2){
+			results += " #Missing end of comment " + tmpName.trim() + " at index: " + errorIndex;
+		} else if(!isFirst){
+			results += "  #Missing end of group " + tmpName.trim() + " at index: " + startIndex;
+		}
+		
+		return new parseReturn(results, index);
+	}
+	private class parseReturn{
+		String error="";
+		int index=0;
+		public parseReturn(String Error, int Index){
+			this.error=Error;
+			this.index=Index;
+		}
 	}
 }
