@@ -59,12 +59,12 @@ Namespace SimpleD
         'Change : The brace styles are now a bit simpiler.   Uses last groups style if none is specfied. falls back to BSD_Allman if base group is none.
         'Change : There is now NoStyle
         'Fixed  : Did not spefi that parse is the same as fromstring.
-        'Fixed  : Empty groups now save. Fixes Issue:2 "g{p=;g2{" better.
+        'Fixed  : Empty groups now save. Fixes Issue#2 "g{p=;g2{" better.
         '
         '1      7-18-2011 *Stable*
         'New    : ToString now has brace styling.
         'New    : FromString(Now Parse) is now faster. (Have seen 14x better speed. Bigger strings will have a bigger difference.)
-        'New    : Can now have properties with out any groups in a file.
+        'New    : Can now have properties with out any groups in a string.
         'New    : Checks for empty data in "Group.FromString".
         'New    : Can now set what you want to use as a tab.
         'Renamed: Prop to Property
@@ -114,7 +114,6 @@ Namespace SimpleD
         End Function
 
         Private Function ToStringBase(ByVal IsFirst As Boolean, ByVal TabCount As Integer, ByVal AddVersion As Boolean, ByVal braceStyle As Style) As String
-            'If Properties.Count = 0 And Groups.Count = 0 Then Return ""
             If TabCount < -1 Then TabCount = -2 'Tab count Below -1 means use zero tabs.
 
             If Me.BraceStyle <> Style.None Then braceStyle = Me.BraceStyle
@@ -335,11 +334,16 @@ Namespace SimpleD
         End Sub
 
         Public Overrides Function ToString() As String
-            If AllowSemicolonInValue Then 'ToDo: maybe able to make this faster by using a loop. like fromString.
-                Value = Value.Replace(";", ";;")
+            If AllowSemicolonInValue Then
+                Dim tmpValue As String = Value.Replace(";", ";;")
+                If tmpValue = "" Then Return Name & ";"
+                Return Name & "=" & tmpValue & ";"
+
+            Else
+                If Value = "" Then Return Name & ";"
+                Return Name & "=" & Value & ";"
+
             End If
-            If Value = "" Then Return Name & ";"
-            Return Name & "=" & Value & ";"
         End Function
 
         Shared Operator =(ByVal left As [Property], ByVal right As [Property]) As Boolean

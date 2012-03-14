@@ -72,7 +72,7 @@ public class Group {
 		switch(braceStyle){
 			case NoStyle: case GroupsOnNewLine:
 				for(int i=0; i<Properties.size(); i++){
-					tmp += Properties.get(i).name+"="+Properties.get(i).value+";";
+					tmp += Properties.get(i).toString();
 				}
 				for(int i=0; i<Groups.size(); i++){
 					tmp+=Groups.get(i).toString(false, tabCount+1, false, braceStyle);
@@ -80,7 +80,7 @@ public class Group {
 				break;
 			case Whitesmiths: case BSD_Allman: case K_R: case GNU:
 				for(int i=0; i<Properties.size(); i++){
-					tmp +="\n"+getTabs(tabCount+1)+ Properties.get(i).name+"="+Properties.get(i).value+";";
+					tmp +="\n"+getTabs(tabCount+1)+ Properties.get(i).toString();
 				}
 				for(int i=0; i<Groups.size(); i++){
 					tmp+="\n"+getTabs(tabCount+1)+ Groups.get(i).toString(false, tabCount+1, false, braceStyle);
@@ -109,7 +109,6 @@ public class Group {
 		return tmp;
 	}
 
-	
 	private String getTabs(int count){
 		StringBuilder sb = new StringBuilder();
 		for (int i =0; i<count; i++){
@@ -117,6 +116,7 @@ public class Group {
 		}
 		return sb.toString();
 	}
+	
 	
 	//###################### FromString ######################
 	public String fromString(String data){
@@ -145,9 +145,13 @@ public class Group {
 							state=1;
 							break;
 						case ';':
+							if(tmpName.trim().isEmpty()){
+								results +="#Found end of property but no name&value at index: " + index + "Could need AllowSemicolonInValue enabled.";
+							} else {
+								Properties.add(new Property(tmpName.trim(),""));
+							}
 							tmpName="";
 							tmpValue="";
-							results +=" #Found end of property but no beginning at index: " + index;
 							break;
 						case '{':
 							index++;
@@ -159,12 +163,7 @@ public class Group {
 							tmpName="";
 							break;
 						case '}':
-							if(isFirst){
-								tmpName+=chr;
-							} else {
-								return new parseReturn(results,index);
-							}
-							break;
+							return new parseReturn(results,index);
 						
 						case '*':
 							if(index-1>=0 && data.charAt(index-1)=='/'){
@@ -183,10 +182,16 @@ public class Group {
 					
 				case 1://In property
 					if(chr==';'){
-						Properties.add(new Property(tmpName.trim(), tmpValue));
-						tmpName="";
-						tmpValue="";
-						state=0;
+						if((Info.AllowSemicolonInValue & index+1 <data.length()) && data.charAt(index+1) == 'c'){
+							index ++;
+							tmpValue +=chr;
+						} else {
+							Properties.add(new Property(tmpName.trim(), tmpValue));
+							tmpName="";
+							tmpValue="";
+							state=0;
+						}
+						
 					} else if(chr=='='){
 						if(Info.AllowEqualsInValue){
 							tmpValue +=chr;
@@ -201,10 +206,8 @@ public class Group {
 					}
 					break;
 				case 2://in comment.
-					if(index-1>=0){
-						if(data.charAt(index-1)=='*' && chr=='/'){
-							state=0;
-						}
+					if(data.charAt(index-1)=='*' && chr=='/'){
+						state=0;
 					}
 					break;
 			}

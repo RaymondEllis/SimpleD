@@ -9,4 +9,17 @@ public class Property {
 		name=Name;
 		value=Value;
 	}
+	
+	@Override
+	public String toString(){
+		if(Info.AllowSemicolonInValue){
+			String tmpValue=value.replace(";", ";;");
+			if(tmpValue.isEmpty()) return name+";";
+			return name +"="+ tmpValue +";";
+		} else {
+			if(value.isEmpty()) return name+";";
+			return name +"="+ value +";";
+		}
+	}
+	
 }
