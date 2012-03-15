@@ -8,14 +8,14 @@
 	echo $g->props[0]->name;
 	*/
 	
-	
+	#$AllowSemicolonInValue=false;
 	$g=new sdGroupH("test.sd", true);
-	$index=0;
 	#echo "<p> FromStringBase: ". $g->FromString("gname{z=321;}",false);
 	#$g->FromFile('test.sd', true);
 	if (isset($g->grps[0])){
-		echo "<p>".$g->ToString(false, sdStyle::K_R); 
-		$g->ToFile('test.sd', false, sdStyle::K_R);
+		$g->braceStyle=sdStyle::BSD_Allman;
+		echo "<p>".$g->ToString(false); 
+		$g->ToFile('test.sd', false);
 	}else{
 		echo "<p>group 0 is unset.";
 	}

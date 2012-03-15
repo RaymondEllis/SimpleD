@@ -11,15 +11,19 @@
 			}
 		}
 		
-		function ToFile($File, $AddVersion, $OverrideStyle){
+		function ToFile($File, $AddVersion){
 			$fh=fopen($File, 'w');
-			fwrite($fh, $this->ToString($AddVersion, $OverrideStyle));
+			fwrite($fh, $this->ToString($AddVersion));
 			fclose($fh);
 		}
-		function FromFile($File, $AllowEqualsInValue){
-			$fh=fopen($File, 'r');
-			$this->FromString(fread($fh,filesize($File)), $AllowEqualsInValue);
-			fclose($fh);
+		function FromFile($File){
+			if(filesize($File)>0){
+				$fh=fopen($File, 'r');
+				$this->FromString(fread($fh,filesize($File)));
+				fclose($fh);
+			} else {
+				echo "Error File is empty! ".$File;
+			}
 		}
 	}
 	
