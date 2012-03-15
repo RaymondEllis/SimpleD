@@ -1,10 +1,10 @@
 ﻿Imports SimpleD
 
 Public Class frmMain
-    Private Sub btnOpen_Click(sender As System.Object, e As System.EventArgs) Handles btnOpen.Click
+    Private Sub btnFromString_Click(sender As System.Object, e As System.EventArgs) Handles btnFromString.Click
         Dim MainGroup As New Group
         'Open from the string.
-        MainGroup.FromString(txtData.Text)
+        txtErrors.Text = MainGroup.FromString(txtData.Text)
 
         Try
             'Get The Group
@@ -26,9 +26,8 @@ Public Class frmMain
         End Try
     End Sub
 
-    Private Sub btnSave_Click(sender As System.Object, e As System.EventArgs) Handles btnSave.Click
+    Private Sub btnToString_Click(sender As System.Object, e As System.EventArgs) Handles btnToString.Click
         Dim MainGroup As New Group
-
 
         'The Group
         Dim TheGroup As Group = MainGroup.CreateGroup("The Group") 'Create group from sd.
@@ -40,6 +39,7 @@ Public Class frmMain
 
         'Other group    There is nothing new here.
         Dim OtherGroup As Group = MainGroup.CreateGroup("OtherGroup")
+        OtherGroup.BraceStyle = Group.Style.NoStyle 'Set the brace style.
         OtherGroup.SetValue(NumericUpDown1.Name, NumericUpDown1.Value)
 
         'Save to the data text box.

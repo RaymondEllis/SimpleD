@@ -22,47 +22,22 @@ Partial Class frmMain
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.txtData = New System.Windows.Forms.TextBox()
-        Me.btnOpen = New System.Windows.Forms.Button()
-        Me.btnSave = New System.Windows.Forms.Button()
         Me.TextBox1 = New System.Windows.Forms.TextBox()
         Me.grpGroup1 = New System.Windows.Forms.GroupBox()
         Me.grpSubGroup = New System.Windows.Forms.GroupBox()
         Me.CheckBox1 = New System.Windows.Forms.CheckBox()
         Me.grpOtherGroup = New System.Windows.Forms.GroupBox()
         Me.NumericUpDown1 = New System.Windows.Forms.NumericUpDown()
+        Me.label1 = New System.Windows.Forms.Label()
+        Me.txtErrors = New System.Windows.Forms.TextBox()
+        Me.btnToString = New System.Windows.Forms.Button()
+        Me.btnFromString = New System.Windows.Forms.Button()
+        Me.txtData = New System.Windows.Forms.TextBox()
         Me.grpGroup1.SuspendLayout()
         Me.grpSubGroup.SuspendLayout()
         Me.grpOtherGroup.SuspendLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
-        '
-        'txtData
-        '
-        Me.txtData.Location = New System.Drawing.Point(218, 12)
-        Me.txtData.Multiline = True
-        Me.txtData.Name = "txtData"
-        Me.txtData.ScrollBars = System.Windows.Forms.ScrollBars.Both
-        Me.txtData.Size = New System.Drawing.Size(309, 180)
-        Me.txtData.TabIndex = 0
-        '
-        'btnOpen
-        '
-        Me.btnOpen.Location = New System.Drawing.Point(137, 12)
-        Me.btnOpen.Name = "btnOpen"
-        Me.btnOpen.Size = New System.Drawing.Size(75, 23)
-        Me.btnOpen.TabIndex = 1
-        Me.btnOpen.Text = "< Open <"
-        Me.btnOpen.UseVisualStyleBackColor = True
-        '
-        'btnSave
-        '
-        Me.btnSave.Location = New System.Drawing.Point(137, 41)
-        Me.btnSave.Name = "btnSave"
-        Me.btnSave.Size = New System.Drawing.Size(75, 23)
-        Me.btnSave.TabIndex = 1
-        Me.btnSave.Text = "> Save >"
-        Me.btnSave.UseVisualStyleBackColor = True
         '
         'TextBox1
         '
@@ -120,16 +95,61 @@ Partial Class frmMain
         Me.NumericUpDown1.Size = New System.Drawing.Size(95, 20)
         Me.NumericUpDown1.TabIndex = 0
         '
+        'label1
+        '
+        Me.label1.AutoSize = True
+        Me.label1.Location = New System.Drawing.Point(141, 210)
+        Me.label1.Name = "label1"
+        Me.label1.Size = New System.Drawing.Size(86, 13)
+        Me.label1.TabIndex = 15
+        Me.label1.Text = "fromString errors:"
+        '
+        'txtErrors
+        '
+        Me.txtErrors.Location = New System.Drawing.Point(233, 207)
+        Me.txtErrors.Name = "txtErrors"
+        Me.txtErrors.Size = New System.Drawing.Size(309, 20)
+        Me.txtErrors.TabIndex = 14
+        '
+        'btnToString
+        '
+        Me.btnToString.Location = New System.Drawing.Point(137, 41)
+        Me.btnToString.Name = "btnToString"
+        Me.btnToString.Size = New System.Drawing.Size(90, 23)
+        Me.btnToString.TabIndex = 13
+        Me.btnToString.Text = "> toString >"
+        Me.btnToString.UseVisualStyleBackColor = True
+        '
+        'btnFromString
+        '
+        Me.btnFromString.Location = New System.Drawing.Point(137, 12)
+        Me.btnFromString.Name = "btnFromString"
+        Me.btnFromString.Size = New System.Drawing.Size(90, 23)
+        Me.btnFromString.TabIndex = 12
+        Me.btnFromString.Text = "< fromString <"
+        Me.btnFromString.UseVisualStyleBackColor = True
+        '
+        'txtData
+        '
+        Me.txtData.Location = New System.Drawing.Point(233, 12)
+        Me.txtData.Multiline = True
+        Me.txtData.Name = "txtData"
+        Me.txtData.ScrollBars = System.Windows.Forms.ScrollBars.Both
+        Me.txtData.Size = New System.Drawing.Size(309, 186)
+        Me.txtData.TabIndex = 11
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(539, 204)
+        Me.ClientSize = New System.Drawing.Size(554, 239)
+        Me.Controls.Add(Me.label1)
+        Me.Controls.Add(Me.txtErrors)
+        Me.Controls.Add(Me.btnToString)
+        Me.Controls.Add(Me.btnFromString)
+        Me.Controls.Add(Me.txtData)
         Me.Controls.Add(Me.grpOtherGroup)
         Me.Controls.Add(Me.grpGroup1)
-        Me.Controls.Add(Me.btnSave)
-        Me.Controls.Add(Me.btnOpen)
-        Me.Controls.Add(Me.txtData)
         Me.Name = "frmMain"
         Me.Text = "VB SimpleD Sample"
         Me.grpGroup1.ResumeLayout(False)
@@ -142,14 +162,16 @@ Partial Class frmMain
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents txtData As System.Windows.Forms.TextBox
-    Friend WithEvents btnOpen As System.Windows.Forms.Button
-    Friend WithEvents btnSave As System.Windows.Forms.Button
     Friend WithEvents TextBox1 As System.Windows.Forms.TextBox
     Friend WithEvents grpGroup1 As System.Windows.Forms.GroupBox
     Friend WithEvents grpSubGroup As System.Windows.Forms.GroupBox
     Friend WithEvents CheckBox1 As System.Windows.Forms.CheckBox
     Friend WithEvents grpOtherGroup As System.Windows.Forms.GroupBox
     Friend WithEvents NumericUpDown1 As System.Windows.Forms.NumericUpDown
+    Private WithEvents label1 As System.Windows.Forms.Label
+    Private WithEvents txtErrors As System.Windows.Forms.TextBox
+    Friend WithEvents btnToString As System.Windows.Forms.Button
+    Friend WithEvents btnFromString As System.Windows.Forms.Button
+    Friend WithEvents txtData As System.Windows.Forms.TextBox
 
 End Class

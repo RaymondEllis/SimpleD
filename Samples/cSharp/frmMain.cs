@@ -16,11 +16,11 @@ namespace cSharp
 			InitializeComponent();
 		}
 
-		private void btnOpen_Click(object sender, EventArgs e)
+		private void btnFromString_Click(object sender, EventArgs e)
 		{
 			SimpleD.Group MainGroup = new SimpleD.Group();
 			//Open from the string.
-			MainGroup.FromString(txtData.Text);
+			txtErrors.Text = MainGroup.FromString(txtData.Text);
 
 			try
 			{
@@ -46,7 +46,7 @@ namespace cSharp
 
 		}
 
-		private void btnSave_Click(object sender, EventArgs e)
+		private void btnToString_Click(object sender, EventArgs e)
 		{
 			SimpleD.Group MainGroup = new SimpleD.Group();
 
@@ -60,6 +60,7 @@ namespace cSharp
 
 			//Other group    There is nothing new here.
 			Group OtherGroup = MainGroup.CreateGroup("OtherGroup");
+			OtherGroup.BraceStyle = Group.Style.NoStyle; //Set the style.
 			OtherGroup.SetValue(NumericUpDown1.Name, NumericUpDown1.Value.ToString());
 
 			//Save to the data text box.

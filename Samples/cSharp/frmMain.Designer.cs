@@ -34,9 +34,11 @@
 			this.NumericUpDown1 = new System.Windows.Forms.NumericUpDown();
 			this.grpGroup1 = new System.Windows.Forms.GroupBox();
 			this.TextBox1 = new System.Windows.Forms.TextBox();
-			this.btnSave = new System.Windows.Forms.Button();
-			this.btnOpen = new System.Windows.Forms.Button();
+			this.btnToString = new System.Windows.Forms.Button();
+			this.btnFromString = new System.Windows.Forms.Button();
 			this.txtData = new System.Windows.Forms.TextBox();
+			this.txtErrors = new System.Windows.Forms.TextBox();
+			this.label1 = new System.Windows.Forms.Label();
 			this.grpSubGroup.SuspendLayout();
 			this.grpOtherGroup.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.NumericUpDown1)).BeginInit();
@@ -99,44 +101,62 @@
 			this.TextBox1.TabIndex = 2;
 			this.TextBox1.Text = "Some text";
 			// 
-			// btnSave
+			// btnToString
 			// 
-			this.btnSave.Location = new System.Drawing.Point(137, 41);
-			this.btnSave.Name = "btnSave";
-			this.btnSave.Size = new System.Drawing.Size(75, 23);
-			this.btnSave.TabIndex = 6;
-			this.btnSave.Text = "> Save >";
-			this.btnSave.UseVisualStyleBackColor = true;
-			this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+			this.btnToString.Location = new System.Drawing.Point(137, 41);
+			this.btnToString.Name = "btnToString";
+			this.btnToString.Size = new System.Drawing.Size(90, 23);
+			this.btnToString.TabIndex = 6;
+			this.btnToString.Text = "> toString >";
+			this.btnToString.UseVisualStyleBackColor = true;
+			this.btnToString.Click += new System.EventHandler(this.btnToString_Click);
 			// 
-			// btnOpen
+			// btnFromString
 			// 
-			this.btnOpen.Location = new System.Drawing.Point(137, 12);
-			this.btnOpen.Name = "btnOpen";
-			this.btnOpen.Size = new System.Drawing.Size(75, 23);
-			this.btnOpen.TabIndex = 5;
-			this.btnOpen.Text = "< Open <";
-			this.btnOpen.UseVisualStyleBackColor = true;
-			this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
+			this.btnFromString.Location = new System.Drawing.Point(137, 12);
+			this.btnFromString.Name = "btnFromString";
+			this.btnFromString.Size = new System.Drawing.Size(90, 23);
+			this.btnFromString.TabIndex = 5;
+			this.btnFromString.Text = "< fromString <";
+			this.btnFromString.UseVisualStyleBackColor = true;
+			this.btnFromString.Click += new System.EventHandler(this.btnFromString_Click);
 			// 
 			// txtData
 			// 
-			this.txtData.Location = new System.Drawing.Point(218, 12);
+			this.txtData.Location = new System.Drawing.Point(233, 12);
 			this.txtData.Multiline = true;
 			this.txtData.Name = "txtData";
 			this.txtData.ScrollBars = System.Windows.Forms.ScrollBars.Both;
 			this.txtData.Size = new System.Drawing.Size(309, 186);
 			this.txtData.TabIndex = 4;
 			// 
+			// txtErrors
+			// 
+			this.txtErrors.Location = new System.Drawing.Point(233, 207);
+			this.txtErrors.Name = "txtErrors";
+			this.txtErrors.Size = new System.Drawing.Size(309, 20);
+			this.txtErrors.TabIndex = 9;
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(141, 210);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(86, 13);
+			this.label1.TabIndex = 10;
+			this.label1.Text = "fromString errors:";
+			// 
 			// frmMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(539, 210);
+			this.ClientSize = new System.Drawing.Size(554, 239);
+			this.Controls.Add(this.label1);
+			this.Controls.Add(this.txtErrors);
 			this.Controls.Add(this.grpOtherGroup);
 			this.Controls.Add(this.grpGroup1);
-			this.Controls.Add(this.btnSave);
-			this.Controls.Add(this.btnOpen);
+			this.Controls.Add(this.btnToString);
+			this.Controls.Add(this.btnFromString);
 			this.Controls.Add(this.txtData);
 			this.Name = "frmMain";
 			this.Text = "C# SimpleD Sample";
@@ -159,9 +179,11 @@
 		internal System.Windows.Forms.NumericUpDown NumericUpDown1;
 		internal System.Windows.Forms.GroupBox grpGroup1;
 		internal System.Windows.Forms.TextBox TextBox1;
-		internal System.Windows.Forms.Button btnSave;
-		internal System.Windows.Forms.Button btnOpen;
+		internal System.Windows.Forms.Button btnToString;
+		internal System.Windows.Forms.Button btnFromString;
 		internal System.Windows.Forms.TextBox txtData;
+		private System.Windows.Forms.TextBox txtErrors;
+		private System.Windows.Forms.Label label1;
 	}
 }
 
