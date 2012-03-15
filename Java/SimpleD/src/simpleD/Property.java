@@ -12,12 +12,11 @@ public class Property {
 	
 	@Override
 	public String toString(){
+		if(value.isEmpty()) return name+";";
 		if(Info.AllowSemicolonInValue){
 			String tmpValue=value.replace(";", ";;");
-			if(tmpValue.isEmpty()) return name+";";
 			return name +"="+ tmpValue +";";
 		} else {
-			if(value.isEmpty()) return name+";";
 			return name +"="+ value +";";
 		}
 	}

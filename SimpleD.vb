@@ -44,7 +44,7 @@ Namespace SimpleD
         '   Group names { } /* = ;
         Public Const Version As Single = 1.1
         Public Const FileVersion As Single = 3
-        Public AllowEqualsInValue As Boolean = False
+        Public AllowEqualsInValue As Boolean = True
         Public AllowSemicolonInValue As Boolean = True
         'Public CheckIllegalChars As Boolean = True 'Should be apart of the Helper.
         '
@@ -334,15 +334,12 @@ Namespace SimpleD
         End Sub
 
         Public Overrides Function ToString() As String
+            If Value = "" Then Return Name & ";"
             If AllowSemicolonInValue Then
                 Dim tmpValue As String = Value.Replace(";", ";;")
-                If tmpValue = "" Then Return Name & ";"
                 Return Name & "=" & tmpValue & ";"
-
             Else
-                If Value = "" Then Return Name & ";"
                 Return Name & "=" & Value & ";"
-
             End If
         End Function
 

@@ -211,7 +211,7 @@ public class Group {
 					
 				case 1://In property
 					if(chr==';'){
-						if((Info.AllowSemicolonInValue & index+1 <data.length()) && data.charAt(index+1) == 'c'){
+						if((Info.AllowSemicolonInValue & index+1 <data.length()) && data.charAt(index+1) == ';'){
 							index ++;
 							tmpValue +=chr;
 						} else {

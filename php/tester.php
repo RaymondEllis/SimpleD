@@ -9,11 +9,14 @@
 	*/
 	
 	#$AllowSemicolonInValue=false;
-	$g=new sdGroupH("test.sd", true);
+	#$AllowEqualsInValue=true;
+	$g=new sdGroupH("",false);
+	echo $g->FromFile("test.sd");
 	#echo "<p> FromStringBase: ". $g->FromString("gname{z=321;}",false);
 	#$g->FromFile('test.sd', true);
 	if (isset($g->grps[0])){
-		$g->braceStyle=sdStyle::BSD_Allman;
+		$g->BraceStyle=sdStyle::K_R;
+		
 		echo "<p>".$g->ToString(false); 
 		$g->ToFile('test.sd', false);
 	}else{

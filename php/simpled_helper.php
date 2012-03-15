@@ -19,8 +19,9 @@
 		function FromFile($File){
 			if(filesize($File)>0){
 				$fh=fopen($File, 'r');
-				$this->FromString(fread($fh,filesize($File)));
+				$error=$this->FromString(fread($fh,filesize($File)));
 				fclose($fh);
+				return $error;
 			} else {
 				echo "Error File is empty! ".$File;
 			}
