@@ -32,23 +32,19 @@
             IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(sdFile))
         End If
         Dim sw As New IO.StreamWriter(sdFile)
-        sw.Write(sd.ToString(, SimpleD.Group.Style.GroupsOnNewLine))
+        sd.BraceStyle = SimpleD.Group.Style.K_R
+        sw.Write(sd.ToString())
         sw.Close()
         Console.WriteLine("File saved to: " & Environment.NewLine & sdFile)
     End Sub
     Private Function DoChildNode(node As Xml.XmlNode) As SimpleD.Group
-        If node Is Nothing Then Return Nothing
         Dim g As New SimpleD.Group(node.Name)
-        If node.ChildNodes.Count = 0 And node.Attributes Is Nothing Then
-            g.BraceStyle = SimpleD.Group.Style.None
-            Return g
-        End If
         For Each child As Xml.XmlNode In node.ChildNodes
-            Dim tmp As SimpleD.Group = DoChildNode(child)
-            If tmp.BraceStyle = SimpleD.Group.Style.None Then
-                g.Properties.Add(New SimpleD.Property("", child.InnerText))
+            If child.HasChildNodes Or child.Attributes IsNot Nothing Then
+                g.Groups.Add(DoChildNode(child))
             Else
-                g.Groups.Add(tmp)
+                g.BraceStyle = SimpleD.Group.Style.NoStyle
+                g.Properties.Add(New SimpleD.Property(child.InnerText.Trim, ""))
             End If
         Next
         If node.Attributes IsNot Nothing Then
