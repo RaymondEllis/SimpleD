@@ -1,4 +1,4 @@
-package tset;
+package test;
 
 import simpleD.*;
 import simpleD.Group.Style;
@@ -20,10 +20,11 @@ public class SDTest {
 		
 		g.BraceStyle=Style.K_R;
 		System.out.print(g.toString(true));
+		
 	}
 	
 	static void fromTest(){
-		Group g = new Group();
+		GroupHelper g = new GroupHelper();
 		Info.AllowEqualsInValue=true;
 		Info.AllowSemicolonInValue=true;
 		System.out.println(g.fromString("g{p=test;g2{a;b=;c=a=b;;;}}c=a=b;;;"));
