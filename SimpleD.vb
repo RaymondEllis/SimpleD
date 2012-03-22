@@ -50,11 +50,11 @@ Namespace SimpleD
         '
         '1.2    Redo the helper class.  It needs to folow some standers.
         '
-        '1.1    <Not Released>
+        '1.1    3-21-2012 *Stable*
         'Added  : Can now make a empty property by just using a semicolon. p; is now the same as p=;
         'Change : AllowEqualsInValue is now in Info.
         'Change : } can now end the base group. so "p=v;}p2=2;" would only parse as "p=v;" because } ended the base group.
-        'Change : Commants are now /*comment*/ (was //comment\\)
+        'Change : Comments are now /*comment*/ (was //comment\\)
         'Change : The brace styles are now a bit simpiler.   Uses last groups style if none is specfied. falls back to BSD_Allman if base group is none.
         'Change : There is now NoStyle
         'Fixed  : Did not spefi that parse is the same as fromstring.
