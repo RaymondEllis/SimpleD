@@ -94,6 +94,10 @@ public class Group {
 				case GroupsOnNewLine:
 					tmp += "\n"+getTabs(tabCount-1)+name+"{";
 					break;
+				case None:
+					break;
+			default:
+				break;
 			}
 		}
 		
@@ -115,6 +119,8 @@ public class Group {
 					tmp+="\n"+getTabs(tabCount+1)+ Groups.get(i).toString(false, tabCount+1, false, braceStyle);
 				}
 				break;
+			default:
+				break;
 		}
 		
 		//} end of group.
@@ -131,6 +137,8 @@ public class Group {
 					break;
 				case GNU:
 					tmp+="\n"+getTabs(tabCount)+"  }";
+					break;
+				default:
 					break;
 			}
 		}

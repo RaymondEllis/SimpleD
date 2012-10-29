@@ -50,6 +50,7 @@ Namespace SimpleD
         '
         '1.2    Redo the helper class.  It needs to folow some standers.
         'Change : The name of the first group now gets saved. (if it's not empty)
+        'Chagee : Comments are now ignored in names. (group and property)
         '
         '1.1    3-21-2012 *Stable*
         'Added  : Can now make a empty property by just using a semicolon. p; is now the same as p=;
@@ -132,10 +133,11 @@ Namespace SimpleD
                                 State = 1 'In property
 
                             Case ";"c
-                                If tName.Trim = "" Then
+                                tName = tName.Trim
+                                If tName = "" Then
                                     Results &= " #Found end of property but no name&value at index: " & Index & " Could need AllowSemicolonInValue enabled."
                                 Else
-                                    Properties.Add(New [Property](tName.Trim, ""))
+                                    Properties.Add(New [Property](tName, ""))
                                 End If
                                 tName = ""
                                 tValue = ""
@@ -147,13 +149,12 @@ Namespace SimpleD
                                 Groups.Add(newGroup)
                                 tName = ""
 
-                            Case "}"c 'End of current group
+                            Case "}"c 'End current group
                                 Return Results
 
 
-                            Case "*"c
-                                If Index - 1 >= 0 AndAlso Data(Index - 1) = "/"c Then
-                                    tName = ""
+                            Case "/"c '/* start of comment
+                                If Index + 1 < Data.Length AndAlso Data(Index + 1) = "*"c Then
                                     State = 2 'In comment
                                     ErrorIndex = Index
                                 Else
