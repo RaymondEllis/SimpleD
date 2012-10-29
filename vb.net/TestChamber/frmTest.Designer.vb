@@ -50,6 +50,7 @@ Partial Class frmTest
         Me.comBraceStyle = New System.Windows.Forms.ComboBox()
         Me.chkAllowEqualsInValue = New System.Windows.Forms.CheckBox()
         Me.chkAllowSemicolon = New System.Windows.Forms.CheckBox()
+        Me.btnRunTests = New System.Windows.Forms.Button()
         Me.GroupBox1.SuspendLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox2.SuspendLayout()
@@ -338,6 +339,15 @@ Partial Class frmTest
         Me.chkAllowSemicolon.Text = "Allow Semicolon In Value"
         Me.chkAllowSemicolon.UseVisualStyleBackColor = True
         '
+        'btnRunTests
+        '
+        Me.btnRunTests.Location = New System.Drawing.Point(206, 246)
+        Me.btnRunTests.Name = "btnRunTests"
+        Me.btnRunTests.Size = New System.Drawing.Size(75, 23)
+        Me.btnRunTests.TabIndex = 15
+        Me.btnRunTests.Text = "Run tests"
+        Me.btnRunTests.UseVisualStyleBackColor = True
+        '
         'frmTest
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -345,6 +355,7 @@ Partial Class frmTest
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.ClientSize = New System.Drawing.Size(1062, 797)
+        Me.Controls.Add(Me.btnRunTests)
         Me.Controls.Add(Me.comBraceStyle)
         Me.Controls.Add(Me.panResize)
         Me.Controls.Add(Me.chkAllowSemicolon)
@@ -406,5 +417,6 @@ Partial Class frmTest
     Friend WithEvents comBraceStyle As System.Windows.Forms.ComboBox
     Friend WithEvents chkAllowEqualsInValue As System.Windows.Forms.CheckBox
     Friend WithEvents chkAllowSemicolon As System.Windows.Forms.CheckBox
+    Friend WithEvents btnRunTests As System.Windows.Forms.Button
 
 End Class

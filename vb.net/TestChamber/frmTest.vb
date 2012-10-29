@@ -220,4 +220,8 @@ Public Class frmTest
     Private Sub comBraceStyle_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles comBraceStyle.SelectedIndexChanged
         btnOpen_Click(sender, e)
     End Sub
+
+    Private Sub btnRunTests_Click(sender As System.Object, e As System.EventArgs) Handles btnRunTests.Click
+        frmRunTests.Show()
+    End Sub
 End Class

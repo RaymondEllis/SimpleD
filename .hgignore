@@ -2,3 +2,5 @@ relre:obj
 relre:bin
 syntax: glob
 *.zip
+*.suo
+*.user

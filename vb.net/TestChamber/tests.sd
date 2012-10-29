@@ -1,0 +1,21 @@
+﻿"Group tests:"
+g{
+g{}
+"Property tests:"
+p
+p;
+
+p=
+p=;
+"Group and Property tests:"
+g{p
+g{p;}
+
+g{g2{p
+g{g2{p;}}
+
+g{p=;g2{
+g{p;g2{}}
+"Comment tests:"
+g/*1*/{p/*a*/2=/*test*/;
+g{p2=/*test*/;}
