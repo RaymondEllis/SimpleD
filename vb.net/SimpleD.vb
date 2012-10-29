@@ -51,6 +51,7 @@ Namespace SimpleD
         '1.2    Redo the helper class.  It needs to folow some standers.
         'Change : The name of the first group now gets saved. (if it's not empty)
         'Chagee : Comments are now ignored in names. (group and property)
+        'Change : Empty groups and properties are nolonger added.
         '
         '1.1    3-21-2012 *Stable*
         'Added  : Can now make a empty property by just using a semicolon. p; is now the same as p=;
@@ -146,7 +147,7 @@ Namespace SimpleD
                                 Index += 1
                                 Dim newGroup As New Group(tName.Trim)
                                 Results &= newGroup.FromStringBase(False, Data, Index)
-                                Groups.Add(newGroup)
+                                If Not newGroup.IsEmpty Then Groups.Add(newGroup)
                                 tName = ""
 
                             Case "}"c 'End current group
@@ -172,7 +173,8 @@ Namespace SimpleD
                                 Index += 1
                                 tValue &= chr
                             Else
-                                Properties.Add(New [Property](tName.Trim, tValue))
+                                Dim newPorp As New [Property](tName.Trim, tValue)
+                                If Not newPorp.IsEmpty Then Properties.Add(newPorp)
                                 tName = ""
                                 tValue = ""
                                 State = 0
@@ -323,6 +325,10 @@ Namespace SimpleD
 
 #End Region
 
+        Public Function IsEmpty() As Boolean
+            If Groups.Count = 0 And Properties.Count = 0 And Name = "" Then Return True
+            Return False
+        End Function
     End Class
 
     ''' <summary>
@@ -354,5 +360,10 @@ Namespace SimpleD
         Shared Operator <>(ByVal left As [Property], ByVal right As [Property]) As Boolean
             Return Not left = right
         End Operator
+
+        Public Function IsEmpty() As Boolean
+            If Name = "" And Value = "" Then Return True
+            Return False
+        End Function
     End Class
 End Namespace
