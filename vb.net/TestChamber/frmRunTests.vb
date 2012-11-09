@@ -23,7 +23,9 @@
         'Load and run
         Dim sr As New IO.StreamReader("tests.sd")
         Dim i As Integer = -1
+        Dim line As Integer = -1
         Do Until sr.EndOfStream
+            line += 3
             Dim tmpComment As String = sr.ReadLine
             'Do we setup?
             If tmpComment = """Setup""" Then
@@ -34,12 +36,11 @@
                 If tmpComment <> "" And tmpComment <> """""" Then lastComment = tmpComment
                 'Load the test
                 i += 1
-                Tests.Add(New Test(i, sr.ReadLine, sr.ReadLine, lastComment))
+                Tests.Add(New Test(i, sr.ReadLine, sr.ReadLine, lastComment, line))
                 lstTests.Items.Add("U: " & Tests(Tests.Count - 1).test)
                 'Run the test
                 If RunTest(Tests(i)) Then passed += 1
             End If
-
         Loop
         sr.Close()
 
@@ -85,6 +86,7 @@
         txtOutput.Text = test.output
         txtExpectedOutput.Text = test.expected
         lblComment.Text = "Last comment: " & test.comment
+        lblLine.Text = "Line: " & test.line
     End Sub
 
 
@@ -96,12 +98,14 @@
         Public expected As String
 
         Public comment As String
+        Public line As Integer
 
-        Sub New(ByRef index As Integer, ByRef test As String, ByRef expected As String, ByRef commant As String)
+        Sub New(ByRef index As Integer, ByRef test As String, ByRef expected As String, ByRef commant As String, ByRef line As Integer)
             Me.Index = index
             Me.test = test
             Me.expected = expected
             Me.comment = commant
+            Me.line = line
         End Sub
 
         Public Overrides Function ToString() As String

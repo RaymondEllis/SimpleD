@@ -31,6 +31,7 @@ Partial Class frmRunTests
         Me.txtTest = New System.Windows.Forms.TextBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.lblComment = New System.Windows.Forms.Label()
+        Me.lblLine = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'lstTests
@@ -114,11 +115,21 @@ Partial Class frmRunTests
         Me.lblComment.TabIndex = 5
         Me.lblComment.Text = "Last comment: "
         '
+        'lblLine
+        '
+        Me.lblLine.AutoSize = True
+        Me.lblLine.Location = New System.Drawing.Point(577, 12)
+        Me.lblLine.Name = "lblLine"
+        Me.lblLine.Size = New System.Drawing.Size(33, 13)
+        Me.lblLine.TabIndex = 7
+        Me.lblLine.Text = "Line: "
+        '
         'frmRunTests
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(687, 263)
+        Me.Controls.Add(Me.lblLine)
         Me.Controls.Add(Me.txtTest)
         Me.Controls.Add(Me.lblComment)
         Me.Controls.Add(Me.Label3)
@@ -145,4 +156,5 @@ Partial Class frmRunTests
     Friend WithEvents txtTest As System.Windows.Forms.TextBox
     Friend WithEvents Label3 As System.Windows.Forms.Label
     Friend WithEvents lblComment As System.Windows.Forms.Label
+    Friend WithEvents lblLine As System.Windows.Forms.Label
 End Class

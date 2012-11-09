@@ -52,6 +52,7 @@ Namespace SimpleD
         'Change : The name of the first group now gets saved. (if it's not empty)
         'Chagee : Comments are now ignored in names. (group and property)
         'Change : Empty groups and properties are nolonger added.
+        'Change : Properties that have not been ended now parse properly. ("p=v" is "p=v;" "p" is "")
         '
         '1.1    3-21-2012 *Stable*
         'Added  : Can now make a empty property by just using a semicolon. p; is now the same as p=;
@@ -206,7 +207,9 @@ Namespace SimpleD
             Loop
 
             If State = 1 Then
-                Results &= " #Missing end of property " & tName.Trim & " at index: " & ErrorIndex
+                tName = tName.Trim
+                If tName <> "" Then Properties.Add(New [Property](tName, tValue))
+                Results &= " #Missing end of property " & tName & " at index: " & ErrorIndex
             ElseIf State = 2 Then
                 Results &= " #Missing end of comment " & tName.Trim & " at index: " & ErrorIndex
             ElseIf Not IsFirst Then 'The base group does not need to be ended.
