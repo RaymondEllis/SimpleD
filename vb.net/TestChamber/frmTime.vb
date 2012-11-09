@@ -15,7 +15,7 @@
             timer.Start()
             Dim sd As New SimpleD.Group()
             sd.FromString(str)
-            sd.ToString()
+            'sd.ToString()
             timer.Stop()
             time += timer.ElapsedMilliseconds
         Next
@@ -38,7 +38,7 @@
             timer.Start()
             Dim g As New SimpleD.Group()
             g.FromString(str)
-            g.ToString()
+            'g.ToString()
             timer.Stop()
             time += timer.ElapsedMilliseconds
         Next

@@ -1,4 +1,7 @@
-﻿"Group tests:"
+﻿"Setup"
+false
+false
+"Group tests:"
 {}
 
 ""
@@ -21,40 +24,55 @@ g{g2{}g3{g3.1{}}}
 
 ""
 p
-p;
 
+""
 p=
 p=;
-
+""
 p=v;
 p=v;
-
+""
 p=v
 p=v;
 "Group and Property tests:"
 g{p=v;}
 g{p=v;}
-
+""
 p=g{};
 p=g{};
-
+""
 g{p
-g{p;}
-
+g{}
+""
 g{g2{p
-g{g2{p;}}
-
+g{g2{}}
+""
 g{p=;g2{
 g{p;g2{}}
 "Comment tests:"
 g/*1*/{p/*a*/2=/*test*/;
 g{p2=/*test*/;}
-
+""
 /*1*/t/*2*/;
 t;
-
+""
 /*Nothing*/
 
 ""
 t/*1*/;/*2*/
 t;
+"Setup"
+true
+true
+"= and ; in names and values"
+p==;
+p==;
+""
+p=;;;
+p=;;;
+""
+p=;;=;;;
+p=;;=;;;
+""
+g={p=v;;};
+g={p=v;;};

@@ -210,7 +210,7 @@ Namespace SimpleD
             ElseIf State = 2 Then
                 Results &= " #Missing end of comment " & tName.Trim & " at index: " & ErrorIndex
             ElseIf Not IsFirst Then 'The base group does not need to be ended.
-                Results &= "  #Missing end of group " & Name.Trim & " at index: " & StartIndex
+                Results &= "  #Missing end of group " & Name & " at index: " & StartIndex
             End If
 
             Return Results
