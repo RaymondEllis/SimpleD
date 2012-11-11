@@ -49,6 +49,7 @@ Namespace SimpleD
         'Public CheckIllegalChars As Boolean = True 'Should be apart of the Helper.
         '
         '1.2    Redo the helper class.  It needs to folow some standers.
+        'Added  : FromStream (In my tests it was slower.)
         'Change : The name of the first group now gets saved. (if it's not empty)
         'Chagee : Comments are now ignored in names. (group and property)
         'Change : Empty groups and properties are nolonger added.
@@ -214,6 +215,135 @@ Namespace SimpleD
                 Results &= " #Missing end of comment " & tName.Trim & " at index: " & ErrorIndex
             ElseIf Not IsFirst Then 'The base group does not need to be ended.
                 Results &= "  #Missing end of group " & Name & " at index: " & StartIndex
+            End If
+
+            Return Results
+        End Function
+
+        ''' <summary>
+        ''' Does NOT clear groups/properties.
+        ''' Note: It will continue loading even with errors.
+        ''' </summary>
+        ''' <param name="Data">The text stream to parse.</param>
+        ''' <returns>Errors if any.</returns>
+        ''' <remarks></remarks>
+        Public Function FromStream(ByVal Data As IO.TextReader) As String
+            Return FromStreamBase(True, Data, 1)
+        End Function
+        Public Function FromStream(ByVal Data As IO.TextReader, ByVal CloseStream As Boolean) As String
+            Return FromStreamBase(True, Data, 1)
+            If CloseStream Then Data.Close()
+        End Function
+        Private Function FromStreamBase(ByVal IsFirst As Boolean, ByVal Data As IO.TextReader, ByRef Line As Integer) As String
+            If Data Is Nothing Then Return "Data is empty!"
+
+            'Names can not contain { } ; /*
+            'Property names can only contain = if AllowEqualsInValue is set to true.
+            'p=g{};
+
+
+            Dim Results As String = "" 'Holds errors to be returned later.
+            Dim State As Byte = 0 '0 = Nothing    1 = In property   2 = In comment
+
+            Dim StartLine As Integer = Line 'The start of the group.
+            Dim ErrorLine As Integer = 0 'Used for error handling.
+            Dim tName As String = "" 'Group or property name
+            Dim tValue As String = ""
+
+            Dim cCode As Integer = 0
+            Do Until cCode = -1
+                cCode = Data.Read
+                Dim chr As Char = ChrW(cCode)
+
+                Select Case State
+                    Case 0 'In nothing
+
+                        Select Case chr
+                            Case "="c
+                                ErrorLine = Line
+                                State = 1 'In property
+
+                            Case ";"c
+                                tName = tName.Trim
+                                If tName = "" Then
+                                    Results &= " #Found end of property but no name&value at line: " & Line & " Could need AllowSemicolonInValue enabled."
+                                Else
+                                    Properties.Add(New [Property](tName, ""))
+                                End If
+                                tName = ""
+                                tValue = ""
+
+                            Case "{"c 'New group
+                                Dim newGroup As New Group(tName.Trim)
+                                Results &= newGroup.FromStreamBase(False, Data, Line)
+                                If Not newGroup.IsEmpty Then Groups.Add(newGroup)
+                                tName = ""
+
+                            Case "}"c 'End current group
+                                Return Results
+
+
+                            Case "/"c '/* start of comment
+                                If ChrW(Data.Peek) = "*"c Then
+                                    Data.Read()
+                                    State = 2 'In comment
+                                    ErrorLine = Line
+                                Else
+                                    tName &= chr
+                                End If
+
+                            Case Else
+                                tName &= chr
+                        End Select
+
+
+                    Case 1 'get property value
+                        If chr = ";"c Then
+                            If (AllowSemicolonInValue) AndAlso ChrW(Data.Peek) = ";"c Then
+                                Data.Read()
+                                tValue &= chr
+                            Else
+                                Dim newPorp As New [Property](tName.Trim, tValue)
+                                If Not newPorp.IsEmpty Then Properties.Add(newPorp)
+                                tName = ""
+                                tValue = ""
+                                State = 0
+                            End If
+
+
+                        ElseIf chr = "="c Then 'error
+                            If AllowEqualsInValue Then
+                                tValue &= chr
+                            Else
+                                Results &= "  #Missing end of property " & tName.Trim & " at line: " & ErrorLine
+                                ErrorLine = Line
+                                tName = ""
+                                tValue = ""
+                            End If
+                        Else
+                            tValue &= chr
+                        End If
+
+                    Case 2 'In comment
+                        If chr = "/"c AndAlso ChrW(Data.Peek) = "*"c Then
+                            Data.Read()
+                            State = 0
+                        End If
+
+
+                End Select
+
+                If chr = vbLf Then Line += 1
+            Loop
+
+            If State = 1 Then
+                tName = tName.Trim
+                If tName <> "" Then Properties.Add(New [Property](tName, tValue))
+                Results &= " #Missing end of property " & tName & " at line: " & ErrorLine
+            ElseIf State = 2 Then
+                Results &= " #Missing end of comment " & tName.Trim & " at line: " & ErrorLine
+            ElseIf Not IsFirst Then 'The base group does not need to be ended.
+                Results &= "  #Missing end of group " & Name & " at line: " & StartLine
             End If
 
             Return Results

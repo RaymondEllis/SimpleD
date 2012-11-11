@@ -36,6 +36,9 @@ Partial Class frmTime
         Me.Label6 = New System.Windows.Forms.Label()
         Me.txtTime2 = New System.Windows.Forms.TextBox()
         Me.txtTotalTime2 = New System.Windows.Forms.TextBox()
+        Me.btnFromStream = New System.Windows.Forms.Button()
+        Me.lblTest2 = New System.Windows.Forms.Label()
+        Me.lblTest1 = New System.Windows.Forms.Label()
         CType(Me.numCount, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         Me.SuspendLayout()
@@ -106,11 +109,12 @@ Partial Class frmTime
         '
         'Panel1
         '
+        Me.Panel1.Controls.Add(Me.btnFromStream)
         Me.Panel1.Controls.Add(Me.Label2)
         Me.Panel1.Controls.Add(Me.numCount)
         Me.Panel1.Controls.Add(Me.btnFromString)
         Me.Panel1.Controls.Add(Me.btnToString)
-        Me.Panel1.Location = New System.Drawing.Point(15, 58)
+        Me.Panel1.Location = New System.Drawing.Point(15, 36)
         Me.Panel1.Name = "Panel1"
         Me.Panel1.Size = New System.Drawing.Size(200, 99)
         Me.Panel1.TabIndex = 6
@@ -163,11 +167,40 @@ Partial Class frmTime
         Me.txtTotalTime2.Size = New System.Drawing.Size(202, 20)
         Me.txtTotalTime2.TabIndex = 5
         '
+        'btnFromStream
+        '
+        Me.btnFromStream.Location = New System.Drawing.Point(84, 42)
+        Me.btnFromStream.Name = "btnFromStream"
+        Me.btnFromStream.Size = New System.Drawing.Size(75, 23)
+        Me.btnFromStream.TabIndex = 4
+        Me.btnFromStream.Text = "FromStream"
+        Me.btnFromStream.UseVisualStyleBackColor = True
+        '
+        'lblTest2
+        '
+        Me.lblTest2.AutoSize = True
+        Me.lblTest2.Location = New System.Drawing.Point(220, 158)
+        Me.lblTest2.Name = "lblTest2"
+        Me.lblTest2.Size = New System.Drawing.Size(34, 13)
+        Me.lblTest2.TabIndex = 7
+        Me.lblTest2.Text = "Test2"
+        '
+        'lblTest1
+        '
+        Me.lblTest1.AutoSize = True
+        Me.lblTest1.Location = New System.Drawing.Point(12, 158)
+        Me.lblTest1.Name = "lblTest1"
+        Me.lblTest1.Size = New System.Drawing.Size(34, 13)
+        Me.lblTest1.TabIndex = 7
+        Me.lblTest1.Text = "Test1"
+        '
         'frmTime
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(435, 269)
+        Me.Controls.Add(Me.lblTest1)
+        Me.Controls.Add(Me.lblTest2)
         Me.Controls.Add(Me.Panel1)
         Me.Controls.Add(Me.txtTotalTime2)
         Me.Controls.Add(Me.txtTotalTime)
@@ -201,4 +234,7 @@ Partial Class frmTime
     Friend WithEvents Label6 As System.Windows.Forms.Label
     Friend WithEvents txtTime2 As System.Windows.Forms.TextBox
     Friend WithEvents txtTotalTime2 As System.Windows.Forms.TextBox
+    Friend WithEvents btnFromStream As System.Windows.Forms.Button
+    Friend WithEvents lblTest2 As System.Windows.Forms.Label
+    Friend WithEvents lblTest1 As System.Windows.Forms.Label
 End Class
