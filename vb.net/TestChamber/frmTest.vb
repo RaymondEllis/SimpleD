@@ -215,6 +215,9 @@ Public Class frmTest
         chkAllowEqualsInValue.Checked = SimpleD.AllowEqualsInValue
         chkAllowSemicolon.Checked = SimpleD.AllowSemicolonInValue
 
+        Dim g As New SimpleD.Group
+        g.FromStream(New IO.StreamReader("smallfiletest.sd"))
+        txtFile.Text = g.ToString(False)
     End Sub
 
     Private Sub comBraceStyle_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles comBraceStyle.SelectedIndexChanged
