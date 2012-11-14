@@ -111,6 +111,8 @@
     <None Include="tests.sd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Time Tests\BIGsmallfiletest.sd" />
+    <None Include="Time Tests\smallfiletest.sd" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SimpleD.vbproj">

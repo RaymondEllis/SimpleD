@@ -1,9 +1,9 @@
 ﻿Public Class frmTime
+    Dim str As String
+    Dim file As String
 
     Private Sub btnFromString_FromStringL_Click(sender As System.Object, e As System.EventArgs) Handles btnFromString_FromStringL.Click
         startTesting()
-
-        Dim str As String = frmTest.txtFile.Text
 
         runTest("FromString", Sub()
                                   Dim sd As New SimpleD.Group
@@ -64,8 +64,6 @@
             Return
         End If
 
-        ' txtTime.Text = time / numCount.Value
-        ' txtTotalTime.Text = TotalTimer.ElapsedMilliseconds
 
         testIndex += 1
 
@@ -97,8 +95,6 @@
     Private Sub btnFromStringStream_Click(sender As System.Object, e As System.EventArgs) Handles btnFromStringStream.Click
         startTesting()
 
-        Dim file As String = "smallfiletest.sd"
-
         runTest("FromString", Sub()
                                   Dim sd As New SimpleD.Group()
                                   Dim sr As New IO.StreamReader(file)
@@ -120,8 +116,6 @@
     Private Sub btnFromEqualsSemi_Click(sender As System.Object, e As System.EventArgs) Handles btnFromEqualsSemi.Click
         startTesting()
 
-        Dim str As String = frmTest.txtFile.Text
-
         SimpleD.AllowEqualsInValue = False
         SimpleD.AllowSemicolonInValue = False
         runTest("Disallowed", Sub()
@@ -139,5 +133,17 @@
                            End Sub)
 
         stopTesting()
+    End Sub
+
+    Private Sub frmTime_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+        comFile.Items.AddRange(IO.Directory.GetFiles("..\..\Time Tests\", "*.sd"))
+        comFile.SelectedIndex = 0
+    End Sub
+
+    Private Sub comFile_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles comFile.SelectedIndexChanged
+        file = comFile.Items(comFile.SelectedIndex)
+        Dim sr As New IO.StreamReader(file)
+        str = sr.ReadToEnd
+        sr.Close()
     End Sub
 End Class

@@ -33,6 +33,7 @@ Partial Class frmTime
         Me.btnFromString_FromStringL = New System.Windows.Forms.Button()
         Me.panTests = New System.Windows.Forms.Panel()
         Me.lblStatus = New System.Windows.Forms.Label()
+        Me.comFile = New System.Windows.Forms.ComboBox()
         CType(Me.numCount, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
@@ -69,6 +70,7 @@ Partial Class frmTime
         '
         'Panel1
         '
+        Me.Panel1.Controls.Add(Me.comFile)
         Me.Panel1.Controls.Add(Me.Label2)
         Me.Panel1.Controls.Add(Me.GroupBox2)
         Me.Panel1.Controls.Add(Me.GroupBox1)
@@ -142,6 +144,14 @@ Partial Class frmTime
         Me.lblStatus.TabIndex = 9
         Me.lblStatus.Text = "Status:"
         '
+        'comFile
+        '
+        Me.comFile.FormattingEnabled = True
+        Me.comFile.Location = New System.Drawing.Point(132, 15)
+        Me.comFile.Name = "comFile"
+        Me.comFile.Size = New System.Drawing.Size(226, 21)
+        Me.comFile.TabIndex = 11
+        '
         'frmTime
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -172,4 +182,5 @@ Partial Class frmTime
     Friend WithEvents GroupBox1 As System.Windows.Forms.GroupBox
     Friend WithEvents btnFromStringStream As System.Windows.Forms.Button
     Friend WithEvents btnFromEqualsSemi As System.Windows.Forms.Button
+    Friend WithEvents comFile As System.Windows.Forms.ComboBox
 End Class
