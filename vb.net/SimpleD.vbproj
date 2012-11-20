@@ -54,6 +54,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SimpleD.Extra.vb" />
     <Compile Include="SimpleD_Helper.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="SimpleD.vb" />
