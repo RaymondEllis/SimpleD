@@ -26,14 +26,13 @@ Partial Class frmTime
         Me.numCount = New System.Windows.Forms.NumericUpDown()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.comFile = New System.Windows.Forms.ComboBox()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.btnFromStringStream = New System.Windows.Forms.Button()
         Me.btnFromEqualsSemi = New System.Windows.Forms.Button()
-        Me.btnFromString_FromStringL = New System.Windows.Forms.Button()
         Me.panTests = New System.Windows.Forms.Panel()
         Me.lblStatus = New System.Windows.Forms.Label()
-        Me.comFile = New System.Windows.Forms.ComboBox()
         CType(Me.numCount, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
@@ -80,6 +79,14 @@ Partial Class frmTime
         Me.Panel1.Size = New System.Drawing.Size(373, 311)
         Me.Panel1.TabIndex = 6
         '
+        'comFile
+        '
+        Me.comFile.FormattingEnabled = True
+        Me.comFile.Location = New System.Drawing.Point(132, 15)
+        Me.comFile.Name = "comFile"
+        Me.comFile.Size = New System.Drawing.Size(226, 21)
+        Me.comFile.TabIndex = 11
+        '
         'GroupBox2
         '
         Me.GroupBox2.Location = New System.Drawing.Point(185, 58)
@@ -93,7 +100,6 @@ Partial Class frmTime
         '
         Me.GroupBox1.Controls.Add(Me.btnFromStringStream)
         Me.GroupBox1.Controls.Add(Me.btnFromEqualsSemi)
-        Me.GroupBox1.Controls.Add(Me.btnFromString_FromStringL)
         Me.GroupBox1.Location = New System.Drawing.Point(6, 58)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Size = New System.Drawing.Size(173, 237)
@@ -103,7 +109,7 @@ Partial Class frmTime
         '
         'btnFromStringStream
         '
-        Me.btnFromStringStream.Location = New System.Drawing.Point(6, 106)
+        Me.btnFromStringStream.Location = New System.Drawing.Point(6, 71)
         Me.btnFromStringStream.Name = "btnFromStringStream"
         Me.btnFromStringStream.Size = New System.Drawing.Size(158, 23)
         Me.btnFromStringStream.TabIndex = 4
@@ -112,21 +118,12 @@ Partial Class frmTime
         '
         'btnFromEqualsSemi
         '
-        Me.btnFromEqualsSemi.Location = New System.Drawing.Point(6, 54)
+        Me.btnFromEqualsSemi.Location = New System.Drawing.Point(6, 19)
         Me.btnFromEqualsSemi.Name = "btnFromEqualsSemi"
         Me.btnFromEqualsSemi.Size = New System.Drawing.Size(158, 46)
         Me.btnFromEqualsSemi.TabIndex = 3
         Me.btnFromEqualsSemi.Text = "no Eueals or Semi" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Equals and Semi VS"
         Me.btnFromEqualsSemi.UseVisualStyleBackColor = True
-        '
-        'btnFromString_FromStringL
-        '
-        Me.btnFromString_FromStringL.Location = New System.Drawing.Point(6, 19)
-        Me.btnFromString_FromStringL.Name = "btnFromString_FromStringL"
-        Me.btnFromString_FromStringL.Size = New System.Drawing.Size(158, 23)
-        Me.btnFromString_FromStringL.TabIndex = 3
-        Me.btnFromString_FromStringL.Text = "FromString VS FromStringL"
-        Me.btnFromString_FromStringL.UseVisualStyleBackColor = True
         '
         'panTests
         '
@@ -143,14 +140,6 @@ Partial Class frmTime
         Me.lblStatus.Size = New System.Drawing.Size(40, 13)
         Me.lblStatus.TabIndex = 9
         Me.lblStatus.Text = "Status:"
-        '
-        'comFile
-        '
-        Me.comFile.FormattingEnabled = True
-        Me.comFile.Location = New System.Drawing.Point(132, 15)
-        Me.comFile.Name = "comFile"
-        Me.comFile.Size = New System.Drawing.Size(226, 21)
-        Me.comFile.TabIndex = 11
         '
         'frmTime
         '
@@ -175,7 +164,6 @@ Partial Class frmTime
     Friend WithEvents numCount As System.Windows.Forms.NumericUpDown
     Friend WithEvents Label2 As System.Windows.Forms.Label
     Friend WithEvents Panel1 As System.Windows.Forms.Panel
-    Friend WithEvents btnFromString_FromStringL As System.Windows.Forms.Button
     Friend WithEvents panTests As System.Windows.Forms.Panel
     Friend WithEvents lblStatus As System.Windows.Forms.Label
     Friend WithEvents GroupBox2 As System.Windows.Forms.GroupBox

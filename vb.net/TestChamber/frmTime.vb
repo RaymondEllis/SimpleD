@@ -2,24 +2,6 @@
     Dim str As String
     Dim file As String
 
-    Private Sub btnFromString_FromStringL_Click(sender As System.Object, e As System.EventArgs) Handles btnFromString_FromStringL.Click
-        startTesting()
-
-        runTest("FromString", Sub()
-                                  Dim sd As New SimpleD.Group
-                                  sd.FromString(str)
-                                  sd = Nothing
-                              End Sub)
-
-        runTest("FromStringL", Sub()
-                                   Dim sd As New SimpleD.Group
-                                   sd.FromStringBaseL(True, str, 0, 1)
-                                   sd = Nothing
-                               End Sub)
-
-        stopTesting()
-    End Sub
-
 #Region "Testing"
     Private LoopTime As Integer
     Private Sub startTesting()

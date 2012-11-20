@@ -39,8 +39,8 @@ Imports Microsoft.VisualBasic
 Namespace SimpleD
     Public Module Info
         'What things can NOT contain.
-        '   Property names { } /* =
-        '   Property values ;(is allowed if specafied) =(is allowed if specafied)
+        '   Property names { } /* = ;
+        '   Property values ;(allowed if specified) =(allowed if specified)
         '   Group names { } /* = ;
         Public Const Version As Single = 1.2
         Public Const FileVersion As Single = 3
@@ -48,21 +48,22 @@ Namespace SimpleD
         Public AllowSemicolonInValue As Boolean = True
         'Public CheckIllegalChars As Boolean = True 'Should be apart of the Helper.
         '
-        '1.2    Redo the helper class.  It needs to folow some standers.
+        '1.2    Redo the helper class.  It needs to folow some standards.
         'Added  : FromStream (In my tests it was slower.)
         'Change : The name of the first group now gets saved. (if it's not empty)
         'Chagee : Comments are now ignored in names. (group and property)
-        'Change : Empty groups and properties are nolonger added.
-        'Change : Properties that have not been ended now parse properly. ("p=v" is "p=v;" "p" is "")
+        'Change : Empty groups and properties are nolonger added. A group has to have no name, no sub groups, and no properties to be empty.
+        'Change : Results now output line of error not index.
+        'Fixed  : Properties that have not been ended now parse properly. ("p=v" is "p=v;" "p" is "")
         '
         '1.1    3-21-2012 *Stable*
         'Added  : Can now make a empty property by just using a semicolon. p; is now the same as p=;
         'Change : AllowEqualsInValue is now in Info.
         'Change : } can now end the base group. so "p=v;}p2=2;" would only parse as "p=v;" because } ended the base group.
         'Change : Comments are now /*comment*/ (was //comment\\)
-        'Change : The brace styles are now a bit simpiler.   Uses last groups style if none is specfied. falls back to BSD_Allman if base group is none.
+        'Change : The brace styles are now a bit simpiler.   Uses last groups style if none is specified. falls back to BSD_Allman if base group is none.
         'Change : There is now NoStyle
-        'Fixed  : Did not spefi that parse is the same as fromstring.
+        'Fixed  : Did not specify that parse is the same as fromstring.
         'Fixed  : Empty groups now save. Fixes Issue#2 "g{p=;g2{" better.
         '
         '1      7-18-2011 *Stable*
@@ -105,132 +106,14 @@ Namespace SimpleD
         ''' <returns>Errors if any.</returns>
         ''' <remarks></remarks>
         Public Function FromString(ByVal Data As String) As String
-            Return FromStringBase(True, Data, 0)
+            Return FromStringBase(True, Data, 0, 1)
         End Function
 
-        Private Function FromStringBase(ByVal IsFirst As Boolean, ByVal Data As String, ByRef Index As Integer) As String
+        Private Function FromStringBase(ByVal IsFirst As Boolean, ByVal Data As String, ByRef Index As Integer, ByRef Line As Integer) As String
             If Data = "" Then Return "Data is empty!"
 
-            'Names can not contain { } ; /*
-            'Property names can only contain = if AllowEqualsInValue is set to true.
-            'p=g{};
-
-
             Dim Results As String = "" 'Holds errors to be returned later.
-            Dim State As Byte = 0 '0 = Nothing    1 = In property   2 = In comment
-
-            Dim StartIndex As Integer = Index 'The start of the group.
-            Dim ErrorIndex As Integer = 0 'Used for error handling.
-            Dim tName As String = "" 'Group or property name
-            Dim tValue As String = ""
-
-            Do Until Index > Data.Length - 1
-                Dim chr As Char = Data(Index)
-
-                Select Case State
-                    Case 0 'In nothing
-
-                        Select Case chr
-                            Case "="c
-                                ErrorIndex = Index
-                                State = 1 'In property
-
-                            Case ";"c
-                                tName = tName.Trim
-                                If tName = "" Then
-                                    Results &= " #Found end of property but no name&value at index: " & Index & " Could need AllowSemicolonInValue enabled."
-                                Else
-                                    Properties.Add(New [Property](tName, ""))
-                                End If
-                                tName = ""
-                                tValue = ""
-
-                            Case "{"c 'New group
-                                Index += 1
-                                Dim newGroup As New Group(tName.Trim)
-                                Results &= newGroup.FromStringBase(False, Data, Index)
-                                If Not newGroup.IsEmpty Then Groups.Add(newGroup)
-                                tName = ""
-
-                            Case "}"c 'End current group
-                                Return Results
-
-
-                            Case "/"c '/* start of comment
-                                If Index + 1 < Data.Length AndAlso Data(Index + 1) = "*"c Then
-                                    State = 2 'In comment
-                                    ErrorIndex = Index
-                                Else
-                                    tName &= chr
-                                End If
-
-                            Case Else
-                                tName &= chr
-                        End Select
-
-
-                    Case 1 'get property value
-                        If chr = ";"c Then
-                            If (AllowSemicolonInValue And Index + 1 < Data.Length) AndAlso Data(Index + 1) = ";"c Then
-                                Index += 1
-                                tValue &= chr
-                            Else
-                                Dim newPorp As New [Property](tName.Trim, tValue)
-                                If Not newPorp.IsEmpty Then Properties.Add(newPorp)
-                                tName = ""
-                                tValue = ""
-                                State = 0
-                            End If
-
-
-                        ElseIf chr = "="c Then 'error
-                            If AllowEqualsInValue Then
-                                tValue &= chr
-                            Else
-                                Results &= "  #Missing end of property " & tName.Trim & " at index: " & ErrorIndex
-                                ErrorIndex = Index
-                                tName = ""
-                                tValue = ""
-                            End If
-                        Else
-                            tValue &= chr
-                        End If
-
-                    Case 2 'In comment
-                        If chr = "/"c AndAlso Data(Index - 1) = "*"c Then
-                            State = 0
-                        End If
-
-
-                End Select
-
-                Index += 1
-            Loop
-
-            If State = 1 Then
-                tName = tName.Trim
-                If tName <> "" Then Properties.Add(New [Property](tName, tValue))
-                Results &= " #Missing end of property " & tName & " at index: " & ErrorIndex
-            ElseIf State = 2 Then
-                Results &= " #Missing end of comment " & tName.Trim & " at index: " & ErrorIndex
-            ElseIf Not IsFirst Then 'The base group does not need to be ended.
-                Results &= "  #Missing end of group " & Name & " at index: " & StartIndex
-            End If
-
-            Return Results
-        End Function
-
-
-        Public Function FromStringBaseL(ByVal IsFirst As Boolean, ByVal Data As String, ByRef Index As Integer, ByRef Line As Integer) As String
-            If Data = "" Then Return "Data is empty!"
-
-            'Names can not contain { } ; /*
-            'Property names can only contain = if AllowEqualsInValue is set to true.
-            'p=g{};
-
-
-            Dim Results As String = "" 'Holds errors to be returned later.
-            Dim State As Byte = 0 '0 = Nothing    1 = In property   2 = In comment
+            Dim State As Byte = 0 '0 = Get name    1 = In property   2 = Finish comment
 
             Dim StartLine As Integer = Line 'The start of the group.
             Dim ErrorLine As Integer = 0 'Used for error handling.
@@ -241,7 +124,7 @@ Namespace SimpleD
                 Dim chr As Char = Data(Index)
 
                 Select Case State
-                    Case 0 'In nothing
+                    Case 0 'Get name
 
                         Select Case chr
                             Case "="c
@@ -251,7 +134,7 @@ Namespace SimpleD
                             Case ";"c
                                 tName = tName.Trim
                                 If tName = "" Then
-                                    Results &= " #Found end of property but no name&value at line: " & Line & " Could need AllowSemicolonInValue enabled."
+                                    Results &= " #Found end of property but no name at line: " & Line & " Could need AllowSemicolonInValue enabled."
                                 Else
                                     Properties.Add(New [Property](tName, ""))
                                 End If
@@ -261,7 +144,7 @@ Namespace SimpleD
                             Case "{"c 'New group
                                 Index += 1
                                 Dim newGroup As New Group(tName.Trim)
-                                Results &= newGroup.FromStringBaseL(False, Data, Index, Line)
+                                Results &= newGroup.FromStringBase(False, Data, Index, Line)
                                 If Not newGroup.IsEmpty Then Groups.Add(newGroup)
                                 tName = ""
 
@@ -271,7 +154,7 @@ Namespace SimpleD
 
                             Case "/"c '/* start of comment
                                 If Index + 1 < Data.Length AndAlso Data(Index + 1) = "*"c Then
-                                    State = 2 'In comment
+                                    State = 2 'Finish the comment
                                     ErrorLine = Line
                                 Else
                                     tName &= chr
@@ -284,7 +167,7 @@ Namespace SimpleD
 
                     Case 1 'get property value
                         If chr = ";"c Then
-                            If (AllowSemicolonInValue And Index + 1 < Data.Length) AndAlso Data(Index + 1) = ";"c Then
+                            If AllowSemicolonInValue AndAlso Index + 1 < Data.Length AndAlso Data(Index + 1) = ";"c Then
                                 Index += 1
                                 tValue &= chr
                             Else
@@ -309,7 +192,7 @@ Namespace SimpleD
                             tValue &= chr
                         End If
 
-                    Case 2 'In comment
+                    Case 2 'Finish comment
                         If chr = "/"c AndAlso Data(Index - 1) = "*"c Then
                             State = 0
                         End If
@@ -471,7 +354,7 @@ Namespace SimpleD
         ''' <remarks></remarks>
         Shared Function Parse(ByVal Data As String) As Group
             Dim g As New Group
-            g.FromStringBase(True, Data, 0)
+            g.FromStringBase(True, Data, 0, 1)
             Return g
         End Function
 #End Region
@@ -572,6 +455,9 @@ Namespace SimpleD
 
 #End Region
 
+        ''' <summary>
+        ''' Returns true if there are zero groups, zero properties, and the name is empty.
+        ''' </summary>
         Public Function IsEmpty() As Boolean
             If Groups.Count = 0 And Properties.Count = 0 And Name = "" Then Return True
             Return False
