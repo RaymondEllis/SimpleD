@@ -39,20 +39,27 @@ Imports Microsoft.VisualBasic
 Namespace SimpleD
     Public Module Info
         'What things can NOT contain.
+        '   Group names { } /* = ;
         '   Property names { } /* = ;
         '   Property values ;(allowed if specified) =(allowed if specified)
-        '   Group names { } /* = ;
         Public Const Version As Single = 1.2
         Public Const FileVersion As Single = 3
+        ''' <summary>
+        ''' Only used for parsing a string(FromString)
+        ''' </summary>
         Public AllowEqualsInValue As Boolean = True
         Public AllowSemicolonInValue As Boolean = True
+        ''' <summary>
+        ''' Allow empty groups and empty properties
+        ''' </summary>
+        Public AllowEmpty As Boolean = False
         'Public CheckIllegalChars As Boolean = True 'Should be apart of the Helper.
         '
         '1.2    *InDev* Redo the helper class.  It needs to folow some standards.
         'Added  : FromStream in SimpleD.Extra.vb (In my tests it was slower.)
         'Change : The name of the first group now gets saved. (if it's not empty)
         'Chagee : Comments are now ignored in names. (group and property)
-        'Change : Empty groups and properties are nolonger added. A group has to have no name, no sub groups, and no properties to be empty.
+        'Change : Empty groups and properties are nolonger added.(Unliss AllowEmpty is true) A group has to have no name, no sub groups, and no properties to be empty.
         'Change : Results now output line of error not index.
         'Fixed  : Properties that have not been ended now parse properly. ("p=v" is "p=v;" "p" is "")
 
@@ -120,7 +127,7 @@ Namespace SimpleD
                                 Index += 1
                                 Dim newGroup As New Group(tName.Trim)
                                 Results &= newGroup.FromStringBase(False, Data, Index, Line)
-                                If Not newGroup.IsEmpty Then Groups.Add(newGroup)
+                                If AllowEmpty OrElse Not newGroup.IsEmpty Then Groups.Add(newGroup)
                                 tName = ""
 
                             Case "}"c 'End current group
@@ -147,7 +154,7 @@ Namespace SimpleD
                                 tValue &= chr
                             Else
                                 Dim newPorp As New [Property](tName.Trim, tValue)
-                                If Not newPorp.IsEmpty Then Properties.Add(newPorp)
+                                If AllowEmpty OrElse Not newPorp.IsEmpty Then Properties.Add(newPorp)
                                 tName = ""
                                 tValue = ""
                                 State = 0
@@ -181,7 +188,7 @@ Namespace SimpleD
 
             If State = 1 Then
                 tName = tName.Trim
-                If tName <> "" Then Properties.Add(New [Property](tName, tValue))
+                If AllowEmpty OrElse tName <> "" Then Properties.Add(New [Property](tName, tValue))
                 Results &= " #Missing end of property " & tName & " at line: " & ErrorLine
             ElseIf State = 2 Then
                 Results &= " #Missing end of comment " & tName.Trim & " at line: " & ErrorLine
@@ -230,6 +237,7 @@ Namespace SimpleD
         End Function
 
         Private Function ToStringBase(ByVal SaveName As Boolean, ByVal TabCount As Integer, ByVal AddVersion As Boolean, ByVal braceStyle As Style) As String
+            If Not AllowEmpty And Me.IsEmpty Then Return ""
             If TabCount < -1 Then TabCount = -2 'Tab count Below -1 means use zero tabs.
 
             If Me.BraceStyle <> Style.None Then braceStyle = Me.BraceStyle
@@ -326,7 +334,14 @@ Namespace SimpleD
         ''' Or if there is no value "Name;"
         ''' </summary>
         Public Overrides Function ToString() As String
-            If Value = "" Then Return Name & ";"
+            If Value = "" Then
+                If Name = "" Then
+                    If Not AllowEmpty Then Return ""
+                    Return "=;"
+                Else
+                    Return Name & ";"
+                End If
+            End If
             If AllowSemicolonInValue Then
                 Dim tmpValue As String = Value.Replace(";", ";;")
                 Return Name & "=" & tmpValue & ";"

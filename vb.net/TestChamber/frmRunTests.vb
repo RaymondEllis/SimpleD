@@ -31,7 +31,8 @@
             If tmpComment = """Setup""" Then
                 Boolean.TryParse(sr.ReadLine, SimpleD.AllowEqualsInValue)
                 Boolean.TryParse(sr.ReadLine, SimpleD.AllowSemicolonInValue)
-
+                Boolean.TryParse(sr.ReadLine, SimpleD.AllowEmpty)
+                line += 1 'There is an extra line in 'Setup'.
             Else
                 If tmpComment <> "" And tmpComment <> """""" Then lastComment = tmpComment
                 'Load the test

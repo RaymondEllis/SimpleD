@@ -37,7 +37,7 @@ Imports System.Collections.Generic
 Imports Microsoft.VisualBasic
 
 'Version    : 1.2
-'Last update: 11-20-2012 10am
+'Last update: 12-15-2012 6am
 
 Namespace SimpleD
     Partial Public Class Group
@@ -109,7 +109,7 @@ Namespace SimpleD
                             Case "{"c 'New group
                                 Dim newGroup As New Group(tName.Trim)
                                 Results &= newGroup.FromStreamBase(False, Data, Line)
-                                If Not newGroup.IsEmpty Then Groups.Add(newGroup)
+                                If AllowEmpty OrElse Not newGroup.IsEmpty Then Groups.Add(newGroup)
                                 tName = ""
 
                             Case "}"c 'End current group
@@ -137,7 +137,7 @@ Namespace SimpleD
                                 tValue &= chr
                             Else
                                 Dim newPorp As New [Property](tName.Trim, tValue)
-                                If Not newPorp.IsEmpty Then Properties.Add(newPorp)
+                                If AllowEmpty OrElse Not newPorp.IsEmpty Then Properties.Add(newPorp)
                                 tName = ""
                                 tValue = ""
                                 State = 0
@@ -171,7 +171,7 @@ Namespace SimpleD
 
             If State = 1 Then
                 tName = tName.Trim
-                If tName <> "" Then Properties.Add(New [Property](tName, tValue))
+                If AllowEmpty OrElse tName <> "" Then Properties.Add(New [Property](tName, tValue))
                 Results &= " #Missing end of property " & tName & " at line: " & ErrorLine
             ElseIf State = 2 Then
                 Results &= " #Missing end of comment " & tName.Trim & " at line: " & ErrorLine

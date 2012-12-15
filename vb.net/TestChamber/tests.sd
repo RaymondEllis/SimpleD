@@ -1,6 +1,7 @@
 ﻿"Setup"
 false
 false
+false
 "Group tests:"
 {}
 
@@ -64,6 +65,7 @@ t;
 "Setup"
 true
 true
+true
 "= and ; in names and values"
 p==;
 p==;
@@ -76,3 +78,9 @@ p=;;=;;;
 ""
 g={p=v;;};
 g={p=v;;};
+"Empty tests"
+=;
+=;
+""
+{}
+{}
