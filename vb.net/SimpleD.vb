@@ -274,21 +274,21 @@ Namespace SimpleD
                     Case Style.Whitesmiths
                         Output.Append(Name)
                         Output.AppendLine()
-                        Output.Append(Tab, TabCount + 1)
+                        If TabCount > -1 Then Output.Append(Tab, TabCount + 1)
                         Output.Append("{"c)
                     Case Style.BSD_Allman
                         Output.Append(Name)
                         Output.AppendLine()
-                        Output.Append(Tab, TabCount)
+                        If TabCount > 0 Then Output.Append(Tab, TabCount)
                         Output.Append("{"c)
                     Case Style.GNU
                         Output.Append(Name)
                         Output.AppendLine()
-                        Output.Append(Tab, TabCount)
+                        If TabCount > 0 Then Output.Append(Tab, TabCount)
                         Output.Append("  {")
                     Case Style.GroupsOnNewLine
                         Output.AppendLine()
-                        If TabCount > 0 Then Output.Append(Tab, TabCount - 1)
+                        If TabCount > 1 Then Output.Append(Tab, TabCount - 1)
                         Output.Append(Name & "{")
                 End Select
             End If
@@ -305,12 +305,12 @@ Namespace SimpleD
                 Case Style.Whitesmiths, Style.BSD_Allman, Style.K_R, Style.GNU
                     For n As Integer = 0 To Properties.Count - 1
                         Output.AppendLine()
-                        Output.Append(Tab, TabCount + 1)
+                        If TabCount > -1 Then Output.Append(Tab, TabCount + 1)
                         Output.Append(Properties(n).ToString())
                     Next
                     For Each Grp As Group In Groups
                         Output.AppendLine()
-                        Output.Append(Tab, TabCount + 1)
+                        If TabCount > -1 Then Output.Append(Tab, TabCount + 1)
                         Grp.ToStringBase(True, TabCount + 1, False, braceStyle, Output)
                     Next
             End Select
@@ -322,15 +322,15 @@ Namespace SimpleD
                         Output.Append("}"c)
                     Case Style.Whitesmiths
                         Output.AppendLine()
-                        Output.Append(Tab, TabCount + 1)
+                        If TabCount > -1 Then Output.Append(Tab, TabCount + 1)
                         Output.Append("}"c)
                     Case Style.BSD_Allman, Style.K_R
                         Output.AppendLine()
-                        Output.Append(Tab, TabCount)
+                        If TabCount > 0 Then Output.Append(Tab, TabCount)
                         Output.Append("}"c)
                     Case Style.GNU
                         Output.AppendLine()
-                        Output.Append(Tab, TabCount)
+                        If TabCount > 0 Then Output.Append(Tab, TabCount)
                         Output.Append("  }")
                 End Select
             End If
