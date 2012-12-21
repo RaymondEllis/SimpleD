@@ -61,11 +61,14 @@ Namespace SimpleD
         '
         '1.2    *InDev* 
         'Added  : FromStream in SimpleD.Extra.vb (In my tests it was slower.)
+        'Change : Group.Tab is now a Char not a string.
         'Change : The name of the first group now gets saved. (if it's not empty)
         'Chagee : Comments are now ignored in names. (group and property)
         'Change : Empty groups and properties are nolonger added.(Unliss AllowEmpty is true) A group has to have no name, no sub groups, and no properties to be empty.
         'Change : Results now output line of error not index.
-        'Change : FromString is now using Text.StringBuilder. (BIGsmallfiletest.sd is 2.5x faster)
+        'Change : FromString is now using Text.StringBuilder. (BIGsmallfiletest.sd is 2.5x faster, then it was)
+        'Change : ToString is now using Text.StringBuilder. (BIGsmallfiletest.sd is 370x faster, then it was)
+        'Fixed  : ToString is now faster then FromString!!
         'Fixed  : Properties that have not been ended now parse properly. ("p=v" is "p=v;" "p" is "")
 
         'Old change logs at:
@@ -232,7 +235,7 @@ Namespace SimpleD
             GroupsOnNewLine = 6
         End Enum
         Public BraceStyle As Style = Style.None
-        Public Tab As String = vbTab
+        Public Tab As Char = CChar(vbTab)
 
         ''' <summary>
         ''' Returns a string with all the properties and sub groups.
@@ -241,33 +244,52 @@ Namespace SimpleD
         Public Overloads Function ToString(Optional ByVal AddVersion As Boolean = True) As String
             Dim SaveName As Boolean = True
             If Name = "" Then SaveName = False
-            Return ToStringBase(SaveName, -1, AddVersion, BraceStyle)
+            Dim Output As New Text.StringBuilder()
+            ToStringBase(SaveName, -1, AddVersion, BraceStyle, Output)
+            Return Output.ToString
         End Function
-        'ToDo: ToStringBase should use Text.StringBuilder
-        Private Function ToStringBase(ByVal SaveName As Boolean, ByVal TabCount As Integer, ByVal AddVersion As Boolean, ByVal braceStyle As Style) As String
-            If Not AllowEmpty And Me.IsEmpty Then Return ""
+        Public Overloads Function ToStringBuilder(Optional ByVal AddVersion As Boolean = True) As Text.StringBuilder
+            Dim SaveName As Boolean = True
+            If Name = "" Then SaveName = False
+            Dim Output As New Text.StringBuilder()
+            ToStringBase(SaveName, -1, AddVersion, BraceStyle, Output)
+            Return Output
+        End Function
+
+        Private Sub ToStringBase(ByVal SaveName As Boolean, ByVal TabCount As Integer, ByVal AddVersion As Boolean, ByVal braceStyle As Style, ByRef Output As Text.StringBuilder)
+            If Not AllowEmpty And Me.IsEmpty Then Return
             If TabCount < -1 Then TabCount = -2 'Tab count Below -1 means use zero tabs.
 
             If Me.BraceStyle <> Style.None Then braceStyle = Me.BraceStyle
             If braceStyle = Style.None Then braceStyle = Style.BSD_Allman
 
-            Dim tmp As String = ""
 
-            If AddVersion Then tmp = "SimpleD{Version=" & Version & ";FormatVersion=" & FileVersion & ";}"
+            If AddVersion Then Output.Append("SimpleD{Version=" & Version & ";FormatVersion=" & FileVersion & ";}")
 
             'Name and start of group. Name{
             If SaveName Then
                 Select Case braceStyle
                     Case Style.NoStyle, Style.K_R
-                        tmp &= Name & "{"
+                        Output.Append(Name & "{")
                     Case Style.Whitesmiths
-                        tmp &= Name & Environment.NewLine & GetTabs(TabCount + 1) & "{"
+                        Output.Append(Name)
+                        Output.AppendLine()
+                        Output.Append(Tab, TabCount + 1)
+                        Output.Append("{"c)
                     Case Style.BSD_Allman
-                        tmp &= Name & Environment.NewLine & GetTabs(TabCount) & "{"
+                        Output.Append(Name)
+                        Output.AppendLine()
+                        Output.Append(Tab, TabCount)
+                        Output.Append("{"c)
                     Case Style.GNU
-                        tmp &= Name & Environment.NewLine & GetTabs(TabCount) & "  {"
+                        Output.Append(Name)
+                        Output.AppendLine()
+                        Output.Append(Tab, TabCount)
+                        Output.Append("  {")
                     Case Style.GroupsOnNewLine
-                        tmp &= Environment.NewLine & GetTabs(TabCount - 1) & Name & "{"
+                        Output.AppendLine()
+                        If TabCount > 0 Then Output.Append(Tab, TabCount - 1)
+                        Output.Append(Name & "{")
                 End Select
             End If
 
@@ -275,17 +297,21 @@ Namespace SimpleD
             Select Case braceStyle
                 Case Style.NoStyle, Style.GroupsOnNewLine
                     For n As Integer = 0 To Properties.Count - 1
-                        tmp &= Properties(n).ToString()
+                        Output.Append(Properties(n).ToString())
                     Next
                     For Each Grp As Group In Groups
-                        tmp &= Grp.ToStringBase(True, TabCount + 1, False, braceStyle)
+                        Grp.ToStringBase(True, TabCount + 1, False, braceStyle, Output)
                     Next
                 Case Style.Whitesmiths, Style.BSD_Allman, Style.K_R, Style.GNU
                     For n As Integer = 0 To Properties.Count - 1
-                        tmp &= Environment.NewLine & GetTabs(TabCount + 1) & Properties(n).ToString()
+                        Output.AppendLine()
+                        Output.Append(Tab, TabCount + 1)
+                        Output.Append(Properties(n).ToString())
                     Next
                     For Each Grp As Group In Groups
-                        tmp &= Environment.NewLine & GetTabs(TabCount + 1) & Grp.ToStringBase(True, TabCount + 1, False, braceStyle)
+                        Output.AppendLine()
+                        Output.Append(Tab, TabCount + 1)
+                        Grp.ToStringBase(True, TabCount + 1, False, braceStyle, Output)
                     Next
             End Select
 
@@ -293,27 +319,23 @@ Namespace SimpleD
             If SaveName Then
                 Select Case braceStyle
                     Case Style.NoStyle, Style.GroupsOnNewLine
-                        tmp &= "}"
+                        Output.Append("}"c)
                     Case Style.Whitesmiths
-                        tmp &= Environment.NewLine & GetTabs(TabCount + 1) & "}"
+                        Output.AppendLine()
+                        Output.Append(Tab, TabCount + 1)
+                        Output.Append("}"c)
                     Case Style.BSD_Allman, Style.K_R
-                        tmp &= Environment.NewLine & GetTabs(TabCount) & "}"
+                        Output.AppendLine()
+                        Output.Append(Tab, TabCount)
+                        Output.Append("}"c)
                     Case Style.GNU
-                        tmp &= Environment.NewLine & GetTabs(TabCount) & "  }"
+                        Output.AppendLine()
+                        Output.Append(Tab, TabCount)
+                        Output.Append("  }")
                 End Select
             End If
 
-            Return tmp
-        End Function
-
-        Private Function GetTabs(Count As Integer) As String
-            If Count < 1 Then Return ""
-            Dim str As String = Tab
-            For i As Integer = 2 To Count
-                str &= Tab
-            Next
-            Return str
-        End Function
+        End Sub
 
 #End Region
 
@@ -342,6 +364,7 @@ Namespace SimpleD
         ''' Or if there is no value "Name;"
         ''' </summary>
         Public Overrides Function ToString() As String
+            'ToDo: Try using Text.StringBuilder
             If Value = "" Then
                 If Name = "" Then
                     If Not AllowEmpty Then Return ""
