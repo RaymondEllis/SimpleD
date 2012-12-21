@@ -28,13 +28,16 @@ Partial Class frmTime
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.comFile = New System.Windows.Forms.ComboBox()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
+        Me.btnToString = New System.Windows.Forms.Button()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.btnFromStringStream = New System.Windows.Forms.Button()
         Me.btnFromEqualsSemi = New System.Windows.Forms.Button()
         Me.panTests = New System.Windows.Forms.Panel()
         Me.lblStatus = New System.Windows.Forms.Label()
+        Me.btnCopyToClip = New System.Windows.Forms.Button()
         CType(Me.numCount, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
+        Me.GroupBox2.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -89,12 +92,22 @@ Partial Class frmTime
         '
         'GroupBox2
         '
+        Me.GroupBox2.Controls.Add(Me.btnToString)
         Me.GroupBox2.Location = New System.Drawing.Point(185, 58)
         Me.GroupBox2.Name = "GroupBox2"
         Me.GroupBox2.Size = New System.Drawing.Size(173, 237)
         Me.GroupBox2.TabIndex = 10
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "ToString"
+        '
+        'btnToString
+        '
+        Me.btnToString.Location = New System.Drawing.Point(6, 19)
+        Me.btnToString.Name = "btnToString"
+        Me.btnToString.Size = New System.Drawing.Size(158, 23)
+        Me.btnToString.TabIndex = 4
+        Me.btnToString.Text = "ToString"
+        Me.btnToString.UseVisualStyleBackColor = True
         '
         'GroupBox1
         '
@@ -141,11 +154,21 @@ Partial Class frmTime
         Me.lblStatus.TabIndex = 9
         Me.lblStatus.Text = "Status:"
         '
+        'btnCopyToClip
+        '
+        Me.btnCopyToClip.Location = New System.Drawing.Point(700, 331)
+        Me.btnCopyToClip.Name = "btnCopyToClip"
+        Me.btnCopyToClip.Size = New System.Drawing.Size(75, 23)
+        Me.btnCopyToClip.TabIndex = 10
+        Me.btnCopyToClip.Text = "Copy"
+        Me.btnCopyToClip.UseVisualStyleBackColor = True
+        '
         'frmTime
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(797, 357)
+        Me.Controls.Add(Me.btnCopyToClip)
         Me.Controls.Add(Me.lblStatus)
         Me.Controls.Add(Me.panTests)
         Me.Controls.Add(Me.Panel1)
@@ -155,6 +178,7 @@ Partial Class frmTime
         CType(Me.numCount, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
+        Me.GroupBox2.ResumeLayout(False)
         Me.GroupBox1.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -171,4 +195,6 @@ Partial Class frmTime
     Friend WithEvents btnFromStringStream As System.Windows.Forms.Button
     Friend WithEvents btnFromEqualsSemi As System.Windows.Forms.Button
     Friend WithEvents comFile As System.Windows.Forms.ComboBox
+    Friend WithEvents btnCopyToClip As System.Windows.Forms.Button
+    Friend WithEvents btnToString As System.Windows.Forms.Button
 End Class
