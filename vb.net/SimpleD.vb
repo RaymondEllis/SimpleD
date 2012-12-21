@@ -55,12 +55,17 @@ Namespace SimpleD
         Public AllowEmpty As Boolean = False
         'Public CheckIllegalChars As Boolean = True 'Should be apart of the Helper.
         '
-        '1.2    *InDev* Redo the helper class.  It needs to folow some standards.
+        'ToDo:
+        'Redo the helper class.  It needs to folow some standards.
+        'ToString should use StringBuilder? or a Char array? (Faster?)
+        '
+        '1.2    *InDev* 
         'Added  : FromStream in SimpleD.Extra.vb (In my tests it was slower.)
         'Change : The name of the first group now gets saved. (if it's not empty)
         'Chagee : Comments are now ignored in names. (group and property)
         'Change : Empty groups and properties are nolonger added.(Unliss AllowEmpty is true) A group has to have no name, no sub groups, and no properties to be empty.
         'Change : Results now output line of error not index.
+        'Change : FromString is now using Text.StringBuilder. (BIGsmallfiletest.sd is 2.5x faster)
         'Fixed  : Properties that have not been ended now parse properly. ("p=v" is "p=v;" "p" is "")
 
         'Old change logs at:
@@ -88,19 +93,23 @@ Namespace SimpleD
         ''' <returns>Errors if any.</returns>
         ''' <remarks></remarks>
         Public Function FromString(ByVal Data As String) As String
-            Return FromStringBase(True, Data, 0, 1)
+            Dim Results As New Text.StringBuilder 'Holds errors to be returned by FromStringBase.
+            FromStringBase(True, Data, 0, 1, Results)
+            Return Results.ToString
         End Function
 
-        Private Function FromStringBase(ByVal IsFirst As Boolean, ByVal Data As String, ByRef Index As Integer, ByRef Line As Integer) As String
-            If Data = "" Then Return "Data is empty!"
+        Private Sub FromStringBase(ByVal IsFirst As Boolean, ByVal Data As String, ByRef Index As Integer, ByRef Line As Integer, ByRef Results As Text.StringBuilder)
+            If Data = "" Then
+                Results.Append("Data is empty!")
+                Return
+            End If
 
-            Dim Results As String = "" 'Holds errors to be returned later.
             Dim State As Byte = 0 '0 = Get name    1 = In property   2 = Finish comment
 
             Dim StartLine As Integer = Line 'The start of the group.
             Dim ErrorLine As Integer = 0 'Used for error handling.
-            Dim tName As String = "" 'Group or property name
-            Dim tValue As String = ""
+            Dim sbName As New Text.StringBuilder() 'Group name, or property name
+            Dim sbValue As Text.StringBuilder = Nothing 'Property value.
 
             Do Until Index > Data.Length - 1
                 Dim chr As Char = Data(Index)
@@ -110,28 +119,28 @@ Namespace SimpleD
 
                         Select Case chr
                             Case "="c
+                                sbValue = New Text.StringBuilder()
                                 ErrorLine = Line
                                 State = 1 'In property
 
                             Case ";"c
-                                tName = tName.Trim
+                                Dim tName As String = sbName.ToString.Trim
                                 If tName = "" Then
-                                    Results &= " #Found end of property but no name at line: " & Line & " Could need AllowSemicolonInValue enabled."
+                                    Results.Append(" #Found end of property but no name at line: " & Line & " Could need AllowSemicolonInValue enabled.")
                                 Else
                                     Properties.Add(New [Property](tName, ""))
                                 End If
-                                tName = ""
-                                tValue = ""
+                                sbName = New Text.StringBuilder()
 
                             Case "{"c 'New group
                                 Index += 1
-                                Dim newGroup As New Group(tName.Trim)
-                                Results &= newGroup.FromStringBase(False, Data, Index, Line)
+                                Dim newGroup As New Group(sbName.ToString.Trim)
+                                newGroup.FromStringBase(False, Data, Index, Line, Results)
                                 If AllowEmpty OrElse Not newGroup.IsEmpty Then Groups.Add(newGroup)
-                                tName = ""
+                                sbName = New Text.StringBuilder()
 
                             Case "}"c 'End current group
-                                Return Results
+                                Return
 
 
                             Case "/"c '/* start of comment
@@ -139,11 +148,11 @@ Namespace SimpleD
                                     State = 2 'Finish the comment
                                     ErrorLine = Line
                                 Else
-                                    tName &= chr
+                                    sbName.Append(chr)
                                 End If
 
                             Case Else
-                                tName &= chr
+                                sbName.Append(chr)
                         End Select
 
 
@@ -151,27 +160,27 @@ Namespace SimpleD
                         If chr = ";"c Then
                             If AllowSemicolonInValue AndAlso Index + 1 < Data.Length AndAlso Data(Index + 1) = ";"c Then
                                 Index += 1
-                                tValue &= chr
+                                sbValue.Append(chr)
                             Else
-                                Dim newPorp As New [Property](tName.Trim, tValue)
+                                Dim newPorp As New [Property](sbName.ToString.Trim, sbValue.ToString)
                                 If AllowEmpty OrElse Not newPorp.IsEmpty Then Properties.Add(newPorp)
-                                tName = ""
-                                tValue = ""
+                                sbName = New Text.StringBuilder()
+                                sbValue = Nothing
                                 State = 0
                             End If
 
 
                         ElseIf chr = "="c Then 'error
                             If AllowEqualsInValue Then
-                                tValue &= chr
+                                sbValue.Append(chr)
                             Else
-                                Results &= "  #Missing end of property " & tName.Trim & " at line: " & ErrorLine
+                                Results.Append("  #Missing end of property " & sbName.ToString.Trim & " at line: " & ErrorLine)
                                 ErrorLine = Line
-                                tName = ""
-                                tValue = ""
+                                sbName = New Text.StringBuilder()
+                                sbValue = Nothing
                             End If
                         Else
-                            tValue &= chr
+                            sbValue.Append(chr)
                         End If
 
                     Case 2 'Finish comment
@@ -187,17 +196,16 @@ Namespace SimpleD
             Loop
 
             If State = 1 Then
-                tName = tName.Trim
-                If AllowEmpty OrElse tName <> "" Then Properties.Add(New [Property](tName, tValue))
-                Results &= " #Missing end of property " & tName & " at line: " & ErrorLine
+                Dim tName As String = sbName.ToString.Trim
+                If AllowEmpty OrElse tName <> "" Then Properties.Add(New [Property](tName, sbValue.ToString))
+                Results.Append(" #Missing end of property " & tName & " at line: " & ErrorLine)
             ElseIf State = 2 Then
-                Results &= " #Missing end of comment " & tName.Trim & " at line: " & ErrorLine
+                Results.Append(" #Missing end of comment " & sbName.ToString.Trim & " at line: " & ErrorLine)
             ElseIf Not IsFirst Then 'The base group does not need to be ended.
-                Results &= "  #Missing end of group " & Name & " at line: " & ErrorLine
+                Results.Append("  #Missing end of group " & Name & " at line: " & ErrorLine)
             End If
 
-            Return Results
-        End Function
+        End Sub
 
         ''' <summary>
         ''' Note: It will continue loading even with errors.
@@ -207,7 +215,7 @@ Namespace SimpleD
         ''' <remarks></remarks>
         Shared Function Parse(ByVal Data As String) As Group
             Dim g As New Group
-            g.FromStringBase(True, Data, 0, 1)
+            g.FromString(Data)
             Return g
         End Function
 #End Region
@@ -235,7 +243,7 @@ Namespace SimpleD
             If Name = "" Then SaveName = False
             Return ToStringBase(SaveName, -1, AddVersion, BraceStyle)
         End Function
-
+        'ToDo: ToStringBase should use Text.StringBuilder
         Private Function ToStringBase(ByVal SaveName As Boolean, ByVal TabCount As Integer, ByVal AddVersion As Boolean, ByVal braceStyle As Style) As String
             If Not AllowEmpty And Me.IsEmpty Then Return ""
             If TabCount < -1 Then TabCount = -2 'Tab count Below -1 means use zero tabs.
