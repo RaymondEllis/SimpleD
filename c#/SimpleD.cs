@@ -31,6 +31,7 @@ Contact:
 #endregion
 
 using System;
+using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -47,9 +48,11 @@ namespace SimpleD
 
 		/* Last update:
 		 * 
-		 * 1.2 *InDev* 12-19-2012 NOT COMPLEATE!
-		 * SimpleD.Info functionality done!
+		 * 1.2 *InDev* 12-21-2012
+		 * SimpleD.Info done!
 		 * SimpleD.Proprety needs operators & XML comments.
+		 * SimpleD.Group needs XML comments.
+		 * Needs testing as well.
 		 */
 	}
 
@@ -60,9 +63,14 @@ namespace SimpleD
 		public List<Property> Properties = new List<Property>();
 
 		public Group() { }
-		public Group(string name)//ToDo: Needs style
+		public Group(string name)
 		{
 			this.Name = name;
+		}
+		public Group(string name, Style braceStyle)
+		{
+			this.Name = name;
+			this.BraceStyle = braceStyle;
 		}
 
 		#region Parse(FromString)
@@ -71,20 +79,25 @@ namespace SimpleD
 		{
 			int index=0;
 			int line=1;
-			return FromStringBase(true, data, ref index, ref line);
+			StringBuilder Results=new StringBuilder();
+			FromStringBase(true, data, ref index, ref line,ref Results);
+			return Results.ToString();
 		}
 
-		private string FromStringBase(bool isFirst, string data, ref int index, ref int line)
+		private void FromStringBase(bool isFirst, string data, ref int index, ref int line, ref StringBuilder Results)
 		{
-			if (data == "") return "Data is empty!";
+			if (data == "")
+			{
+				Results.Append("Data is empty!");
+				return;
+			}
 
-			string Results="";
 			byte State = 0; //0 = Get name    1 = In property   2 = Finish comment
 
 			int StartLine = line;
 			int ErrorLine = 0;
-			string tName = "";
-			string tValue = "";
+			StringBuilder sbName = new StringBuilder();
+			StringBuilder sbValue = null;
 
 			while (index < data.Length)
 			{
@@ -92,54 +105,52 @@ namespace SimpleD
 
 				switch (State)
 				{
-					case 0://Get bane
+					case 0://Get name
 
 						switch (chr)
 						{
 							case '=':
+								sbValue = new StringBuilder();
 								ErrorLine = line;
-								State = 1; //Property
+								State = 1; //Get property value
 								break;
 
 							case ';':
-								tName = tName.Trim();
+								String tName = sbName.ToString().Trim();
 								if (tName == "")
 								{
-									Results += " #Found end of property but no name at line: " + line + " Could need AllowSemicolonInValue enabled.";
+									Results.Append(" #Found end of property but no name at line: " + line + " Could need AllowSemicolonInValue enabled.");
 								}
 								else
 								{
 									Properties.Add(new Property(tName, ""));
 								}
-								tName = "";
-								tValue = ""; //Should not have to set to nothing.
+								sbName = new StringBuilder();
 								break;
 
 							case '{': //New group
 								++index;
-								Group newGroup = new Group(tName.Trim());
-								Results += newGroup.FromStringBase(false, data, ref index, ref line);
+								Group newGroup = new Group(sbName.ToString().Trim());
+								newGroup.FromStringBase(false, data, ref index, ref line, ref Results);
 								if (Info.AllowEmpty || !newGroup.IsEmpty()) Groups.Add(newGroup);
-								tName = "";
+								sbName = new StringBuilder();
 								break;
 
 							case '}': //End current group
-								return Results;
+								return;
 
 							case '/': //Start of comment
 								if (index + 1 < data.Length && data[index + 1] == '*')
 								{
 									State = 2;
 									ErrorLine = line;
+									break;
 								}
-								else
-								{
-									tName += chr;
-								}
+								sbName.Append(chr); //Don't start comment.
 								break;
 
 							default:
-								tName += chr;
+								sbName.Append(chr);
 								break;
 						}
 						break;
@@ -153,24 +164,24 @@ namespace SimpleD
 							}
 							else
 							{
-								Property newProp = new Property(tName.Trim(), tValue);
+								Property newProp = new Property(sbName.ToString().Trim(), sbValue.ToString());
 								if (Info.AllowEmpty || !newProp.IsEmpty()) Properties.Add(newProp);
-								tName = "";
-								tValue = "";
+								sbName = new StringBuilder();
+								sbValue = null;
 								State = 0;
 								break;
 							}
 						}
 						else if (chr == '=' && !Info.AllowEqualsInValue) //Should there be = in value?
 						{
-							Results += "  #Missing end of property " + tName.Trim() + " at line: " + ErrorLine;
+							Results.Append("  #Missing end of property " + sbName.ToString().Trim() + " at line: " + ErrorLine);
 							ErrorLine = line;
-							tName = "";
-							tValue = "";
+							sbName = new StringBuilder();
+							sbValue = null;
 							break;
 						}
 
-						tValue += chr;
+						sbValue.Append(chr);
 						break;
 
 					case 2: //Finsh comment
@@ -187,24 +198,175 @@ namespace SimpleD
 
 			if (State == 1)
 			{
-				tName = tName.Trim();
-				if (Info.AllowEmpty || tName != "") Properties.Add(new Property(tName, tValue));
-				Results += " #Missing end of property " + tName + " at line: " + ErrorLine;
+				String tName = sbName.ToString().Trim();
+				if (Info.AllowEmpty || tName != "") Properties.Add(new Property(tName, sbValue.ToString()));
+				Results.Append(" #Missing end of property " + tName + " at line: " + ErrorLine);
 			}
 			else if (State == 2)
 			{
-				Results += " #Missing end of comment " + tName.Trim() + " at line: " + ErrorLine;
+				Results.Append(" #Missing end of comment " + sbName.ToString().Trim() + " at line: " + ErrorLine);
 			}
 			else if (!isFirst) //The base group does not need to be ended.
 			{
-				Results += "  #Missing end of group " + Name + " at line: " + ErrorLine;
+				Results.Append("  #Missing end of group " + Name + " at line: " + ErrorLine);
 			}
 
-
-			return Results;
 		}
 
+		public static Group Parse(string data)
+		{
+			Group g = new Group();
+			g.FromString(data);
+			return g;
+		}
 		#endregion
+
+		#region ToString and Styling
+
+		public enum Style
+		{
+			None = 0,
+			NoStyle = 1,
+			Whitesmiths = 2,
+			GNU = 3,
+			BSD_Allman = 4,
+			K_R = 5,
+			GroupsOnNewLine = 6
+		}
+		public Style BraceStyle = Style.None;
+		public Char Tab = Convert.ToChar("\t");
+
+		public override string ToString()
+		{
+			bool SaveName = true;
+			if (Name == null || Name.Length == 0) SaveName = false;
+			StringBuilder Output = new StringBuilder();
+			ToStringBase(SaveName, -1, false, BraceStyle, ref Output);
+			return Output.ToString();
+		}
+
+		public StringBuilder ToStringBuilder()
+		{
+			bool SaveName = true;
+			if (Name == null || Name.Length == 0) SaveName = false;
+			StringBuilder Output = new StringBuilder();
+			ToStringBase(SaveName, -1, false, BraceStyle, ref Output);
+			return Output;
+		}
+
+		private void ToStringBase(bool saveName, int tabCount, bool addVersion, Style braceStyle, ref StringBuilder output)
+		{
+			if (!Info.AllowEmpty && IsEmpty()) return;
+			if (tabCount < -1) tabCount = -2;
+
+			if (this.BraceStyle != Style.None) braceStyle = this.BraceStyle;
+			if (braceStyle == Style.None) braceStyle = Style.BSD_Allman;
+
+			if (addVersion) output.Append("SimpleD{Version=" + Info.Version + ";FormatVersion=" + Info.FileVersion + ";}");
+
+			//Name and start of group. GroupName{
+			if (saveName)
+			{
+				switch (braceStyle)
+				{
+					case Style.NoStyle:
+					case Style.K_R:
+						output.Append(Name);
+						output.Append('{');
+						break;
+					case Style.Whitesmiths:
+						output.Append(Name);
+						output.AppendLine();
+						if (tabCount > -1) output.Append(Tab, tabCount + 1);
+						output.Append('{');
+						break;
+					case Style.BSD_Allman:
+						output.Append(Name);
+						output.AppendLine();
+						if (tabCount > 0) output.Append(Tab, tabCount);
+						output.Append('{');
+						break;
+					case Style.GNU:
+						output.Append(Name);
+						output.AppendLine();
+						if (tabCount > 0) output.Append(Tab, tabCount);
+						output.Append("  {");
+						break;
+					case Style.GroupsOnNewLine:
+						output.AppendLine();
+						if (tabCount > 1) output.Append(Tab, tabCount - 1);
+						output.Append(Name);
+						output.Append('{');
+						break;
+				}
+			}
+
+			//Groups and properties
+			switch (braceStyle)
+			{
+				case Style.NoStyle:
+				case Style.GroupsOnNewLine:
+					for (int i = 0; i < Properties.Count; ++i)
+					{
+						output.Append(Properties[i].ToString());
+					}
+					for (int i = 0; i < Groups.Count; ++i)
+					{
+						Groups[i].ToStringBase(true, tabCount + 1, false, braceStyle, ref output);
+					}
+					break;
+				case Style.Whitesmiths:
+				case Style.BSD_Allman:
+				case Style.K_R:
+				case Style.GNU:
+					for (int i = 0; i < Properties.Count; ++i)
+					{
+						output.AppendLine();
+						if (tabCount > -1) output.Append(Tab, tabCount + 1);
+						output.Append(Properties[i].ToString());
+					}
+					for (int i = 0; i < Groups.Count; ++i)
+					{
+						output.AppendLine();
+						if (tabCount > -1) output.Append(Tab, tabCount + 1);
+						Groups[i].ToStringBase(true, tabCount + 1, false, braceStyle, ref output);
+					}
+					break;
+			}
+
+			//End of group }
+			if (saveName)
+			{
+				switch (braceStyle)
+				{
+					case Style.NoStyle:
+					case Style.GroupsOnNewLine:
+						output.Append('}');
+						break;
+					case Style.Whitesmiths:
+						output.Append('}');
+						if (tabCount > -1) output.Append(Tab, tabCount + 1);
+						output.Append('}');
+						break;
+					case Style.BSD_Allman:
+					case Style.K_R:
+						output.AppendLine();
+						if (tabCount > 0) output.Append(Tab, tabCount);
+						output.Append('}');
+						break;
+					case Style.GNU:
+						output.AppendLine();
+						if (tabCount > 0) output.Append(Tab, tabCount);
+						output.Append("  }");
+						break;
+
+				}
+			}
+		}
+
+
+		#endregion
+
 
 		public bool IsEmpty()
 		{
@@ -226,12 +388,12 @@ namespace SimpleD
 
 		public override string ToString()
 		{
-			if (Value == "")
+			if (Value == null || Value.Length==0)
 			{
-				if (Name == "")
+				if (Name == null || Name.Length==0)
 				{
-					if (!Info.AllowEmpty) return "";
-					return "=;";
+					if (Info.AllowEmpty) return "=;";
+					return "";
 				}
 				else
 				{
@@ -241,8 +403,7 @@ namespace SimpleD
 
 			if (Info.AlllowSemicolonInValue)
 			{
-				string tmpValue = Value.Replace(";", ";;");
-				return Name + "=" + tmpValue + ";";
+				return Name + "=" + Value.Replace(";", ";;") + ";";
 			}
 
 			return Name + "=" + Value + ";";
@@ -250,7 +411,8 @@ namespace SimpleD
 
 		public bool IsEmpty()
 		{
-			return Name == "" && Value == "";
+			//Name andalso value is null or empty.
+			return (Name == null || Name.Length==0) && (Value == null || Value.Length==0);
 		}
 	}
 }
