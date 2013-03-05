@@ -48,7 +48,7 @@ namespace SimpleD
 
 		/* Last update:
 		 * 
-		 * 1.2 *InDev* 12-21-2012
+		 * 1.2 *InDev* 2013-03-05
 		 * SimpleD.Info done!
 		 * SimpleD.Proprety needs operators & XML comments.
 		 * SimpleD.Group needs XML comments.
@@ -308,10 +308,12 @@ namespace SimpleD
 				case Style.GroupsOnNewLine:
 					for (int i = 0; i < Properties.Count; ++i)
 					{
+						if (Properties[i] == null) continue;
 						output.Append(Properties[i].ToString());
 					}
 					for (int i = 0; i < Groups.Count; ++i)
 					{
+						if (Groups[i] == null) continue;
 						Groups[i].ToStringBase(true, tabCount + 1, false, braceStyle, ref output);
 					}
 					break;
@@ -321,12 +323,14 @@ namespace SimpleD
 				case Style.GNU:
 					for (int i = 0; i < Properties.Count; ++i)
 					{
+						if (Properties[i] == null) continue;
 						output.AppendLine();
 						if (tabCount > -1) output.Append(Tab, tabCount + 1);
 						output.Append(Properties[i].ToString());
 					}
 					for (int i = 0; i < Groups.Count; ++i)
 					{
+						if (Groups[i] == null) continue;
 						output.AppendLine();
 						if (tabCount > -1) output.Append(Tab, tabCount + 1);
 						Groups[i].ToStringBase(true, tabCount + 1, false, braceStyle, ref output);

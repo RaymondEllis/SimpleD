@@ -70,6 +70,7 @@ Namespace SimpleD
         'Change : ToString is now using Text.StringBuilder. (BIGsmallfiletest.sd is 370x faster, then it was)
         'Fixed  : ToString is now faster then FromString!!
         'Fixed  : Properties that have not been ended now parse properly. ("p=v" is "p=v;" "p" is "")
+        'Fixed  : Crash when a group or a property is nothing.
 
         'Old change logs at:
         'https://code.google.com/p/simpled/wiki/Versions
@@ -297,21 +298,25 @@ Namespace SimpleD
             Select Case braceStyle
                 Case Style.NoStyle, Style.GroupsOnNewLine
                     For n As Integer = 0 To Properties.Count - 1
-                        Output.Append(Properties(n).ToString())
+                        If Properties(n) Is Nothing Then Continue For
+                        output.Append(Properties(n).ToString())
                     Next
                     For Each Grp As Group In Groups
-                        Grp.ToStringBase(True, TabCount + 1, False, braceStyle, Output)
+                        If Grp Is Nothing Then Continue For
+                        Grp.ToStringBase(True, tabCount + 1, False, braceStyle, output)
                     Next
                 Case Style.Whitesmiths, Style.BSD_Allman, Style.K_R, Style.GNU
                     For n As Integer = 0 To Properties.Count - 1
-                        Output.AppendLine()
-                        If TabCount > -1 Then Output.Append(Tab, TabCount + 1)
-                        Output.Append(Properties(n).ToString())
+                        If Properties(n) Is Nothing Then Continue For
+                        output.AppendLine()
+                        If tabCount > -1 Then output.Append(Tab, tabCount + 1)
+                        output.Append(Properties(n).ToString())
                     Next
                     For Each Grp As Group In Groups
-                        Output.AppendLine()
-                        If TabCount > -1 Then Output.Append(Tab, TabCount + 1)
-                        Grp.ToStringBase(True, TabCount + 1, False, braceStyle, Output)
+                        If Grp Is Nothing Then Continue For
+                        output.AppendLine()
+                        If tabCount > -1 Then output.Append(Tab, tabCount + 1)
+                        Grp.ToStringBase(True, tabCount + 1, False, braceStyle, output)
                     Next
             End Select
 
