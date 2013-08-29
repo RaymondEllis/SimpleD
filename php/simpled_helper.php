@@ -17,6 +17,11 @@
 			fclose($fh);
 		}
 		function FromFile($File){
+			if(!file_exists($File))
+			{
+				echo "<b>Error</b> file: $File does not exist!";
+				return;
+			}
 			if(filesize($File)>0){
 				$fh=fopen($File, 'r');
 				$error=$this->FromString(fread($fh,filesize($File)));
