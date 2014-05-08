@@ -51,38 +51,29 @@ Namespace SimpleD
         ''' <param name="Data">The text stream to parse.</param>
         ''' <returns>Errors if any.</returns>
         ''' <remarks></remarks>
-        Public Function FromStream(ByVal Data As IO.TextReader) As String
-            Return FromStreamBase(True, Data, 1)
-        End Function
-
-        ''' <summary>
-        ''' Does NOT clear groups/properties.
-        ''' Note: It will continue loading even with errors.
-        ''' Slower then FromString
-        ''' </summary>
-        ''' <param name="Data">The text stream to parse.</param>
-        ''' <returns>Errors if any.</returns>
-        ''' <remarks></remarks>
-        Public Function FromStream(ByVal Data As IO.TextReader, ByVal CloseStream As Boolean) As String
-            Return FromStreamBase(True, Data, 1)
+        Public Function FromStream(ByVal Data As IO.TextReader, Optional ByVal CloseStream As Boolean = True) As String
+            Dim Results As New Text.StringBuilder 'Holds errors to be returned by FromStringBase.
+            FromStreamBase(True, Data, 1, Results)
             If CloseStream Then Data.Close()
+            Return Results.ToString()
         End Function
 
-        Private Function FromStreamBase(ByVal IsFirst As Boolean, ByVal Data As IO.TextReader, ByRef Line As Integer) As String
-            If Data Is Nothing Then Return "Data is empty!"
+        Private Sub FromStreamBase(ByVal IsFirst As Boolean, ByVal Data As IO.TextReader, ByRef Line As Integer, ByRef Results As Text.StringBuilder)
+            If Data Is Nothing Then
+                Results.Append("Data is empty!")
+                Return
+            End If
 
             'Names can not contain { } ; /*
             'Property names can only contain = if AllowEqualsInValue is set to true.
             'p=g{};
 
-
-            Dim Results As String = "" 'Holds errors to be returned later.
             Dim State As Byte = 0 '0 = Nothing    1 = In property   2 = In comment
 
             Dim StartLine As Integer = Line 'The start of the group.
             Dim ErrorLine As Integer = 0 'Used for error handling.
-            Dim tName As String = "" 'Group or property name
-            Dim tValue As String = ""
+            Dim sbName As New Text.StringBuilder() 'Group name, or property name
+            Dim sbValue As Text.StringBuilder = Nothing 'Property value.
 
             Dim cCode As Integer = 0
             Do Until cCode = -1
@@ -94,27 +85,28 @@ Namespace SimpleD
 
                         Select Case chr
                             Case "="c
+                                sbValue = New Text.StringBuilder()
                                 ErrorLine = Line
                                 State = 1 'In property
 
                             Case ";"c
-                                tName = tName.Trim
+                                Dim tName As String = sbName.ToString.Trim
                                 If tName = "" Then
-                                    Results &= " #Found end of property but no name&value at line: " & Line & " Could need AllowSemicolonInValue enabled."
+                                    Results.Append(" #Found end of property but no name&value at line: " & Line & " Could need AllowSemicolonInValue enabled.")
                                 Else
                                     Properties.Add(New [Property](tName, ""))
                                 End If
-                                tName = ""
-                                tValue = ""
+                                sbName = New Text.StringBuilder()
+                                sbValue = Nothing
 
                             Case "{"c 'New group
-                                Dim newGroup As New Group(tName.Trim)
-                                Results &= newGroup.FromStreamBase(False, Data, Line)
+                                Dim newGroup As New Group(sbName.ToString.Trim)
+                                newGroup.FromStreamBase(False, Data, Line, Results)
                                 If AllowEmpty OrElse Not newGroup.IsEmpty Then Groups.Add(newGroup)
-                                tName = ""
+                                sbName = New Text.StringBuilder()
 
                             Case "}"c 'End current group
-                                Return Results
+                                Return
 
 
                             Case "/"c '/* start of comment
@@ -123,11 +115,11 @@ Namespace SimpleD
                                     State = 2 'In comment
                                     ErrorLine = Line
                                 Else
-                                    tName &= chr
+                                    sbName.Append(chr)
                                 End If
 
                             Case Else
-                                tName &= chr
+                                sbName.Append(chr)
                         End Select
 
 
@@ -135,27 +127,27 @@ Namespace SimpleD
                         If chr = ";"c Then
                             If (AllowSemicolonInValue) AndAlso ChrW(Data.Peek) = ";"c Then
                                 Data.Read()
-                                tValue &= chr
+                                sbValue.Append(chr)
                             Else
-                                Dim newPorp As New [Property](tName.Trim, tValue)
+                                Dim newPorp As New [Property](sbName.ToString.Trim, sbValue.ToString)
                                 If AllowEmpty OrElse Not newPorp.IsEmpty Then Properties.Add(newPorp)
-                                tName = ""
-                                tValue = ""
+                                sbName = New Text.StringBuilder()
+                                sbValue = Nothing
                                 State = 0
                             End If
 
 
                         ElseIf chr = "="c Then 'error
                             If AllowEqualsInValue Then
-                                tValue &= chr
+                                sbValue.Append(chr)
                             Else
-                                Results &= "  #Missing end of property " & tName.Trim & " at line: " & ErrorLine
+                                Results.Append("  #Missing end of property " & sbName.ToString.Trim & " at line: " & ErrorLine)
                                 ErrorLine = Line
-                                tName = ""
-                                tValue = ""
+                                sbName = New Text.StringBuilder()
+                                sbValue = Nothing
                             End If
                         Else
-                            tValue &= chr
+                            sbValue.Append(chr)
                         End If
 
                     Case 2 'In comment
@@ -171,17 +163,16 @@ Namespace SimpleD
             Loop
 
             If State = 1 Then
-                tName = tName.Trim
-                If AllowEmpty OrElse tName <> "" Then Properties.Add(New [Property](tName, tValue))
-                Results &= " #Missing end of property " & tName & " at line: " & ErrorLine
+                Dim tName As String = sbName.ToString.Trim
+                If AllowEmpty OrElse tName <> "" Then Properties.Add(New [Property](tName, sbValue.ToString))
+                Results.Append(" #Missing end of property " & tName & " at line: " & ErrorLine)
             ElseIf State = 2 Then
-                Results &= " #Missing end of comment " & tName.Trim & " at line: " & ErrorLine
+                Results.Append(" #Missing end of comment " & sbName.ToString.Trim & " at line: " & ErrorLine)
             ElseIf Not IsFirst Then 'The base group does not need to be ended.
-                Results &= "  #Missing end of group " & Name & " at line: " & StartLine
+                Results.Append("  #Missing end of group " & Name & " at line: " & StartLine)
             End If
 
-            Return Results
-        End Function
+        End Sub
 
     End Class
 

@@ -57,7 +57,6 @@ Namespace SimpleD
         '
         'ToDo:
         'Redo the helper class.  It needs to folow some standards.
-        'ToString should use StringBuilder? or a Char array? (Faster?)
         '
         '1.2    *InDev* 
         'Added  : FromStream in SimpleD.Extra.vb (In my tests it was slower.)
