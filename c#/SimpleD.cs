@@ -77,10 +77,10 @@ namespace SimpleD
 
 		public string FromString(string data)
 		{
-			int index=0;
-			int line=1;
-			StringBuilder Results=new StringBuilder();
-			FromStringBase(true, data, ref index, ref line,ref Results);
+			int index = 0;
+			int line = 1;
+			StringBuilder Results = new StringBuilder();
+			FromStringBase(true, data, ref index, ref line, ref Results);
 			return Results.ToString();
 		}
 
@@ -392,9 +392,9 @@ namespace SimpleD
 
 		public override string ToString()
 		{
-			if (Value == null || Value.Length==0)
+			if (Value == null || Value.Length == 0)
 			{
-				if (Name == null || Name.Length==0)
+				if (Name == null || Name.Length == 0)
 				{
 					if (Info.AllowEmpty) return "=;";
 					return "";
@@ -416,7 +416,7 @@ namespace SimpleD
 		public bool IsEmpty()
 		{
 			//Name andalso value is null or empty.
-			return (Name == null || Name.Length==0) && (Value == null || Value.Length==0);
+			return (Name == null || Name.Length == 0) && (Value == null || Value.Length == 0);
 		}
 	}
 }
