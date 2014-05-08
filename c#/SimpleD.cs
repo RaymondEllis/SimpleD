@@ -37,36 +37,53 @@ using System.Collections.Generic;
 
 namespace SimpleD
 {
+	/// <summary>System wide settings/info</summary>
 	public static class Info
 	{
+		/// <summary>The current version of SimpleD</summary>
 		public const Single Version = 1.2f;
+		/// <summary>The current file version, if this changes your files may not load properly.</summary>
 		public const Single FileVersion = 3f;
 
+		/// <summary>Allow "=" in the values? fv3 just doesn't report it as an error...</summary>
 		public static bool AllowEqualsInValue = true;
+		/// <summary>Allow ";" in values? fv3 replaces them with ";;"</summary>
 		public static bool AlllowSemicolonInValue = true;
+		/// <summary>if True, than ToString() will return empty groups and properties.
+		/// ex: "{}=;" (empty group with an empty property.)</summary>
 		public static bool AllowEmpty = false;
 
 		/* Last update:
 		 * 
-		 * 1.2 *InDev* 2013-03-05
+		 * 1.2 *InDev* 2014-02-14
 		 * SimpleD.Info done!
-		 * SimpleD.Proprety needs operators & XML comments.
-		 * SimpleD.Group needs XML comments.
+		 * SimpleD.Proprety needs operators.
 		 * Needs testing as well.
 		 */
 	}
 
+	/// <summary>Container to place other groups and properties.
+	/// "Name{}"</summary>
 	public class Group
 	{
+		/// <summary>Name of the group. Goes befure "{".</summary>
 		public string Name;
+		/// <summary>It's a list of groups</summary>
 		public List<Group> Groups = new List<Group>();
+		/// <summary>And this is a list of properties</summary>
 		public List<Property> Properties = new List<Property>();
 
+		/// <summary>Creates an empty group</summary>
 		public Group() { }
+		/// <summary>Creats an group with a name</summary>
+		/// <param name="name"></param>
 		public Group(string name)
 		{
 			this.Name = name;
 		}
+		/// <summary>Creats an group with a name and a custom style</summary>
+		/// <param name="name"></param>
+		/// <param name="braceStyle"></param>
 		public Group(string name, Style braceStyle)
 		{
 			this.Name = name;
@@ -74,7 +91,9 @@ namespace SimpleD
 		}
 
 		#region Parse(FromString)
-
+		/// <summary>Parses a string into this group.</summary>
+		/// <param name="data">string to parse</param>
+		/// <returns>Returns a string of warnings/errors, or an empty string if no warnings/errors</returns>
 		public string FromString(string data)
 		{
 			int index = 0;
@@ -213,6 +232,9 @@ namespace SimpleD
 
 		}
 
+		/// <summary>Parses a string into this group.</summary>
+		/// <param name="data">string to parse</param>
+		/// <returns>Does not do anything with errors/warnings!</returns>
 		public static Group Parse(string data)
 		{
 			Group g = new Group();
@@ -222,20 +244,30 @@ namespace SimpleD
 		#endregion
 
 		#region ToString and Styling
-
+		/// <summary>Style to use when calling ToString()</summary>
 		public enum Style
 		{
+			/// <summary>No style has been set, use parent style.</summary>
 			None = 0,
+			/// <summary>Don't use any styling, will be one long string.</summary>
 			NoStyle = 1,
+			/// <summary>See http://en.wikipedia.org/wiki/Indent_style#Whitesmiths_style </summary>
 			Whitesmiths = 2,
+			/// <summary>See http://en.wikipedia.org/wiki/Indent_style#GNU_style </summary>
 			GNU = 3,
+			/// <summary>See  </summary>
 			BSD_Allman = 4,
+			/// <summary>K and R See http://en.wikipedia.org/wiki/Indent_style#K.26R_style </summary>
 			K_R = 5,
+			/// <summary>Simply places new groups on a new line.</summary>
 			GroupsOnNewLine = 6
 		}
+		/// <summary>It's a little more than the brace style</summary>
 		public Style BraceStyle = Style.None;
+		/// <summary>What do you want to use as a tab?</summary>
 		public Char Tab = Convert.ToChar("\t");
 
+		/// <summary>Converts all groups and properties to a string</summary>
 		public override string ToString()
 		{
 			bool SaveName = true;
@@ -245,6 +277,7 @@ namespace SimpleD
 			return Output.ToString();
 		}
 
+		/// <summary>Converts all groups and properties to a StringBuilder</summary>
 		public StringBuilder ToStringBuilder()
 		{
 			bool SaveName = true;
@@ -371,25 +404,37 @@ namespace SimpleD
 
 		#endregion
 
-
+		/// <summary>Is the group empty?
+		/// Groups.Count==0 andalso Properties.Count==0 andalso Name==""</summary>
 		public bool IsEmpty()
 		{
 			return Groups.Count == 0 && Properties.Count == 0 && Name == "";
 		}
 	}
 
+	/// <summary>A property. "name=value;"</summary>
 	public class Property
 	{
+		/// <summary>Name of the property.
+		/// can be empty even if AllowEmpty is false, as long as value has a value.</summary>
 		public string Name;
+		/// <summary>The value of the property.
+		/// can be empty even if AllowEmpty is false, as long as name is not empty.</summary>
 		public string Value;
 
-
+		/// <summary>
+		/// Basic constructor.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
 		public Property(string name, string value)
 		{
 			this.Name = name;
 			this.Value = value;
 		}
 
+		/// <summary>"Name=Value;", if just value is empty "Name;", if just Name is empty "=Value;".</summary>
+		/// <returns></returns>
 		public override string ToString()
 		{
 			if (Value == null || Value.Length == 0)
@@ -413,6 +458,8 @@ namespace SimpleD
 			return Name + "=" + Value + ";";
 		}
 
+		/// <summary>Is the property empty?
+		/// Both name and value must be empty.</summary>
 		public bool IsEmpty()
 		{
 			//Name andalso value is null or empty.
