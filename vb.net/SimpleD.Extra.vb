@@ -37,8 +37,7 @@ Imports System.Collections.Generic
 Imports Microsoft.VisualBasic
 
 'Version    : 1.2
-'ToDo: FromStreamBase needs update!
-'Last update: 12-15-2012 6am
+'Last update: 2014-05-07 11pm
 
 Namespace SimpleD
     Partial Public Class Group
